@@ -1,0 +1,15 @@
+{
+  "name": "open-zeppelin",
+  "version": "1.0.0",
+  "description": "Do no re-invent the wheel. The same logic applies to writing smart contract. Open Zeppelin is an open source smart contract library. \r > OpenZeppelin Contracts helps you minimize risk by using battle-tested libraries of smart contracts for Ethereum and other blockchains. It includes the most used implementations of ERC standards.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0"
+  }
+}
