@@ -1,0 +1,59 @@
+{
+	"compiler": {
+		"version": "0.8.10+commit.fc410830"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "getName",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"myCodeBox-blockchain\\web3\\eatTheBlock\\Jake.sol": "Jake"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"myCodeBox-blockchain\\web3\\eatTheBlock\\Jake.sol": {
+			"keccak256": "0x84b120deacfbe8850c9a39019125b7a1824452e4a3367e0a4c12acfa41152051",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e820323c48df2392d54e8bf641899af8ae8b0b603faa1d3710667e8d526e09c4",
+				"dweb:/ipfs/QmapDPdPHxZk8yB834nj2zFsnYyTHojHuaWUt9w5TR95GL"
+			]
+		}
+	},
+	"version": 1
+}
