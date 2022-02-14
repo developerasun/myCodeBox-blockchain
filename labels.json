@@ -1,0 +1,27 @@
+[
+    {
+        "name": "research",
+        "color": "47FDBF",
+        "description": "digging out for more details"
+        },
+        {
+        "name": "bug",
+        "color": "d73a4a",
+        "description": "Something isn't working"
+        },
+        {
+        "name": "annoying",
+        "color": "BC637F",
+        "description": "digging out for more details"
+        },
+        {
+        "name": "confusing",
+        "color": "006b75",
+        "description": "digging out for more details"
+        },
+        {
+        "name": "unexpected",
+        "color": "64A1BC",
+        "description": "unexpected result or behavior observed"
+    }
+]

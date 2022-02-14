@@ -1,8 +1,8 @@
 import Web3 from "web3";
-import { web3Key } from "../config/key.js";
+import { PROVIDER } from "../config/key.js";
 
 // connecting to Ropsten Mainnet
-const web3 = new Web3(web3Key.INFURA.MAINNET)
+const web3 = new Web3(PROVIDER.INFURA.MAINNET)
 
 // logging total ethereum mainnet block number
 web3.eth.getBlockNumber().then((console.log)) // 14158805

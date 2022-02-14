@@ -1,8 +1,8 @@
 import Web3 from "web3";
-import { web3Key, ABI_AND_CONTRACT } from "../config/key.js";
+import { PROVIDER, ABI_AND_CONTRACT } from "../config/key.js";
 
 // connecting to Ropsten testnet
-const web3 = new Web3(web3Key.INFURA.MAINNET)
+const web3 = new Web3(PROVIDER.INFURA.MAINNET)
 
 // connect contract with web3 JS API
 const abi = ABI_AND_CONTRACT.ABI

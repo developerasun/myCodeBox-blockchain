@@ -1,5 +1,8 @@
 # memo 
 reminder.md
+node_modules/
+secrets.json
+config
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
