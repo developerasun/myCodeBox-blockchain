@@ -69,6 +69,27 @@ Code example of ABI is as follows. It's from Etherscan MekaApes Game contract.
 [{"inputs":[{"internalType":"address","name":"_logic","type":"address"},{"internalType":"address","name":"admin_","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"admin_","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"implementation","outputs":[{"internalType":"address","name":"implementation_","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"stateMutability":"payable","type":"receive"}]
 ```
 
+## Web3.eth.Contract
+> The web3.eth.Contract object makes it easy to interact with smart contracts on the ethereum blockchain. When you create a new contract object you give it the json interface of the respective smart contract and web3 will auto convert all calls into low level ABI calls over RPC for you. This allows you to interact with smart contracts as if they were JavaScript objects.
+
+> To use it standalone:
+```js 
+new web3.eth.Contract(jsonInterface[, address][, options])
+```
+
+> [Parameters](https://web3js.readthedocs.io/en/v1.2.0/web3-eth-contract.html#parameters)
+
+1. jsonInterface(ABI) - Object: The json interface for the contract to instantiate
+1. address - String (optional): The address of the smart contract to call, can be added later using myContract.options.address = '0x1234..'
+1. options - Object (optional): The options of the contract. Some are used as fallbacks for calls and transactions:
+
+- from - String: The address transactions should be made from.
+- gasPrice - String: The gas price in wei to use for transactions.
+- gas - Number: The maximum gas provided for a transaction (gas limit).
+- data - String: The byte code of the contract. Used when the contract gets [deployed](https://web3js.readthedocs.io/en/v1.2.0/web3-eth-contract.html#contract-deploy)[](https://web3js.readthedocs.io/en/v1.2.0/web3-eth-contract.html#returns).
+
+>Returns : Object: The contract instance with all its methods and events.
+
 ## Transaction
 Anything that uses **data in Ethereum triggers a transaction, which costs a gas fee**. Once transaction gets triggered, it will broadcast to entire ethereum blockchain.
 
