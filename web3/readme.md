@@ -93,8 +93,8 @@ new web3.eth.Contract(jsonInterface[, address][, options])
 ## Transaction
 Anything that uses **data in Ethereum triggers a transaction, which costs a gas fee**. Once transaction gets triggered, it will broadcast to entire ethereum blockchain.
 
-- all transactions in **development kit**(e.g Ganache), accounts are **unlocked**(no sign, no private key required)
-- In real blockchain, transaction should be **_signed_** before broadcasting. 
+### Local development
+All transactions in **development kit**(e.g Ganache), accounts are **unlocked**(no sign, no private key required). Sending transactions in local development does not require user to sign the transaction.
 
 ```js
 // account 1 : send 5 ethers to account 2
@@ -105,7 +105,15 @@ web3.eth.sendTransaction( {
 })
 ```
 
-<img src="reference/ganache-transaction.png" width=818 height=209 alt="ganache transactions" /> 
+Compared to sending transaction in public network, local development is much simpler since it requires no user sign and no blockchain node API such as Infura and Moralis.
+
+<img src="reference/local-unsigned-tx.png" width=482 height=393 alt="local development for transaction" /> 
+
+### Public network
+In real blockchain, transaction should be **_signed_** before broadcasting unlike that of local development.
+
+<img src="reference/public-network-for-tx.png" width=640 height=402 alt="real blockchain network for transaction" /> 
+
 
 ### Preparation
 1. Prepare a fake ether. Use websites like below
@@ -154,6 +162,61 @@ signedTransaction.then(signedTx => {
 <img src="reference/transaction-result-log.png" width=800 height=300 alt="ropsten transaction" /> <br/>
 
 <img src="reference/ropsten-test-transaction-result.png" width=640 height=900 alt="ropsten etherscan result" /> 
+
+## Metamask integration
+Metamask will act as a public blockchain node API, delivering user request to actual blockchain just like other providers do. 
+
+<img src="reference/frontend-metamask-contract.png" width=656 height=402 alt="metamask integration with smart contract" /> 
+
+Once Metamask is installed, it injects Ethereum into window global object in browser. 
+
+```js 
+// modern dapp browser
+if (window.ethereum) {
+    const web3 = new Web3(window.ethereum);
+    window.ethereum.enable();
+    } else  {
+    // legacy browser
+    const web3 = window.web3;
+    console.log("Injected web3 detected.");
+    }
+```
+
+Access to smart contract from front end, using web3 with Metamask.
+
+```js
+// get network id & deployedNetwork
+const networkId = web3.eth.net.getId();
+const deployedNetwork = MyContract.networks[networkId];
+
+// create a contract instance
+const instance = new web3.eth.Contract(
+MyContract.abi,
+deployedNetwork && deployedNetwork.address,
+);
+
+// add the deployed contract address
+// check deployed contract address in truffle migrate
+instance.options.address = "0x1c26879ef00Ee67A83bB4d3091eCAbaC38338A6b"
+```
+
+Set the instance as a state in React application and use it to interact with smart contract. 
+
+```js 
+// call 'set' method in the contract 
+await contract.methods.set(5).send({ from: accounts[0] });
+```
+
+Note that Metamask is used in client-side to check user sign while HDWalletProvider is used in server-side. 
+
+```js : serverSide.js
+// HDWalletProvider is used to send a signed transaction, which 
+// requires a private key. HDWalletProvider is used in server-side
+// In client-side, metamask is used to check user sign.
+const provider = new HDWalletProvider(PRIVATE_KEY, PROVIDER.INFURA.TESTNET)
+const web3 = new Web3(provider)
+```
+
 
 ## Reference
 - [Web3.js - Readme](https://github.com/ChainSafe/web3.js/blob/1.x/README.md)
