@@ -184,8 +184,76 @@ Check the result [ropsten etherscan](https://ropsten.etherscan.io/).
 
 <img src="../../reference/ropsten-etherscan-result.png" width=708 height=648 alt="deployed contract in ropsten etherscan" />
 
+## Getting started with Truffle
+A directory of truffle project is as follows : 
+
+1. contracts/: Directory for Solidity contracts
+1. migrations/: Directory for scriptable deployment files
+1. test/: Directory for test files for testing your application and contracts
+1. truffle-config.js: Truffle configuration file
+
+> Truffle also requires that you have a running Ethereum client which supports the standard JSON RPC API (which is nearly all of them). There are many to choose from, and some better than others for development
+
+### Compiling contracts
+> With a bare Truffle project (created through truffle init), you're given a single Migrations.sol file that helps in the deployment process. If you're using a Truffle Box, you will have multiple files here.
+
+```shell
+$truffle init
+```
+
+> To compile a Truffle project, change to the root of the directory where the project is located and then type the following into a terminal:
+
+```shell
+$truffle compile # only compiles changed contracts since last compile
+$truffle compile --all # compile all contracts 
+```
+
+### Build artifacts
+> The name of the generated artifact .json files do not reflect the name of the source file but of the name of the contract definition. This means that changing the contract name string in the artifacts.require method to match that of the source file may lead to a Error: Could not find artifacts for {yourContract} from any sources if the contained smart contract definition is named differently.
+
+> You should not edit these artifacts files.
+
+### Interacting with your contracts
+> The Ethereum network makes a distinction between writing data to the network and reading data from it, and this distinction plays a significant part in how you write your application. In general, writing data is called a transaction whereas reading data is called a call. Transactions and calls are treated very differently, and have the following characteristics.
+
+#### Transaction
+> Transactions fundamentally change the state of the network. ... The defining characteristic of a transaction is that it writes (or changes) data. Transactions cost Ether to run, known as "gas", and transactions take time to process. 
+
+> When you execute a contract's function via a transaction, you cannot receive that function's return value because the transaction isn't processed immediately. 
+
+> In general, functions meant to be executed via a transaction will not return a value; they will return a transaction id instead. So in summary, transactions:
+
+#### Call
+> Calls are free to run(not costing gas), and their defining characteristic is that they read data. When you execute a contract function via a call you will receive the return value immediately.
+
+### Contract abstraction
+> Contract abstractions are the bread and butter of interacting with Ethereum contracts from Javascript. In short, contract abstractions are wrapper code that makes interaction with your contracts easy, in a way that lets you forget about the many engines and gears executing under the hood. 
+
+> Truffle uses its own contract abstraction via the @truffle/contract module.
+
+```js 
+// in truffle console, 
+truffle(develop)> let instance = await MetaCoin.deployed()
+truffle(develop)> instance
+
+// outputs:
+// Contract
+// - address: "0xa9f441a487754e6b27ba044a5a8eb2eec77f6b92"
+// - allEvents: ()
+// - getBalance: ()
+// - getBalanceInEth: ()
+// - sendCoin: ()
+```
+
+> Notice that the abstraction contains the exact same functions that exist within our contract. It also contains an address which points to the deployed version of the MetaCoin contract.
+
+
+
+
+
 
 ## Reference
 - [Moralis Web3 : Truffle Programming Tutorial for Beginners](https://www.youtube.com/watch?v=ZaqAwOzEiQ8&list=PLFPZ8ai7J-iQAtjGbmgcQWfAB53dZvn1y&index=1)
 - [Truffle suite](https://trufflesuite.com/docs/truffle/)
+- [Truffle suite : getting started](https://trufflesuite.com/docs/truffle/getting-started/installation.html)
 - [Writing Tests in Javascript](https://trufflesuite.com/docs/truffle/testing/writing-tests-in-javascript.html)
