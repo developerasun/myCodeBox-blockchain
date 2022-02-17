@@ -247,9 +247,36 @@ truffle(develop)> instance
 
 > Notice that the abstraction contains the exact same functions that exist within our contract. It also contains an address which points to the deployed version of the MetaCoin contract.
 
+### Preserving Files and Content to Storage Platforms¶
+> The truffle preserve command comes preconfigured with the ability to preserve files to IPFS, Filecoin or Textile Buckets.
 
+#### IPFS
+> To preserve your files to IPFS use the --ipfs flag.
 
+```shell
+$truffle preserve ./path --ipfs [--environment <name>]
+```
 
+> By default, the connection to IPFS is done with a local node presumed to be running at http://localhost:5001. This is the default for an ipfs daemon and also for ganache filecoin. It is possible to point to a different IPFS node by configuing a different URL in a truffle-config.js environment.
+
+```js 
+module.exports = {
+  /* ... rest of truffle-config */
+
+  environments: {
+    /* ... other environments */
+
+    production: {
+      ipfs: {
+        address: 'https://ipfs.infura.io:5001'
+      }
+    }
+  }
+}
+```
+
+### Running migrations
+content will be added
 
 
 ## Reference
