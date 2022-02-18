@@ -276,8 +276,123 @@ module.exports = {
 ```
 
 ### Running migrations
-content will be added
+> Migrations are JavaScript files that help you deploy contracts to the Ethereum network. These files are responsible for staging your deployment tasks, and they're written under the assumption that your deployment needs will change over time. 
 
+> As your project evolves, you'll create new migration scripts to further this evolution on the blockchain. A history of previously run migrations is recorded on-chain through a special Migrations contract, detailed below.
+
+#### How migration works
+> Truffle requires you to have a Migrations contract in order to use the Migrations feature. This contract must contain a specific interface, but you're free to edit this contract at will. For most projects, this contract will be deployed initially as the first migration and won't be updated again. You will also receive this contract by default when creating a new project with truffle init.
+
+```solidity : Migration.sol
+pragma solidity ^0.4.8;
+contract Migrations {
+  // pre-defined logic here
+}
+```
+
+> You must deploy this contract inside your first migration in order to take advantage of the migrations feature.
+
+> For local testing, make sure to have a test blockchain such as Ganache configured and running before executing truffle migrate. You can also use truffle develop and run your migrations.
+
+```shell
+$truffle migrate
+```
+
+> This will run all migrations located within your project's migrations directory. At their simplest, migrations are simply a set of managed deployment scripts. 
+
+> If your migrations were previously run successfully, truffle migrate will start execution from the last migration that was run, running only newly created migrations. 
+
+> If no new migrations exists, truffle migrate won't perform any action at all. You can use the --reset option to run all your migrations from the beginning.
+
+#### Understand Migration file
+> Note that the filename is prefixed with a number and is suffixed by a description. The numbered prefix is required in order to record whether the migration ran successfully. The suffix is purely for human readability and comprehension.
+
+```js : 2_my_contract_migration.js
+// artifacts.require : The name specified should match the name of the contract definition within that source file.
+const MyContract = artifacts.require('MyContract')
+
+module.exports = function(deployed) {
+  // The deployer object is your main interface for staging deployment tasks
+  deployer.deploy(MyContract)
+}
+```
+
+> All migrations must export a function via the module.exports syntax. The function exported by each migration should accept a deployer object as its first parameter.
+
+##### Setting directory
+> The default directory for uncompiled contracts is ./contracts relative to the project root. If you wish to keep your contracts in a different directory you may specify a contracts_directory property.
+
+> The default output directory for compiled contracts is ./build/contracts relative to the project root. This can be changed with the contracts_build_directory key.
+
+```js 
+module.exports = {
+  contracts_directory: "./allMyStuff/someStuff/theContractFolder",
+  contracts_build_directory: "./allMyBuildStuff/someStuff",
+  migrations_directory:"./allMyMigrationStuff/thatStuff",
+  networks: {
+    development: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "*",
+    }
+  }
+};
+```
+
+#### Network consideration
+> Even the smallest project will interact with at the very least two blockchain nodes: One on the developer's machine, like Ganache or Truffle Develop, and the other representing the network where the developer will eventually deploy their application (such as the main public Ethereum network or a private consortium network, for instance). 
+
+> Truffle provides a system for managing the compilation and deployment artifacts for each network, and does so in a way that simplifies final application deployment.
+
+> The networks object, shown below, is keyed by network names and each name contains a corresponding object that defines the parameters of the network. You will most likely want to provide your own network names and configurations to tell Truffle what networks to connect to for deployments and testing.
+
+```js : truffle-config.js
+networks: {
+  development: {
+    host: "127.0.0.1",
+    port: 8545,
+    network_id: "*", // match any network
+    websockets: true
+  },
+  live: {
+    host: "178.25.19.88", // Random IP for example purposes (do not use)
+    port: 80,
+    network_id: 1,        // Ethereum public network
+    // optional config values:
+    // gas                  -
+    // gasPrice             - use gas and gasPrice if creating type 0 transactions
+    // maxFeePerGas         -
+    // maxPriorityFeePerGas - use maxFeePerGas and maxPriorityFeePerGas if creating type 2 transactions (https://eips.ethereum.org/EIPS/eip-1559)
+    // from - default address to use for any transaction Truffle makes during migrations
+    // provider - web3 provider instance Truffle should use to talk to the Ethereum network.
+    //          - function that returns a web3 provider instance (see below.)
+    //          - if specified, host and port are ignored.
+    // skipDryRun: - true if you don't want to test run the migration locally before the actual migration (default is false)
+    // confirmations: - number of confirmations to wait between deployments (default: 0)
+    // timeoutBlocks: - if a transaction is not mined, keep waiting for this number of blocks (default is 50)
+    // deploymentPollingInterval: - duration between checks for completion of deployment transactions
+    // disableConfirmationListener: - true to disable web3's confirmation listener
+  }
+}
+```
+
+> Once you have defined your networks, you can provide the names as an option for certain commands; this is possible during testing or running migrations. 
+
+```shell
+$truffle migrate --network live
+```
+
+> Note that if no --network option is provided when using commands that require a network, Truffle will by default look for a network named "development" in your truffle-config.js
+
+```js 
+module.exports = function(deployer, network) {
+  if (network == "live") {
+    // Do something specific to the network named "live".
+  } else {
+    // Perform a different step otherwise.
+  }
+}
+```
 
 ## Reference
 - [Moralis Web3 : Truffle Programming Tutorial for Beginners](https://www.youtube.com/watch?v=ZaqAwOzEiQ8&list=PLFPZ8ai7J-iQAtjGbmgcQWfAB53dZvn1y&index=1)
