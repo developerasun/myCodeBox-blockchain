@@ -125,20 +125,6 @@ modifier onlyOwner {
 
 1. revert(string memory reason) − This method aborts the execution and revert any changes done to the state. It provides an option to provide a custom message.
 
-
-## Remix
-Remix is a online editor to compile Solidity. You can either go below website, 
-
-- [Remix IDE](https://remix.ethereum.org/)
-
-or install extension in VS code. 
-
-<img src="../reference/remix-vscode.png" width=251 height=394 alt="remix extension in vs code" />
-
-> This project brings Remix plugins to Visual Studio Code. Remix plugins can perform a variety of tasks such as verifying contracts, linting, generating documentation, running tutorials, compiling, debugging and much more. The Remix Plugin API allows plugins that run in Remix to run in Visual Studio Code too.
-
-Note that Remix tells us which execution would cost gas by color. If orange, cost gas. If not, not.
-
 ## Basics
 ### State variable
 Variables in solidity contract lie in blockchain and are called state variable.
@@ -192,7 +178,6 @@ assert(1 ether == 1e18);
 
 ### Event
 > Events are convenience interfaces with the EVM logging facilities.
-
 > Solidity events give an abstraction on top of the EVM’s logging functionality. Applications can subscribe and listen to these events through the RPC interface of an Ethereum client.
 
 ```solidity
@@ -213,6 +198,86 @@ contract SimpleAuction {
 
 > Event can be readable outside of blockchain, for example in front end like above.
 
+### Testing
+Once smart contract is deploeyd on blockchain, the contract can't be changed unlike modern web application. This makes testing your contract before deployment crucial. 
+
+#### Test driven development
+> Test-driven development (TDD) is a software development process relying on software requirements being converted to test cases before software is fully developed, and tracking all software development by repeatedly testing the software against all test cases.
+
+> A key benefit of test-driven development is that it makes the developer focus on requirements before writing code. This is in contrast with the usual practice, where unit tests are only written after code.
+
+Sequence of test driven development is as follows : 
+
+1. Add a test
+1. Run all test. new tests should fail for expected reasons
+1. Write the simplest code that passes the new test
+1. All tests should now pass
+1. Refactor as needed
+
+#### Unit/Integration test
+> A unit test is a way of testing a unit - the smallest piece of code that can be logically isolated in a system. In most programming languages, that is a function, a subroutine, a method or property. The isolated part of the definition is important.
+
+In unit test, each unit being test should be isolated. For example, if function A includes function B inside, you should provide a fake function B(mocking) instead of real function B. 
+
+<img src="reference/unit-test-mocking.png" width=656 height=318 alt="unit test isolation and mocking" />
+
+> Integration testing (sometimes called integration and testing, abbreviated I&T) is the phase in software testing in which individual software modules are combined and tested as a group. Integration testing is conducted to evaluate the compliance of a system or component with specified functional requirements.
+
+#### Arrange-Act-Assert pattern 
+> Arrange-Act-Assert is a great way to structure test cases. It prescribes an order of operations.
+
+1. Arrange : inputs and targets. Arrange steps should set up the test case. Does the test require any objects or special settings? Does it need to prep a database? Does it need to log into a web app? Handle all of these operations at the start of the test.
+
+```js
+const a = 1
+const b = 2
+```
+
+1. Act : on the target behavior. Act steps should cover the main thing to be tested. This could be calling a function or method, calling a REST API, or interacting with a web page. Keep actions focused on the target behavior.
+
+```js 
+const add = (a,b) => { return a + b }
+add(a, b)
+```
+
+1. Assert : expected outcomes. Act steps should elicit some sort of response. Assert steps verify the goodness or badness of that response. Assertions will ultimately determine if the test passes or fails.
+
+```js 
+const result = add(a,b)
+assert(result === 3)
+```
+
+#### What to test in contract
+Things that should be tested in smart contract are as follows : 
+
+1. public functions
+1. external functions
+1. function with no visibility specified(publc by default)
+
+#### Test runner
+Mocha is a test runner which lets you know how the tests are going. 
+
+<img src="reference/mocha-test-runner.png" width=633 height=405 alt="test running process" />
+
+#### Chai
+> Chai has several interfaces that allow the developer to choose the most comfortable. The chain-capable BDD styles provide an expressive language & readable style, while the TDD assert style provides a more classical feel.
+
+<img src="reference/chai-should-expect-assert.png" width=1000 height=400 alt="chai API preference" />
+
+## Remix
+Remix is a online editor to compile Solidity. You can either go below website, 
+
+- [Remix IDE](https://remix.ethereum.org/)
+
+or install extension in VS code. 
+
+<img src="../reference/remix-vscode.png" width=251 height=394 alt="remix extension in vs code" />
+
+> This project brings Remix plugins to Visual Studio Code. Remix plugins can perform a variety of tasks such as verifying contracts, linting, generating documentation, running tutorials, compiling, debugging and much more. The Remix Plugin API allows plugins that run in Remix to run in Visual Studio Code too.
+
+Note that Remix tells us which execution would cost gas by color. If orange, cost gas. If not, not.
+
+
 ## Reference
 - [Solidity official](https://docs.soliditylang.org/en/v0.8.11/)
 - [VS Code marketplace : Ethereum Remix](https://marketplace.visualstudio.com/items?itemName=RemixProject.ethereum-remix)
@@ -220,3 +285,5 @@ contract SimpleAuction {
 - [Storage vs Memory - Geeks for geeks](https://www.geeksforgeeks.org/storage-vs-memory-in-solidity/#:~:text=Much%20like%20RAM%2C%20Memory%20in,off%20for%20the%20next%20execution.&text=Function%20arguments%20are%20in%20memory.)
 - [Solidity error handling - tutorialspoint](https://www.tutorialspoint.com/solidity/solidity_error_handling.htm)
 - [Solidity Contract - Solidity official](https://docs.soliditylang.org/en/v0.8.11/contracts.html)
+- [Eat the block - smart contract testing](https://www.youtube.com/watch?v=vLEB-YRukws&list=PLbbtODcOYIoHnn7pbX1fOeA8TopL1fpRL&index=1)
+- [Automation Panda - ARRANGE-ACT-ASSERT: A PATTERN FOR WRITING GOOD TESTS](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/)
