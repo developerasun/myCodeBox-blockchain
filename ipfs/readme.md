@@ -22,6 +22,20 @@ https://ipfs.io/ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Aardvar
 
 > IPFS makes this possible for not only web pages but also any kind of file a computer might store, whether it's a document, an email, or even a database record.
 
+## Installation
+You can install [IPFS desktop](https://docs.ipfs.io/install/ipfs-desktop/#windows) to run your own IPFS node or use external service such as [Pinata](https://www.pinata.cloud/)
+
+## Address IPFS on the web
+> Browsers that support IPFS can redirect these requests to your local IPFS node, while those that don't can fetch the resource from the ipfs.io gateway.
+
+```
+https://ipfs.io/ipfs/<CID>
+# e.g
+https://ipfs.io/ipfs/Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu
+```
+
+> You can swap out ipfs.io for your own http-to-ipfs gateway, but you are then obliged to keep that gateway running forever. If your gateway goes down, users with IPFS aware tools will still be able to fetch the content from the IPFS network as long as any node still hosts it, but for those without, the link will be broken. Don't do that.
+
 ## Advantage over previous web
 > Can speed up the web when you're far away or disconnected. If you can retrieve a file from someone nearby instead of hundreds or thousands of miles away, you can often get it faster. This is especially valuable if your community is networked locally but doesn't have a good connection to the wider internet. (Well-funded organizations with technical expertise do this today by using multiple data centers or CDNs — content distribution networks (opens new window). IPFS hopes to make this possible for everyone.)
 
@@ -34,7 +48,7 @@ https://ipfs.io/ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Aardvar
 
 > …identify a file by where it's located — what computer it's on and where on that computer's hard drive it is. That doesn't work if the file is in many places, though, like your neighbor's computer and your friend's across town.
 
-> Instead of being location-based, IPFS addresses a file by what's in it, or by its content. The content identifier above is a cryptographic hash of the content at that address. The hash is unique to the content that it came from, even though it may look short compared to the original content. 
+> Instead of being location-based, IPFS addresses a file by what's in it, or by its content. The content identifier(CID) above is a cryptographic hash of the content at that address. The hash is unique to the content that it came from, even though it may look short compared to the original content. 
 
 > It also allows you to verify that you got what you asked for — bad actors can't just hand you content that doesn't match. (If hashes are new to you, check out the concept guide on hashes for an introduction.)
 
@@ -66,6 +80,22 @@ https://ipfs.io/ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Aardvar
 ### Pinning service 
 > An easy way to make sure important data is retained is to use a pinning service. These services run lots of IPFS nodes and will pin your data for you! This way, you don't have to run and maintain your own IPFS node. Check out the Persistence page for more information on pinning services. In this tutorial, we're going to use Pinata (opens new window)since it gives new users 1GB of storage for free, and has a very simple interface:
 
+## CID and smart contract
+Contents uploaded to IPFS will get CID(content identifier) and this CID can be used for NFT media management in smart contract.
+
+> A content identifier, or CID, is a label used to point to material in IPFS. It doesn't indicate where the content is stored, but it forms a kind of address based on the content itself. 
+
+For example, you can upload files to Pinata and check its CID like below. 
+
+<img src="reference/pinata-cid.png" width=800 height=300 alt="getting content identifier in Pinata" />
+
+Note that total IPFS address is defined : gateway/ipfs/CID as explained above. For example, 
+
+<img src="reference/IPFS-gateway-cid.png" width=934 height=375 alt="Pinata gateway example" />
+
+Thus, each file in IPFS is available in the form of : gateway/ipfs/CID/file name. Note that the gateway varies. 
+
+<img src="reference/cid-filename.png" width=811 height=212 alt="indexing IPFS file with CID and file name" />
 
 ## Reference
 - [IPFS official](https://docs.ipfs.io/concepts/what-is-ipfs/#decentralization)
