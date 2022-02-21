@@ -90,10 +90,12 @@ Check migration.
 <img src="../../reference/truffle-migrate.png" width=611 height=169 alt="truffle migrate" />
 
 ### Test
-> Truffle uses the Mocha testing framework and Chai for assertions to provide you with a solid framework from which to write your JavaScript tests.
+> Truffle uses the **Mocha testing framework and Chai** for assertions to provide you with a solid framework from which to write your JavaScript tests.
 
 #### Use contract() instead of describe()¶
-> Structurally, your tests should remain largely unchanged from that of Mocha: Your tests should exist in the ./test directory, they should end with a .js extension, and they should contain code that Mocha will recognize as an automated test. What makes Truffle tests different from that of Mocha is the contract() function: This function works exactly like describe() except it enables Truffle's clean-room features. It works like this:
+> Structurally, your tests should remain largely unchanged from that of Mocha: Your tests should exist in the ./test directory, they should end with a .js extension, and they should contain code that Mocha will recognize as an automated test. 
+
+> What makes Truffle tests different from that of Mocha is the contract() function: This function works exactly like describe() except it enables Truffle's clean-room features. It works like this:
 
 > Before each contract() function is run, your contracts are redeployed to the running Ethereum client so the tests within it run with a clean contract state.
 
