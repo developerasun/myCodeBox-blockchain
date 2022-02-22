@@ -117,8 +117,77 @@ Total gas cost of your transaction is calculated like below.
 
 - total gas cost (ether) = gas price(set by transaction sender) * min(gas cost, gas limit)
 
+## Ethereum virutal machine
+> The EVM’s physical instantiation can’t be described in the same way that one might point to a cloud or an ocean wave, but **it does exist as one single entity** maintained by thousands of connected computers running an Ethereum client.
+
+> **The Ethereum protocol itself exists solely for the purpose of keeping the continuous, uninterrupted, and immutable operation of this special state machine**. It's the environment in which all Ethereum accounts and smart contracts live. At any given block in the chain, Ethereum has one and only one 'canonical' state, and the EVM is what defines the rules for computing a new valid state from block to block.
+
+<img src="reference/evm-machine-world-state.png" width=711 height=397 alt="Ethereum virtual machine structure" />
+
+### State transition function
+> The EVM behaves as a mathematical function would: Given an input, it produces a deterministic output. It therefore is quite helpful to more formally describe Ethereum as having a state transition function.
+
+```
+Y(S, T)= S'
+```
+
+> Given an old valid state (S) and a new set of valid transactions (T), the Ethereum state transition function Y(S, T) produces a new valid output state S'
+
+#### State
+> In the context of Ethereum, the state is an enormous data structure called a modified Merkle Patricia Trie, which keeps all accounts linked by hashes and reducible to a single root hash stored on the blockchain.
+
+#### Transaction
+> Transactions are cryptographically signed instructions from accounts. There are two types of transactions: those which result in message calls and those which result in contract creation.
+
+> Contract creation results in the creation of a new contract account containing compiled smart contract bytecode. Whenever another account makes a message call to that contract, it executes its bytecode
+
+### EVM instruction
+> The EVM executes as a stack machine with a depth of 1024 items. Each item is a 256-bit word, which was chosen for the ease of use with 256-bit cryptography (such as Keccak-256 hashes or secp256k1 signatures).
+
+> During execution, the EVM maintains a transient memory (as a word-addressed byte array), which does not persist between transactions.
+
+> Contracts, however, do contain a Merkle Patricia storage trie (as a word-addressable word array), associated with the account in question and part of the global state.
+
+> Compiled smart contract bytecode executes as a number of EVM opcodes, which perform standard stack operations like XOR, AND, ADD, SUB, etc. The EVM also implements a number of blockchain-specific stack operations, such as ADDRESS, BALANCE, BLOCKHASH, etc. 
+
+<img src="reference/how-evm-works.png" width=692 height=376 alt="how EVM works" />
+
+### EVM implementation
+> All implementations of the EVM must adhere to the specification described in the Ethereum Yellowpaper.
+
+> Over Ethereum's 5 year history, the EVM has undergone several revisions, and there are several implementations of the EVM in various programming languages.
+
+> All Ethereum clients include an EVM implementation. Additionally there are multiple standalone implementations, including:
+
+1. Py-EVM - Python
+1. evmone - C++
+1. ethereumjs-vm - JavaScript
+1. eEVM - C++
+1. Hyperledger Burrow - Go
+1. hevm - Haskell
+
+### Blockchain network architecture
+Blockchain node is a server that runs blockchain software, which is constructed as follows : 
+
+<img src="reference/blockchain-node.png" width=345 height=422 alt="node in blockchain network" />
+
+Typically nodes in network interacts each other based on OSI model, 
+
+- Node A sends a packet : network layer => data link layer => physical layer 
+- Node B receives a packet : physical layer => data link layer => network layer
+
+which is similar to how blockchain node interacts. 
+
+<img src="reference/blockchain-node-interaction.png" width=691 height=418 alt="blockchain node interaction" />
+
+However, running a blockchain node as an individual user is quite demanding and time-consuming. Instead, the one can use web browser to interact with blockchain node. 
+
+<img src="reference/web-browser-blockchain-node-interaction.png" width=703 height=424 alt="web browser as an alternative of blockchain node buffer" />
+
 ## Reference
 - [Wikipedia : JSON-RPC](https://en.wikipedia.org/wiki/JSON-RPC#:~:text=JSON%2DRPC%20is%20a%20remote%20procedure%20call%20protocol%20encoded%20in%20JSON.&text=JSON%2DRPC%20allows%20for%20notifications,which%20may%20be%20answered%20asynchronously.)
+- [Ethereum org : EVM](https://ethereum.org/en/developers/docs/evm/)
 - [Eat the block : DeFi programming course](https://www.youtube.com/watch?v=PflQRS9oiHw&list=PLbbtODcOYIoGC8c5-gs0EYzpYVUPdmqO3&index=2)
 - [Ethereum tokens - Eat the block](https://www.youtube.com/watch?v=ryeFqc64Dog&list=PLbbtODcOYIoGOvl0KH57_nfvEKOYV6qdT&index=1)
 - [What Is ERC-20 and What Does It Mean for Ethereum?](https://www.investopedia.com/news/what-erc20-and-what-does-it-mean-ethereum/)
+- [Eat the block : blockchain and ethereum](https://www.youtube.com/playlist?list=PLbbtODcOYIoERtG0c6zfUerC00otrh5tK)
