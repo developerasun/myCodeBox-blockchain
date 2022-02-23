@@ -1,19 +1,13 @@
 # Learning web 3 essentials
 ## What is Web3?
-Web3.js is a Javascript library for Ethereum. 
+> The web3.js library is a collection of modules that contain functionality for the ethereum ecosystem. 
+
+1. web3-eth is for the ethereum blockchain and smart contracts.
+1. web3-shh is for the whisper protocol, to communicate p2p and broadcast.
+1. web3-bzz is for the swarm protocol, the decentralized file storage.
+1. web3-utils contains useful helper functions for Dapp developers.
 
 > This is the Ethereum **JavaScript API** which connects to the Generic **JSON-RPC** spec. You need to run a local or remote Ethereum node to use this library.
-
-> Web3.js is a collection of libraries that allow you to interact with a local or remote ethereum node using HTTP, IPC or WebSocket.
-
-> To **talk to an ethereum node from inside a JavaScript application** use the web3.js library, which gives a convenient interface for the RPC methods.
-
-## Installation 
-Install web3.js with below command. 
-
-```shell
-$npm i web3
-```
 
 ## Architecture
 Overall structure for web3.js to communicate with Ethereum blockchain is as follows : 
@@ -47,6 +41,134 @@ You can use a local Ethereum blockchain using Ganache.
 
 > **Ganache is a personal blockchain** for rapid Ethereum and Corda distributed application development. You can use Ganache across the entire development cycle; enabling you to develop, deploy, and test your dApps in a safe and deterministic environment.
 > The command-line tool, ganache-cli (formerly known as the **TestRPC**), is available for Ethereum development.
+
+## Adding web3
+Install Web3 with following command. 
+
+```shell
+$npm i web3
+$yarn add web3
+```
+
+> After that you need to create a web3 instance and set a provider. **Most Ethereum-supported browsers** like MetaMask have an EIP-1193 compliant provider available at window.ethereum.
+
+## Callback promise event
+> To help web3 integrate into all kinds of projects with different standards we provide multiple ways to act on asynchronous functions.
+
+> Most web3.js objects allow a callback as the last parameter, as well as returning promises to chain functions.
+
+> Ethereum as a blockchain has different levels of finality and therefore needs to return multiple “stages” of an action. To cope with this requirement we return a “promiEvent” for functions like web3.eth.sendTransaction or contract methods. This “promiEvent” is a promise combined with an event emitter to allow acting on different stages of action on the blockchain, like a transaction.
+
+> PromiEvents work like a normal promises with added on, once and off functions. This way developers can watch for additional events like on “receipt” or “transactionHash”.
+
+```js
+web3.eth.sendTransaction({from: '0x123...', data: '0x432...'})
+.once('sending', function(payload){ ... })
+.once('sent', function(payload){ ... })
+.once('transactionHash', function(hash){ ... })
+.once('receipt', function(receipt){ ... })
+.on('confirmation', function(confNumber, receipt, latestBlockHash){ ... })
+.on('error', function(error){ ... })
+.then(function(receipt){
+    // will be fired once the receipt is mined
+});
+```
+
+## json interface
+> The json interface is a json object describing the Application Binary Interface (ABI) for an Ethereum smart contract. Using this json interface web3.js is **able to create JavaScript object representing the smart contract** and its methods and events using the **web3.eth.Contract** object.
+
+## Web3 umbrella package
+> This is the main (or ‘umbrella’) class of the web3.js library.
+
+```js
+const Web3 = require('web3');
+
+Web3.utils
+Web3.version
+Web3.givenProvider
+Web3.providers
+// Web.modules : Will return an object with the classes of all major sub modules, to be able to instantiate them manually.
+Web3.modules
+```
+
+> When called on the umbrella package web3 it will also set the provider for all sub modules web3.eth, web3.shh, etc. EXCEPT **web3.bzz which needs a separate provider at all times**.
+
+### GivenProvider
+> When using web3.js in an Ethereum compatible browser, it will set with the current native provider by that browser. Will return the given provider by the (browser) environment, otherwise null.
+
+> returns an object(the given provider set) or null
+
+### SetProvider
+> Will change the provider for its module, which was set when web3 instance initialization.
+
+```js
+web3.setProvider(myProvider)
+web3.eth.setProvider(myProvider)
+web3.shh.setProvider(myProvider)
+web3.bzz.setProvider(myProvider)
+```
+
+### Web3.eth.subscribe
+> The web3.eth.subscribe function lets you subscribe to specific events in the blockchain.
+
+```js 
+web3.eth.subscribe(type [, options] [, callback]);
+```
+
+1. String - The subscription you want to subscribe to.
+1. Mixed - (optional) Optional additional parameters, depending on the subscription type.
+1. Function - (optional) Optional callback, returns an error object as first parameter and the result as second. Will be called for each incoming subscription, and the subscription itself as the 3rd parameter.
+
+```js
+const subscription = web3.eth.subscribe('pendingTransactions', function(error, result){
+    if (!error)
+        console.log(result);
+})
+.on("data", function(transaction){
+    console.log(transaction);
+});
+
+// unsubscribes the subscription
+subscription.unsubscribe(function(error, success){
+    if(success)
+        console.log('Successfully unsubscribed!');
+});
+```
+
+### Web3.eth.Contract
+> The web3.eth.Contract object makes it easy to interact with smart contracts on the ethereum blockchain. 
+
+> When you create a new contract object you give it the json interface of the respective smart contract and **web3 will auto convert all calls into low level ABI calls over RPC** for you. This allows you to interact with smart contracts as if they were JavaScript objects.
+
+```js 
+// Creates a new contract instance with all its methods and events defined in its json interface object.
+const myContract = new web3.eth.Contract(abi, address, callback)
+```
+
+1. jsonInterface(abi) - Object: The json interface for the contract to instantiate
+1. address - String (optional): The address of the smart contract to call.
+1. options - Object (optional): The options of the contract. Some are used as fallbacks for calls and transactions:
+
+- from - String: The address transactions should be made from.
+- gasPrice - String: The gas price in wei to use for transactions.
+- gas - Number: The maximum gas provided for a transaction (gas limit).
+- data - String: The byte code of the contract. Used when the contract gets deployed.
+
+### Web3.eth.accounts
+> The web3.eth.accounts contains functions to generate Ethereum accounts and sign transactions and data.
+
+> This package has NOT been audited and might potentially be unsafe. Take precautions to clear memory properly, store the private keys safely, and test transaction receiving and sending functionality properly before using in production!
+
+```js 
+web3.eth.accounts.create();
+> {
+    address: "0xb8CE9ab6943e0eCED004cDe8e3bBed6568B2Fa01",
+    privateKey: "0x348ce564d427a3311b6536bbcff9390d69395b06ed6c486954e971d960fe8709",
+    signTransaction: function(tx){...},
+    sign: function(data){...},
+    encrypt: function(password){...}
+}
+```
 
 ## Interact with smart contract
 In order to interact with smart contract in dapp, Web3 instance needs to know what contract it interacts with. 
