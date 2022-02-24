@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>testing metamask</h1>
+
+    <script>
+        if(window.ethereum !== undefined) {
+            console.log("metamask installed")
+            console.log(window.ethereum)
+            window.ethereum.isMetamask ? console.log("yes") : console.log("no")
+            window.ethereum.request( { method : 'eth_requestAccounts' })
+            // window.ethereum.enable() // expose metamask in browse
+        }
+    </script>
+</body>
+</html>
