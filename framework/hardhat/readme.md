@@ -194,7 +194,110 @@ Error: Transaction reverted: function selector was not recognized and there's no
 
 > More generally, Hardhat Network can be used to fork any network, not just mainnet. Even further, Hardhat Network can be used to fork any EVM-compatible blockchain, not just Ethereum.
 
+## Configuration
+> When Hardhat is run, it searches for the closest hardhat.config.js file starting from the Current Working Directory. This file normally lives in the root of your project. An empty hardhat.config.js is enough for Hardhat to work.
 
+> The entirety of your Hardhat setup (i.e. your config, plugins and custom tasks) is contained in this file.
+
+### Available config options
+> To set up your config, you have to export an object from hardhat.config.js.
+
+> This object can have entries like defaultNetwork, networks, solidity, paths and mocha. 
+
+```js 
+module.exports = {
+  defaultNetwork: "rinkeby",
+  networks: {
+    hardhat: {
+    },
+    rinkeby: {
+      url: "https://eth-rinkeby.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
+      accounts: [privateKey1, privateKey2, ...]
+    }
+  },
+  solidity: {
+    version: "0.5.15",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
+  mocha: {
+    timeout: 40000
+  }
+}
+```
+
+### Network configuration
+> The networks config field is an optional object where network names map to their configuration. There are two kinds of networks in Hardhat: JSON-RPC (opens new window)based networks, and the built-in Hardhat Network.
+
+> You can customize which network is used by default when running Hardhat by setting the config's defaultNetwork field. If you omit this config, its default value is "hardhat".
+
+#### JSON-RPC based network
+> These are networks that connect to an external node. Nodes can be running in your computer, like Ganache, or remotely, like Alchemy or Infura. This kind of network is configured with objects with the following fields:
+
+1. url: The url of the node. This argument is required for custom networks.
+
+1. chainId: An optional number, used to validate the network Hardhat connects to. If not present, this validation is omitted.
+
+1. from: The address to use as default sender. If not present the first account of the node is used.
+
+1. gas: Its value should be "auto" or a number. If a number is used, it will be the gas limit used by default in every transaction. If "auto" is used, the gas limit will be automatically estimated. Default value: "auto".
+
+1. gasPrice: Its value should be "auto" or a number. This parameter behaves like gas. Default value: "auto".
+
+1. gasMultiplier: A number used to multiply the results of gas estimation to give it some slack due to the uncertainty of the estimation process. Default value: 1.
+
+1. accounts: This field controls which accounts Hardhat uses. It can use the node's accounts (by setting it to "remote"), a list of local accounts (by setting it to an array of hex-encoded private keys), or use an HD Wallet. Default value: "remote".
+
+1. httpHeaders: You can use this field to set extra HTTP Headers to be used when making JSON-RPC requests. It accepts a JavaScript object which maps header names to their values. Default value: undefined.
+
+1. timeout: Timeout in ms for requests sent to the JSON-RPC server. If the request takes longer than this, it will be cancelled. Default value: 40000 for the localhost network, 20000 for the rest.
+
+#### HD wallet config
+> To use an HD Wallet with Hardhat you should set your network's accounts field to an object with the following fields:
+
+1. mnemonic: A required string with the mnemonic phrase of the wallet.
+1. path: The HD parent of all the derived keys. Default value: "m/44'/60'/0'/0".
+1. initialIndex: The initial index to derive. Default value: 0.
+1. count: The number of accounts to derive. Default value: 20.
+1. passphrase: The passphrase for the wallet. Default value: empty string.
+
+#### Solidity configuration
+>The solidity config is an optional field that can be one of the following:
+
+1. version 
+1. settings : settings has the same schema as the settings entry in the Input JSON (opens new window)that can be passed to the compiler. Some commonly used settings are: optimzer, evmVersion
+1. compilers
+1. overrides
+
+```js
+solidity: {
+    version : "0.8.10",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }, 
+      evmVersion : 'london' // default value managed by solc
+    }, 
+  },
+```
+
+## Typescript support
+> Hardhat will automatically enable its TypeScript support if your config file ends in .ts and is written in valid TypeScript. This requires a few changes to work properly.
+
+> Hardhat uses TypeScript and ts-node under the hood, so you need to install them.
+
+> When using JavaScript, all the properties in the HRE are injected into the global scope, and are also available by getting the HRE explicitly. When using TypeScript nothing will be available in the global scope and you will need to import everything explicitly.
 
 ## Reference 
 - https://hardhat.org/
