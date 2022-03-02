@@ -299,6 +299,40 @@ solidity: {
 
 > When using JavaScript, all the properties in the HRE are injected into the global scope, and are also available by getting the HRE explicitly. When using TypeScript nothing will be available in the global scope and you will need to import everything explicitly.
 
+## Connecting to Metamask
+Check [this youtube tutorial](https://www.youtube.com/watch?v=FTDEX3S1eqU&list=PLFPZ8ai7J-iR-ysy5PeYDgWLu2513aO0i&index=2) to connect Metamask with hardhat node. Basically technique is that run hardhat node first with below command
+
+```shell
+$npx hardhat node
+```
+
+And then add hardhat local network to Metamask. 
+
+- Network name : Hardhat
+- RPC URL : http://127.0.0.1:8545/
+- Chain ID : 31337
+
+Get dummy accounts from the hardhat node. Copy and paste private key to Metamask. 
+
+Through the account, you can send ether back and forth. 
+
+## Verify smart contract
+Hardhat lets you verify contract in etherscan easily.
+
+1. deploy your contract in the network you want(here ropsten testnet). 
+
+```shell
+$npx hardhat run scripts/deploy.ts --network ropsten
+```
+
+1. verify the contact with etherscan. 
+
+```shell
+$npx hardhat verify (the contract address here) --network ropsten
+```
+
+Once successfully verified, it will log Etherscan link in terminal. 
+
 ## Reference 
 - https://hardhat.org/
 - [Hardhat Tutorials | NFT OpenZeppelin ERC721](https://www.youtube.com/playlist?list=PLw-9a9yL-pt3sEhicr6gmuOQdcmWXhCx4)
