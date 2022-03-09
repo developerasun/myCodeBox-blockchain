@@ -315,6 +315,90 @@ fn main() {
 let s = String::from("hello!");
 ```
 
+The value "hello" has a String type, which works like below. Note that red rectangle means it is stored in stack while blue one means heap. 
+
+<img src="reference/String-stack-heap.png" width=667 height=327 alt="how String data is stored in Rust" />
+
+> So, what’s the difference here? Why can String be mutated but literals cannot? The difference is how these two types deal with memory.
+
+#### Memory and allocation
+> In the case of a string literal, we know the contents at compile time, so the text is hardcoded directly into the final executable. This is why string literals are fast and efficient. But these properties only come from the string literal’s immutability. Unfortunately, we can’t put a blob of memory into the binary for each piece of text whose size is unknown at compile time and whose size might change while running the program.
+
+> With the String type, in order to support a mutable, growable piece of text, we need to allocate an amount of memory on the heap, unknown at compile time, to hold the contents. This means:
+
+- The memory must be requested from the memory allocator at runtime.
+- We need a way of returning this memory to the allocator when we’re done with our String.
+
+> That first part is done by us: when we call String::from, its implementation requests the memory it needs. This is pretty much universal in programming languages.
+
+> However, the second part is different. In languages with a garbage collector (GC), the GC keeps track of and cleans up memory that isn’t being used anymore, and we don’t need to think about it. In most languages without a GC, it’s our responsibility to identify when memory is no longer being used and call code to explicitly return it, just as we did to request it.
+
+> **Doing this correctly has historically been a difficult programming problem**. If we forget, we’ll waste memory. If we do it too early, we’ll have an invalid variable. If we do it twice, that’s a bug too. We need to pair exactly one allocate with exactly one free.
+
+> Rust takes a different path: **the memory is automatically returned once the variable that owns it goes out of scope**. Here’s a version of our scope example from Listing 4-1 using a String instead of a string literal:
+
+> There is a natural point at which we can return the memory our String needs to the allocator: when s goes out of scope. **When a variable goes out of scope, Rust calls a special function for us. This function is called drop**, and it’s where the author of String can put the code to **return the memory**. Rust calls drop automatically at the closing curly bracket.
+
+<details>
+<summary>RAII pattern in C++</summary>
+
+> Note: In C++, this pattern of deallocating resources at the end of an item’s lifetime is sometimes called Resource Acquisition Is Initialization (RAII). The drop function in Rust will be familiar to you if you’ve used RAII patterns.
+</details>
+
+> This pattern has a profound impact on the way Rust code is written. It may seem simple right now, but the behavior of code can be unexpected in more complicated situations when we want to have multiple variables use the data we’ve allocated on the heap.
+
+##### Ways Variables and Data Interact: Move
+> Now let’s look at the String version:
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+}
+```
+
+What happens is that s1 pointer is stored in stack and the pointer points to heap data.  
+
+<img src="reference/String-stack-heap.png" width=667 height=327 alt="how String data is stored in Rust" />
+
+And since Rust does not copy heap data, only assigning the same pointer to variable s2, it is illustrated like below. 
+
+<img src="reference/String-pointers.png" width=658 height=432 alt="s1 s2 pointers point the same heap data" />
+
+> If Rust copied the heap data as well, the operation s2 = s1 could be very expensive in terms of runtime performance if the data on the heap were large.
+
+And Rust invalidates the first s1 pointer to prevent double free error. 
+
+<img src="reference/String-invalidation.png" width=593 height=408 alt="s1 pointer invalidation" />
+
+> Earlier, we said that when a variable goes out of scope, Rust automatically calls the drop function and cleans up the heap memory for that variable. But Figure 4-2 shows both data pointers pointing to the same location. This is a problem: when s2 and s1 go out of scope, they will both try to free the same memory. This is known as a double free error and is one of the memory safety bugs we mentioned previously. Freeing memory twice can lead to memory corruption, which can potentially lead to security vulnerabilities.
+
+> To ensure memory safety, after the line let s2 = s1, Rust considers s1 as no longer valid. Therefore, Rust doesn’t need to free anything when s1 goes out of scope. Check out what happens when you try to use s1 after s2 is created; it won’t work:
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+
+    println!("{}, world!", s1); // cause error
+}
+```
+
+> If you’ve heard the terms shallow copy and deep copy while working with other languages, the concept of copying the pointer, length, and capacity without copying the data probably sounds like making a shallow copy. But because Rust also invalidates the first variable, instead of calling it a shallow copy, it’s known as a move. In this example, we would say that s1 was moved into s2.
+
+> Rust will never automatically create “deep” copies of your data. Therefore, any automatic copying can be assumed to be inexpensive in terms of runtime performance.
+
+##### Ways Variables and Data Interact: Clone
+> If we do want to deeply copy the heap data of the String, not just the stack data, we can use a common method called clone. We’ll discuss method syntax in Chapter 5, but because methods are a common feature in many programming languages, you’ve probably seen them before.
+
+```rust
+    let s1 = String::from("hello");
+    let s2 = s1.clone();
+
+    println!("s1 = {}, s2 = {}", s1, s2);
+```
+
+> This works just fine and explicitly produces the behavior shown in Figure 4-3, where the heap data does get copied. When you see a call to clone, you know that some arbitrary code is being executed and that code may be expensive. It’s a visual indicator that something different is going on.
 
 ## Reference 
 - [Rust official docs](https://doc.rust-lang.org/book/ch01-03-hello-cargo.html)
