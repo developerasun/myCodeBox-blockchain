@@ -768,8 +768,157 @@ fn read_username_from_file() -> Result<String, io::Error> {
 
 > If this function encounters any problems, the code that calls this function will receive an Err value that holds an instance of io::Error that contains more information about what the problems were. We chose io::Error as the return type of this function because that happens to be the type of the error value returned from both of the operations we’re calling in this function’s body that might fail: the File::open function and the read_to_string method.
 
+## Storing Lists of Values with Vectors
+> The first collection type we’ll look at is Vec<T>, also known as a vector. Vectors allow you to store more than one value in a single data structure that puts all the values next to each other in memory. Vectors can only store values of the same type. They are useful when you have a list of items, such as the lines of text in a file or the prices of items in a shopping cart.
 
+> To create a new, empty vector, we can call the Vec::new function
 
+```rust
+let v : Vec<i32> = Vec::new();
+```
+
+> Note that we added a type annotation here. Because we aren’t inserting any values into this vector, Rust doesn’t know what kind of elements we intend to store. This is an important point. Vectors are implemented using generics.
+
+> It’s more common to create a Vec<T> that has initial values, and Rust provides the vec! macro for convenience.
+
+```rust
+let v = vec![1,2,3];
+```
+
+### Updating a Vector
+> To create a vector and then add elements to it, we can use the push method, as shown in Listing 8-3.
+
+```rust
+{
+    let mut v = Vec::new();
+
+    v.push(5);
+    v.push(6);
+    v.push(7);
+    v.push(8);
+} // Like any other struct, a vector is freed when it goes out of scope
+```
+
+### Reading a Vector
+> Below code shows both methods of accessing a value in a vector, either with indexing syntax or the get method.
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3, 4, 5];
+
+    let third: &i32 = &v[2];
+    println!("The third element is {}", third);
+
+    match v.get(2) {
+        Some(third) => println!("The third element is {}", third),
+        None => println!("There is no third element."),
+    }
+}
+```
+
+> Note two details here. First, we use the index value of 2 to get the third element: vectors are indexed by number, starting at zero. Second, the two ways to get the third element are by using & and [], which gives us a reference, or by using the get method with the index passed as an argument, which gives us an Option<&T>.
+
+> When the get method is passed an index that is outside the vector, it returns None without panicking. You would use this method if accessing an element beyond the range of the vector happens occasionally under normal circumstances. Your code will then have logic to handle having either Some(&element) or None, as discussed in Chapter 6. For example, the index could be coming from a person entering a number. If they accidentally enter a number that’s too large and the program gets a None value, you could tell the user how many items are in the current vector and give them another chance to enter a valid value. That would be more user-friendly than crashing the program due to a typo!
+
+### Vector and reference
+> Recall the rule that states you can’t have mutable and immutable references in the same scope. That rule applies in Listing 8-7, where we hold an immutable reference to the first element in a vector and try to add an element to the end, which won’t work.
+
+```rust
+fn main() {
+    let mut v = vec![1, 2, 3, 4, 5];
+
+    let first = &v[0];
+
+    v.push(6);
+
+    println!("The first element is: {}", first);
+}
+```
+
+> Why should a reference to the first element care about what changes at the end of the vector? This error is due to the way vectors work: adding a new element onto the end of the vector might require allocating new memory and copying the old elements to the new space, if there isn’t enough room to put all the elements next to each other where the vector currently is.
+
+### Iterate a Vector
+> If we want to access each element in a vector in turn, we can iterate through all of the elements rather than use indices to access one at a time. 
+
+```rust
+fn main() {
+    let v = vec![100, 32, 57];
+    for i in &v {
+        println!("{}", i);
+    }
+}
+```
+
+### Using an Enum to Store Multiple Types
+> At the beginning of this chapter, we said that vectors can only store values that are the same type. This can be inconvenient; there are definitely use cases for needing to store a list of items of different types. Fortunately, the variants of an enum are defined under the same enum type, so when we need to store elements of a different type in a vector, we can define and use an enum!
+
+```rust
+fn main() {
+    enum SpreadsheetCell {
+        Int(i32),
+        Float(f64),
+        Text(String),
+    }
+
+    let row = vec![
+        SpreadsheetCell::Int(3),
+        SpreadsheetCell::Text(String::from("blue")),
+        SpreadsheetCell::Float(10.12),
+    ];
+}
+```
+
+> Rust needs to know what types will be in the vector at compile time so it knows exactly how much memory on the heap will be needed to store each element. A secondary advantage is that we can be explicit about what types are allowed in this vector. If Rust allowed a vector to hold any type, there would be a chance that one or more of the types would cause errors with the operations performed on the elements of the vector. Using an enum plus a match expression means that Rust will ensure at compile time that every possible case is handled, as discussed in Chapter 6.
+
+## Generic
+> We can use generics to create definitions for items like function signatures or structs, which we can then use with many different concrete data types. Let’s first look at how to define functions, structs, enums, and methods using generics. Then we’ll discuss how generics affect code performance.
+
+Generic can be used in 
+
+- function 
+- struct
+- enum 
+- method
+
+```rust
+struct Point<T> {
+    x : T, 
+    y : T,
+}
+
+impl<T> Point<T> {
+    fn printX(&self) -> &T {
+        &self.x
+    }
+}
+
+fn main() {
+    let p = Point { x : 5, y : 10 }; 
+    println!("p.x = {}", p.printX());
+}
+
+```
+
+> Note that we have to declare T just after impl so we can use it to specify that we’re implementing methods on the type Point<T>. By declaring T as a generic type after impl, Rust can identify that the type in the angle brackets in Point is a generic type rather than a concrete type.
+
+> The other option we have is defining methods on the type with some constraint on the generic type. We could, for example, implement methods only on Point<f32> instances rather than on Point<T> instances with any generic type. In Listing 10-10 we use the concrete type f32, meaning we don’t declare any types after impl.
+
+```rust
+impl Point<f32> {
+    fn distance_from_origin(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+```
+
+> This code means the type Point<f32> will have a method named distance_from_origin.
+
+### Performance of Code Using Generics
+> You might be wondering whether there is a runtime cost when you’re using generic type parameters. The good news is that Rust implements generics in such a way that your code doesn’t run any slower using generic types than it would with concrete types.
+
+> Rust accomplishes this by performing monomorphization of the code that is using generics at compile time. Monomorphization is the process of turning generic code into specific code by filling in the concrete types that are used when compiled.
+
+> In this process, the compiler does the opposite of the steps we used to create the generic function.
 
 
 ## Reference 
