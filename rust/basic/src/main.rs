@@ -1,19 +1,57 @@
 // import dependency
 use ferris_says:: say; // :: means path
 use std::io::{stdout, BufWriter};
+use std::fs::File;
+use std::io::ErrorKind;
 
 struct Human { 
     name : String,
     age : i32 // signed 32-bit integer
 }
 
+// Result is a type that represents either success ([Ok]) or failure ([Err]
+enum Result<T, E> {
+    Ok(T),
+    Err(E)
+}
+
 fn main() {
+    // do_panic();
+    open_file_unwrap();
+    open_file();
     call_ferris();
     do_shadow();
     do_destructure();
     init_array();
 
 }  
+
+fn open_file_unwrap() {
+    // let f =File::open("hello2.txt").unwrap();
+    let f = File::open("hello2.txt").expect("Can't open hello2.txt"); // print custom error message
+
+}
+
+fn open_file() {
+    let f = File::open("hello.txt");
+    let f = match f { // match result enum type based on File::open return type
+        Ok(file) => file, 
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem creating the file : {:?}", e),
+            },
+            other_errors => {
+                panic!("Problem opening the file : {:?}", other_errors)
+            }
+        }
+    };
+    
+}
+
+fn do_panic() {
+    panic!("crash and burn"); // panic is for unrecoverable errors
+}
 
 fn do_ownership() {
     let mut my_string = String::from("Hello!"); 
