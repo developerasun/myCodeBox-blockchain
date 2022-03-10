@@ -9,6 +9,17 @@ struct Human {
     age : i32 // signed 32-bit integer
 }
 
+struct Point<T> {
+    x : T, 
+    y : T,
+}
+
+impl<T> Point<T> {
+    fn print_x(&self) -> &T {
+        &self.x
+    }
+}
+
 // Result is a type that represents either success ([Ok]) or failure ([Err]
 enum Result<T, E> {
     Ok(T),
@@ -16,20 +27,50 @@ enum Result<T, E> {
 }
 
 fn main() {
+    iterate_vector();
+    do_generic();
     // do_panic();
-    open_file_unwrap();
-    open_file();
-    call_ferris();
-    do_shadow();
-    do_destructure();
-    init_array();
+    // do_vector();
+    // open_file_unwrap();
+    // open_file();
+    // call_ferris();
+    // do_shadow();
+    // do_destructure();
+    // init_array();
 
 }  
+
+fn do_generic() {
+    let p = Point { x : 5, y : 10 };
+    println!("p.x = {}", p.print_x()); 
+}
+
+fn iterate_vector() {
+    let v = vec![1,2,3];
+    for i in &v {
+        println!("{}", i);
+    }
+}
+
+
+fn do_vector() {
+    let mut v = vec![1,2,3];
+    let index_third : &i32 = &v[2];
+    println!("The third elem is : {}", index_third);
+
+    // get : Returns a reference to an element or subslice depending on the type of index.
+    match v.get(99) {
+        Some(index_third) => println!("The third elem is : {}", index_third),
+        None => println!("No such elem"),
+    }
+    v.push(22);
+    println!("printing out array : {:?}", v);
+}
+
 
 fn open_file_unwrap() {
     // let f =File::open("hello2.txt").unwrap();
     let f = File::open("hello2.txt").expect("Can't open hello2.txt"); // print custom error message
-
 }
 
 fn open_file() {
