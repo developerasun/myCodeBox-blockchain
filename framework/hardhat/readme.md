@@ -325,10 +325,17 @@ Hardhat lets you verify contract in etherscan easily.
 $npx hardhat run scripts/deploy.ts --network ropsten
 ```
 
-1. verify the contact with etherscan. 
+1. verify the contact with etherscan. If the contract has arguments in constructor, provide them. 
 
 ```shell
+# no argument
 $npx hardhat verify (the contract address here) --network ropsten
+
+# simple arguments
+$npx hardhat verify (the contract address here) --network ropsten "argument 1"
+
+# complet arguments
+$npx hardhat verify --constructor-args arguments.js (the contract address here)
 ```
 
 Once successfully verified, it will log Etherscan link in terminal. 
