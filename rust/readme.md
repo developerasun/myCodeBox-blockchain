@@ -192,7 +192,7 @@ use ferris_says::say;
 > In cases where you’re using large data structures, mutating an instance in place may be faster than copying and returning newly allocated instances. With smaller data structures, creating new instances and writing in a more functional programming style may be easier to think through, so lower performance might be a worthwhile penalty for gaining that clarity.
 
 ## Shadowing
-> You can declare a new variable with the same name as a previous variable. Rustaceans say that the first variable is shadowed by the second, which means that the second variable’s value is what the program sees when the variable is used. We can shadow a variable by using the same variable’s name and repeating the use of the let keyword as follows:
+> You can declare a new variable with the same name as a previous variable. Rustaceans say that the first variable is shadowed by the second, which **means that the second variable’s value is what the program sees when the variable is used**. We can shadow a variable by using **the same variable’s name** and repeating the use of the **let keyword** as follows:
 
 ```rust
 fn main() {
@@ -651,6 +651,86 @@ fn main() {
 
 > Data races cause undefined behavior and can be difficult to diagnose and fix when you’re trying to track them down at runtime; Rust prevents this problem by refusing to compile code with data races!
 
+### Slice type
+> Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice is a kind of reference, so it does not have ownership.
+
+> Here’s a small programming problem: write a function that takes a string and returns the first word it finds in that string. If the function doesn’t find a space in the string, the whole string must be one word, so the entire string should be returned.
+
+> Because we need to go through the String element by element and check whether a value is a space, we’ll convert our String to an array of bytes using the as_bytes method.
+
+```rust
+fn first_word(s: &String) -> usize {
+    let bytes = s.as_bytes();
+
+    // Next, we create an iterator over the array of bytes using the iter method. Inside the for loop, we search for the byte that represents the space by using the byte literal syntax.
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    // if there is no whitespace in the String, it is one word.
+    s.len()
+}
+```
+
+> We now have a way to find out the index of the end of the first word in the string, but there’s a problem. We’re returning a usize on its own, but it’s only a meaningful number in the context of the &String. In other words, because it’s a separate value from the String, there’s no guarantee that it will still be valid in the future.
+
+```rust 
+fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&s); // word will get the value 5
+
+    s.clear(); // this empties the String, making it equal to ""
+
+    // word still has the value 5 here, but there's no more string that
+    // we could meaningfully use the value 5 with. word is now totally invalid!
+}
+```
+
+> Having to worry about the index in word getting out of sync with the data in s is tedious and error prone. Rust has a solution to this problem: string slices.
+
+```rust
+fn main() {
+    let s = String::from("hello world");
+
+    let hello = &s[0..5];
+    let world = &s[6..11];
+}
+```
+
+> Rather than a reference to the entire String, hello is a reference to a portion of the String, specified in the extra [0..5] bit. We create slices using a range within brackets by specifying [starting_index..ending_index]. Note that the last element is excluded just like other programming languages' slice would do.
+
+## Struct
+> Structs are similar to tuples, discussed in “The Tuple Type” section, in that both hold multiple related values. To use a struct after we’ve defined it, we create an instance of that struct by specifying concrete values for each of the fields.
+
+### Method
+> Methods are similar to functions: we declare them with the fn keyword and a name, they can have parameters and a return value, and they contain some code that’s run when the method is called from somewhere else. Unlike functions, methods are defined within the context of a struct or an enum or a trait object. 
+
+> Note that **the first parameter when implementing struct is always self**, which represents the instance of the struct the method is being called on.
+
+> To define the function within the context of Rectangle, we start an impl (implementation) block for Rectangle. Everything within this impl block will be associated with the Rectangle type. 
+
+```rust
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+// implement the struct
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+```
+
+> In the signature for area, we use &self instead of rectangle: &Rectangle. The &self is actually short for self: &Self. Within an impl block, the type Self is an alias for the type that the impl block is for.
+
+> Note that we still need to use the & in front of the self shorthand to indicate this method borrows the Self instance.
+
+> We’ve chosen &self here for the same reason we used &Rectangle in the function version: we don’t want to take ownership, and we just want to read the data in the struct, not write to it.
 
 ## Error handling
 > Sometimes, bad things happen in your code, and there’s nothing you can do about it. In these cases, Rust has the panic! macro. When the panic! macro executes, your program will print a failure message, unwind and clean up the stack, and then quit. This most commonly occurs when a bug of some kind has been detected and it’s not clear to the programmer how to handle the error.
@@ -919,6 +999,8 @@ impl Point<f32> {
 > Rust accomplishes this by performing monomorphization of the code that is using generics at compile time. Monomorphization is the process of turning generic code into specific code by filling in the concrete types that are used when compiled.
 
 > In this process, the compiler does the opposite of the steps we used to create the generic function.
+
+
 
 
 ## Reference 
