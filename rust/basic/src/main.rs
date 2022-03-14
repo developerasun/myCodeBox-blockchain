@@ -1,11 +1,12 @@
 // import dependency
 use ferris_says:: say; // :: means path
-use std::io:: { stdin, stdout, BufWriter, ErrorKind};
+use std::io:: { stdin, stdout, BufWriter, ErrorKind };
 use std::fs::File;
 use std::collections::HashMap;
 
-extern crate rand; // import random number library
 use rand::Rng;
+use regex::Regex;
+mod useMe; // module is prviate by default
 
 const MAXIMUM : i32 = 10;
 
@@ -55,21 +56,69 @@ enum Direction {
 }
 
 fn main() {
-    // let mut player_dir = Direction::Up;
-    // change_direction(player_dir);
-
-    // print_to_maximum(MAXIMUM);
-    // print_tuple();
-    // isolated_block();
-    // mutable_reference();
-    // create_human();
-    // manipulate_string();
-    // do_trait();
-    // match_pattern();
-    // read_user_input();
-    // do_hashmap();
-    do_random();
+    // line_string();
+    // split_line();
+    // trim_line();
+    // chars_line();
+    // use_module();
+    // do_random();
+    do_regex();
 }  
+
+fn do_regex() {
+    let one_digit = Regex::new(r"\d").unwrap();
+    let four_words = Regex::new(r"(\w{4})").unwrap();
+    let text = "jake is good";
+
+    println!("Found match? {}", four_words.is_match(text));
+
+    match four_words.captures(text) {
+        Some(caps) => println!("Found match : {}", caps.get(0).unwrap().as_str()),
+        None=>println!("no match")
+    }
+}
+
+fn use_module() {
+    useMe::print_message();
+}
+
+fn chars_line() {
+    let my_string = String::from("rust is good");
+    // chars : Returns an iterator over the chars of a string slice.
+    match my_string.chars().nth(2) {
+        Some(c) => println!("Character at index 2 : {}", c),
+        None => println!("does not exist"),
+    }
+
+}
+
+fn trim_line() {
+    let my_string = String::from("    rust is good    ");
+    println!("{}",my_string.trim()); // trim whitespace at each edge
+}
+
+fn split_line() {
+    let my_string = String::from("rust*is*good");
+
+    // collect: collect() can take anything iterable, and turn it into a relevant collection. 
+    // This is one of the more powerful methods in the standard library,
+    // used in a variety of contexts.
+    // Vec<T> : A contiguous growable array type, written as Vec<T>, short for 'vector'.
+    let token : Vec<&str> = my_string.split("*").collect();
+    println!("{:?}", token);
+}
+
+fn line_string() {
+    let my_string = String::from("rust\nis\ngood");
+    for line in my_string.lines() {
+        println!("{}", line);
+    }
+}
+
+fn replace_string() {
+    let my_string = String::from("rust is good");
+    println!("after replace: {}", my_string.replace("good", "awesome"));
+} 
 
 fn do_random() {
     // get random number between 0~10
