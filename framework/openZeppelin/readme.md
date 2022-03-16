@@ -691,12 +691,33 @@ module.exports = async function (deployer) {
 
 > It isn’t safe to simply add a state variable because it "shifts down" all of the state variables below in the inheritance chain. This makes the storage layouts incompatible, as explained in Writing Upgradeable Contracts. The size of the __gap array is calculated so that the amount of storage used by a contract always adds up to the same number (in this case 50 storage slots).
 
-### Upgrades plugins
-
 ### Proxy pattern
 > The plugins support the UUPS, transparent, and beacon proxy patterns. UUPS and transparent proxies are upgraded individually, whereas any number of beacon proxies can be upgraded atomically at the same time by upgrading the beacon that they point to. For more details on the different proxy patterns available, see the documentation for Proxies.
 
 > For UUPS and transparent proxies, use deployProxy and upgradeProxy as shown above. For beacon proxies, use deployBeacon, deployBeaconProxy, and upgradeBeacon. See the documentation for Hardhat Upgrades and Truffle Upgrades for examples.
+
+## Defender 
+> The first secure operations platform for smart contracts.
+
+> OpenZeppelin Defender provides a security operations (SecOps) platform for Ethereum with built-in best practices. Development teams implement Defender to ship faster and minimize security risks.
+
+### Features
+1. admin : Automate and secure all your smart contract administration.
+> Administration mistakes on protocols and applications put user funds at risk. With Defender Admin, you can seamlessly manage all smart contract administration including access controls, upgrades, and pausing. Works with popular multi-sigs including Gnosis Safe.
+
+1. relay : Build with private and secure transaction infrastructure
+> Don’t spend time implementing third-party or homegrown transaction infrastructure that is unreliable or insecure. Use Defender Relay to quickly implement private relayers with support for testnets, mainnet, layer 2 and sidechains. Increase user security with embedded key vaults, API key management, and meta-transactions.
+
+1. Create automated scripts to call your smart contracts
+> Homegrown bots and cron jobs are tedious to maintain and a target for hackers. With Defender Autotasks, you can easily create and run scripts in a serverless environment that call your smart contracts and other web services. Automate your operations and lower attack risk.
+
+1. sentinels : Monitor and respond to smart contract exploits
+> Use Defender Sentinels to automatically monitor and respond to events, functions, and transaction parameters on your smart contracts. With full Autotask integration, you can add circuit breakers or automated actions so your team can respond to attacks within seconds and receive notifications via email, Slack, Telegram, or Discord.
+
+1. advisor : Quickly implement security best practices
+> Protocol complexity is increasing, leading to new vulnerabilities that you might not be aware of. Use Defender Advisor knowledgebase to stay up to date with the latest security best practices. Use step-by-step guides to implement them across development, testing, monitoring and operations.
+
+<img src="why-defender.png" width=732 height=668 alt="openzepplin defender"/>
 
 ## Reference
 - [OpenZeppelin docs](https://docs.openzeppelin.com/)
