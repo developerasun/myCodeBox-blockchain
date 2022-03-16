@@ -1,12 +1,21 @@
+#![allow(dead_code)] // allow not-used code 
+
 // import dependency
-use ferris_says:: say; // :: means path
 use std::io:: { stdin, stdout, BufWriter, ErrorKind };
 use std::fs::File;
 use std::collections::HashMap;
+use std::process::Command;
 
+use ferris_says:: say; // :: means path
 use rand::Rng;
 use regex::Regex;
-mod useMe; // module is prviate by default
+
+// add custom modules
+mod use_me;
+mod web_request;
+mod my_enum;
+mod my_test;
+mod my_parse_json;
 
 const MAXIMUM : i32 = 10;
 
@@ -47,6 +56,7 @@ enum Result<T, E> {
     Err(E)
 }
 
+
 #[derive(Debug)] // to print out enum type
 enum Direction { 
     Up, 
@@ -55,22 +65,71 @@ enum Direction {
     Right
 }
 
-fn main() {
-    // line_string();
-    // split_line();
-    // trim_line();
-    // chars_line();
+#[tokio::main] // tokio makes main function async
+async fn main() {
+    // use_me::first_module::print_message();
     // use_module();
-    // do_random();
-    do_regex();
-}  
+    // do_regex();
+    // do_match_check();
+    // do_get_request().await;
+    // do_some_enum();
+    // print_python();
+    do_some_json();
+}
+
+fn do_some_json() {
+    my_parse_json::do_json::lets_parse();
+}
+
+fn print_python() {
+    let mut cmd = Command::new("py"); // set terminal command
+    cmd.arg("printMe.py"); // give terminal argument
+
+    // execute command
+    match cmd.output() {
+        // Error handling with Result type
+        Ok(o) => {
+            unsafe {
+                println!("output: {}",String::from_utf8_unchecked(o.stdout))
+            }
+        }, 
+        Err(e) => {
+            println!("{}",e)
+        }
+    }
+}
+
+fn do_some_enum() {
+    let day = my_enum::learn_enum::Day::Monday;
+    println!("{}",day.is_weekend()); // result : false
+}
+
+async fn do_get_request() {
+    web_request::my_http_request::get_request().await;
+}
+
+fn get_occupation(name: &str) -> Option<&str> {
+    // Rust returns a last line value even without return keyword
+    match name {
+        "jake" => Some("software developer"),
+        _ => None // if name is not "jake", ignore
+    }
+
+    // println!("{:?}", get_occupation("jake")) ; // result : Some("software developer")
+    // println!("{}", match get_occupation("jake") {
+    //     Some(occupation) => occupation,
+    //     None => "not found" // type : &str
+    // }); // result : software developer
+}
+
+fn do_match_check() {
+    use_me::check_match::my_name_match(2);
+}
 
 fn do_regex() {
     let one_digit = Regex::new(r"\d").unwrap();
     let four_words = Regex::new(r"(\w{4})").unwrap();
     let text = "jake is good";
-
-    println!("Found match? {}", four_words.is_match(text));
 
     match four_words.captures(text) {
         Some(caps) => println!("Found match : {}", caps.get(0).unwrap().as_str()),
@@ -79,7 +138,10 @@ fn do_regex() {
 }
 
 fn use_module() {
-    useMe::print_message();
+    use_me::first_module::print_message();
+    let _check : use_me::check_enum::my_enum;
+    let check = use_me::check_enum::my_enum::Hello;
+    println!("{:?}", check);
 }
 
 fn chars_line() {
