@@ -411,7 +411,7 @@ contract Base {
 ##### Upgrading via Proxy pattern
 > The basic idea is using a proxy for upgrades. The first contract is a simple wrapper or "proxy" which users interact with directly and is in charge of forwarding transactions to and from the second contract, which contains the logic. The key concept to understand is that the logic contract can be replaced while the proxy, or the access point is never changed. Both contracts are still immutable in the sense that their code cannot be changed, but the logic contract can simply be swapped by another contract. The wrapper can thus point to a different logic implementation and in doing so, the software is "upgraded".
 
-![openzepplin-proxy](https://user-images.githubusercontent.com/83855174/158337176-fe281f21-27ac-443d-8438-2352a706b800.png)
+<img src="https://user-images.githubusercontent.com/83855174/158337176-fe281f21-27ac-443d-8438-2352a706b800.png" />
 
 ##### Proxy forwarding
 > The most immediate problem that proxies need to solve is how the proxy exposes the entire interface of the logic contract without requiring a one to one mapping of the entire logic contract’s interface. That would be difficult to maintain, prone to errors, and would make the interface itself not upgradeable. Hence, a dynamic forwarding mechanism is required. The basics of such a mechanism are presented in the code below:
@@ -437,9 +437,151 @@ assembly {
 }
 ```
 
-> This code can be put in the [fallback function](https://solidity.readthedocs.io/en/v0.6.12/contracts.html#fallback-function) of a proxy, and will forward any call to any function with any set of parameters to the logic contract without it needing to know anything in particular of the logic contract’s interface. In essence, (1) the calldata is copied to memory, (2) the call is forwarded to the logic contract, (3) the return data from the call to the logic contract is retrieved, and (4) the returned data is forwarded back to the caller.
+> This code can be put in the [fallback function](https://solidity.readthedocs.io/en/v0.6.12/contracts.html#fallback-function) of a proxy, and will forward any call to any function with any set of parameters to the logic contract without it needing to know anything in particular of the logic contract’s interface. 
 
-> A very important thing to note is that the code makes use of the EVM’s delegatecall opcode which executes the callee’s code in the context of the caller’s state. That is, the logic contract controls the proxy’s state and the logic contract’s state is meaningless. Thus, the proxy doesn’t only forward transactions to and from the logic contract, but also represents the pair’s state. The state is in the proxy and the logic is in the particular implementation that the proxy points to.
+> In essence, (1) the calldata is copied to memory, (2) the call is forwarded to the logic contract, (3) the return data from the call to the logic contract is retrieved, and (4) the returned data is forwarded back to the caller.
+
+> A very important thing to note is that the code makes use of the EVM’s delegatecall opcode which executes the callee’s code in the context of the caller’s state. 
+
+> **That is, the logic contract controls the proxy’s state and the logic contract’s state is meaningless**. Thus, the proxy doesn’t only forward transactions to and from the logic contract, but also represents the pair’s state. **The state is in the proxy** and the logic is in the particular implementation that the proxy points to.
+
+##### Unstructured Storage Proxies : storage collision
+> A problem that quickly comes up when using proxies has to do with the way in which variables are stored in the proxy contract. Suppose that the proxy stores the logic contract’s address in its only variable address public _implementation;. Now, suppose that the logic contract is a basic token whose first variable is address public _owner. Both variables are 32 byte in size, and as far as the EVM knows, occupy the first slot of the resulting execution flow of a proxied call. When the logic contract writes to _owner, it does so in the scope of the proxy’s state, and in reality writes to _implementation. This problem can be referred to as a "storage collision".
+
+<img src="proxy-storage-collision.png" width=800 height=200 alt="proxy and logic contract's storage collision"/>
+
+> There are many ways to overcome this problem, and the "unstructured storage" approach which OpenZeppelin Upgrades implements works as follows. Instead of storing the _implementation address at the proxy’s first storage slot, it chooses a pseudo random slot instead. This slot is sufficiently random, that the probability of a logic contract declaring a variable at the same slot is negligible. The same principle of randomizing slot positions in the proxy’s storage is used in any other variables the proxy may have, such as an admin address (that is allowed to update the value of _implementation), etc.
+
+<img src="proxy-random-slot.png" width=800 height=200 alt="proxy and logic contract's storage collision"/>
+
+> An example of how the randomized storage is achieved, following EIP 1967:
+
+```solidity
+bytes32 private constant implementationPosition = bytes32(uint256(
+  keccak256('eip1967.proxy.implementation')) - 1
+));
+```
+
+> As a result, a logic contract doesn’t need to care about overwriting any of the proxy’s variables. Other proxy implementations that face this problem usually imply having the proxy know about the logic contract’s storage structure and adapt to it, or instead having the logic contract know about the proxy’s storage structure and adapt to it. This is why this approach is called "unstructured storage"; neither of the contracts needs to care about the structure of the other.
+
+##### Storage Collisions Between Implementation Versions
+> As discussed, the unstructured approach avoids storage collisions between the logic contract and the proxy. However, storage collisions between different versions of the logic contract can occur. In this case, imagine that the first implementation of the logic contract stores address public _owner at the first storage slot and an upgraded logic contract stores address public _lastContributor at the same first slot. 
+
+> When the updated logic contract attempts to write to the _lastContributor variable, it will be using the same storage position where the previous value for _owner was being stored, and overwrite it!
+
+<img src="logic-contracts-storage-extension.png" width=850 height=480 alt="storage extension for logic contract"/>
+
+> The unstructured storage proxy mechanism doesn’t safeguard against this situation. It is up to the user to have new versions of a logic contract extend previous versions, or otherwise guarantee that the storage hierarchy is always appended to but not modified. However, OpenZeppelin Upgrades detects such collisions and warns the developer appropriately.
+
+##### The Constructor Caveat
+> In Solidity, code that is inside a constructor or part of a global variable declaration is not part of a deployed contract’s runtime bytecode. This code is executed only once, when the contract instance is deployed. As a consequence of this, the code within a logic contract’s constructor will never be executed in the context of the proxy’s state. To rephrase, proxies are completely oblivious to the existence of constructors. It’s simply as if they weren’t there for the proxy.
+
+> The problem is easily solved though. Logic contracts should move the code within the constructor to a regular 'initializer' function, and have this function be called whenever the proxy links to this logic contract. Special care needs to be taken with this initializer function so that it can only be called once, which is one of the properties of constructors in general programming.
+
+> This is why when we create a proxy using OpenZeppelin Upgrades, you can provide the name of the initializer function and pass parameters.
+
+> To ensure that the initialize function can only be called once, a simple modifier is used. OpenZeppelin Upgrades provides this functionality via a contract that can be extended:
+
+```solidity
+// contracts/MyContract.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
+
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
+// Notice how the contract extends Initializable and implements the initializer provided by it.
+contract MyContract is Initializable {
+    function initialize(
+        address arg1,
+        uint256 arg2,
+        bytes memory arg3
+    ) public payable initializer {
+        // "constructor" code...
+    }
+}
+```
+
+##### Transparent Proxies and Function Clashes
+> As described in the previous sections, upgradeable contract instances (or proxies) work by delegating all calls to a logic contract. However, the proxies need some functions of their own, such as upgradeTo(address) to upgrade to a new implementation. This begs the question of how to proceed if the logic contract also has a function named upgradeTo(address): upon a call to that function, did the caller intend to call the proxy or the logic contract?
+
+> The way OpenZeppelin Upgrades deals with this problem is via the transparent proxy pattern. A transparent proxy will decide which calls are delegated to the underlying logic contract based on the caller address (i.e., the msg.sender):
+
+1. If the caller is the admin of the proxy (the address with rights to upgrade the proxy), then the proxy will not delegate any calls, and only answer any messages it understands.
+
+1. If the caller is any other address, the proxy will always delegate a call, no matter if it matches one of the proxy’s functions.
+
+> Assuming a proxy with an owner() and an upgradeTo() function, that delegates calls to an ERC20 contract with an owner() and a transfer() function, the following table covers all scenarios:
+
+<img src="transparent-proxy-pattern-caller-address.png" width=744 height=205 alt="transparent proxy pattern"/>
+
+> Fortunately, OpenZeppelin Upgrades accounts for this situation, and creates an intermediary ProxyAdmin contract that is in charge of all the proxies you create via the Upgrades plugins. Even if you call the deploy command from your node’s default account, the ProxyAdmin contract will be the actual admin of all your proxies. 
+
+> This means that you will be able to interact with the proxies from any of your node’s accounts, without having to worry about the nuances of the transparent proxy pattern. Only advanced users that create proxies from Solidity need to be aware of the transparent proxies pattern.
+
+> It all comes down to the following list:
+
+1. Have a basic understanding of wht a proxy is
+1. Always extend storage instead of modifying it
+1. Make sure your contracts use initializer functions instead of constructors
+
+### Network file
+> OpenZeppelin Upgrades keep track of all the contract versions you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-*.json)
+
+#### Network Files
+> OpenZeppelin Upgrades will generate a file for each of the networks you work on (ropsten, mainnet, etc). These files share the same structure:
+
+```json
+// .openzeppelin/<network_name>.json
+{
+  "manifestVersion": "3.0",
+  "impls": {
+    "...": {
+      "address": "...",
+      "txHash": "...",
+      "layout": {
+        "storage": [...],
+        "types": {...}
+      }
+    },
+    "...": {
+      "address": "...",
+      "txHash": "...",
+      "layout": {
+        "storage": [...],
+        "types": {...}
+      }
+    }
+  },
+  "admin": {
+    "address": "...",
+    "txHash": "..."
+  }
+}
+```
+
+> For every logic contract, besides the deployment address, the following info is also tracked:
+
+1. types keeps track of all the types used in the contract or its ancestors, from basic types like uint256 to custom struct types
+
+1. storage tracks the storage layout of the linearized contract, referencing the types defined in the types section, and is used for verifying that any storage layout changes between subsequent versions are compatible.
+
+> The naming of the file will be <network_name>.json, but note that <network_name> is not taken from the name of the network’s entry in the Truffle or Hardhat configuration file, but is instead inferred from the chain id associated to the entry.
+
+> There is a limited set of public chains; Chains not on the list such as Ethereum Classic will have network files named unknown-<chain_id>.json.
+
+#### Configuration Files in Version Control
+> Public network files like mainnet.json or ropsten.json should be tracked in version control. These contain valuable information about your project’s status in the corresponding network, like the addresses of the contract versions that have been deployed. Such files should be identical for all the contributors of a project.
+
+> However, local network files like unknown-<chain_id>.json only represent a project’s deployment in a temporary local network such as ganache-cli that are only relevant to a single contributor of the project and should not be tracked in version control.
+
+> An example .gitignore file could contain the following entries:
+
+```.gitignore
+// .gitignore
+# OpenZeppelin
+.openzeppelin/unknown-*.json
+```
+
 
 ### Deploy and test upgradable smart contract 
 > Integrate upgrades into your existing workflow. Plugins for Hardhat and Truffle to deploy and manage upgradeable contracts on Ethereum. Upgrades Plugins are only a part of a comprehensive set of OpenZeppelin tools for deploying and securing upgradeable smart contracts. Check out the full list of resources.
