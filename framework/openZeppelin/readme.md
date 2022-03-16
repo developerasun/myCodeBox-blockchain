@@ -719,6 +719,116 @@ module.exports = async function (deployer) {
 
 <img src="why-defender.png" width=732 height=668 alt="openzepplin defender"/>
 
+## Utilities
+> The OpenZeppelin Contracts provide a ton of useful utilities that you can use in your project. Here are some of the more popular ones.
+
+### Cryptography
+> ECDSA provides functions for recovering and managing Ethereum account ECDSA signatures. These are often generated via web3.eth.sign, and are a 65 byte array (of type bytes in Solidity) arranged the following way: [[v (1)], [r (32)], [s (32)]].
+
+> The data signer can be recovered with ECDSA.recover, and its address compared to verify the signature. Most wallets will hash the data to sign and add the prefix '\x19Ethereum Signed Message:\n', so when attempting to recover the signer of an Ethereum signed message hash, you’ll want to use toEthSignedMessageHash.
+
+```solidity
+using ECDSA for bytes32;
+
+function _verify(bytes32 data, bytes memory signature, address account) internal pure returns (bool) {
+    return data
+        .toEthSignedMessageHash()
+        .recover(signature) == account;
+}
+```
+
+### Math
+> The most popular math related library OpenZeppelin Contracts provides is SafeMath, which provides mathematical functions that protect your contract from overflows and underflows.
+
+> Include the contract with using SafeMath for uint256; and then call the functions:
+
+1. myNumber.add(otherNumber)
+1. myNumber.sub(otherNumber)
+1. myNumber.div(otherNumber)
+1. myNumber.mul(otherNumber)
+1. myNumber.mod(otherNumber)
+
+### Misc
+> Want to check if an address is a contract? Use Address and Address.isContract(). Want to keep track of some numbers that increment by 1 every time you want another one? Check out Counters. This is useful for lots of things, like creating incremental identifiers, as shown on the ERC721 guide.
+
+### Base64
+> Base64 util allows you to transform bytes32 data into its Base64 string representation. This is specially useful to build URL-safe tokenURIs for both ERC721 or ERC1155. This library provides a clever way to serve URL-safe Data URI compliant strings to serve on-chain data structures.
+
+> Consider this is an example to send JSON Metadata through a Base64 Data URI using an ERC721:
+
+```solidity
+// contracts/My721Token.sol
+// SPDX-License-Identifier: MIT
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+
+contract My721Token is ERC721 {
+    using Strings for uint256;
+
+    constructor() ERC721("My721Token", "MTK") {}
+
+    ...
+
+    function tokenURI(uint256 tokenId)
+        public
+        pure
+        override
+        returns (string memory)
+    {
+        bytes memory dataURI = abi.encodePacked(
+            '{',
+                '"name": "My721Token #', tokenId.toString(), '"',
+                // Replace with extra ERC721 Metadata properties
+            '}'
+        );
+
+        return string(
+            abi.encodePacked(
+                "data:application/json;base64,",
+                Base64.encode(dataURI)
+            )
+        );
+    }
+}
+```
+
+### Multicall
+> The Multicall abstract contract comes with a multicall function that bundles together multiple calls in a single external call. With it, external accounts may perform atomic operations comprising several function calls. This is not only useful for EOAs to make multiple calls in a single transaction, it’s also a way to revert a previous call if a later one fails.
+
+```solidity
+// contracts/Box.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/utils/Multicall.sol";
+
+contract Box is Multicall {
+    function foo() public {
+        ...
+    }
+
+    function bar() public {
+        ...
+    }
+}
+```
+
+> This is how to call the multicall function using Truffle, allowing foo and bar to be called in a single transaction:
+
+```js
+// scripts/foobar.js
+
+const Box = artifacts.require('Box');
+const instance = await Box.new();
+
+await instance.multicall([
+    instance.contract.methods.foo().encodeABI(),
+    instance.contract.methods.bar().encodeABI()
+]);
+```
+
 ## Reference
 - [OpenZeppelin docs](https://docs.openzeppelin.com/)
 - [OpenZeppelin docs : upgradable smart contract](https://docs.openzeppelin.com/learn/upgrading-smart-contracts#whats-in-an-upgrade)
