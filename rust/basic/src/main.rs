@@ -11,6 +11,7 @@ use rand::Rng;
 use regex::Regex;
 
 use std::thread;
+use std::sync::mpsc;
 use std::time::Duration;
 
 // add custom modules
@@ -78,22 +79,75 @@ struct Color {
 #[tokio::main] // tokio makes main function async
 async fn main() {
     // do_thread();
+    // do_channel();
+    // send_multiple_msgs();
+    do_multiple_threads();
+}
 
-    // join : Calling join on the handle blocks the thread currently running, 
-    // waiting for the associated thread to finish.
-    let handle = thread::spawn(|| {
-        for i in 1..10 {
-            println!("from spawned thread : {}", i);
-            thread::sleep(Duration::from_millis(1));
+fn do_multiple_threads() {
+    let (tx, rx) = mpsc::channel();
+    let tx1 = tx.clone();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("this is"),
+            String::from("jake's"),
+            String::from("messages"),
+        ];
+        
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(std::time::Duration::from_millis(1));
+        }
+    });
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("brian"),
+            String::from("likes"),
+            String::from("bread"),
+        ];
+        
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(std::time::Duration::from_millis(1));
         }
     });
 
-    for i in 1..5 {
-        println!("{}", i);
-        thread::sleep(Duration::from_millis(1));
+    for msg in rx {
+        println!("{}",msg);
     }
-    
-    handle.join().unwrap();
+}
+
+fn send_multiple_msgs() {
+    let (tx, rx) = mpsc::channel();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("this is"),
+            String::from("jake's"),
+            String::from("messages"),
+        ];
+        
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(std::time::Duration::from_millis(1));
+        }
+    });
+
+    for msg in rx {
+        println!("get: {}", msg);
+    }
+}
+
+fn do_channel() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("got : {}", received);
 }
 
 fn do_thread() {
