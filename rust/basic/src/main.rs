@@ -10,12 +10,16 @@ use ferris_says:: say; // :: means path
 use rand::Rng;
 use regex::Regex;
 
+use std::thread;
+use std::time::Duration;
+
 // add custom modules
 mod use_me;
 mod web_request;
 mod my_enum;
 mod my_test;
 mod my_parse_json;
+mod my_thread;
 
 const MAXIMUM : i32 = 10;
 
@@ -65,16 +69,39 @@ enum Direction {
     Right
 }
 
+struct Color { 
+    red: u8, 
+    green: u8,
+    blue: u8
+}
+
 #[tokio::main] // tokio makes main function async
 async fn main() {
-    // use_me::first_module::print_message();
-    // use_module();
-    // do_regex();
-    // do_match_check();
-    // do_get_request().await;
-    // do_some_enum();
-    // print_python();
-    do_some_json();
+    // do_thread();
+
+    // join : Calling join on the handle blocks the thread currently running, 
+    // waiting for the associated thread to finish.
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("from spawned thread : {}", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("{}", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+    
+    handle.join().unwrap();
+}
+
+fn do_thread() {
+    my_thread::create_thread::from_module();
+} 
+
+fn print_color(c: Color) {
+    println!("{}, {}, {}", c.red, c.green, c.blue);
 }
 
 fn do_some_json() {
