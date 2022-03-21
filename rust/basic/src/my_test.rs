@@ -31,7 +31,25 @@ pub mod do_test {
         let my_rect = super::Rectangle{ width:4, height:4 };
         assert_eq!(my_rect.check_square(), true); // success
     }
+
+    #[test]
+    fn test_reference() {
+        let x = 4;
+        let y = &x;
+        // assert_eq!(x, y); // can't perform this
+        assert_eq!(x, *y);
+        assert_eq!(4, x);
+    }
     
+
+    #[test]
+    fn test_smart_pointer() {
+        let x = 4;
+        let y = Box::new(x); // make a pointer pointing to x and store the value at heap
+
+        assert_eq!(4,x);
+        assert_eq!(x,*y);
+    }
 }
 
 // super 

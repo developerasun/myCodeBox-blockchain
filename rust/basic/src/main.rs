@@ -21,6 +21,7 @@ mod my_enum;
 mod my_test;
 mod my_parse_json;
 mod my_thread;
+mod my_box;
 
 const MAXIMUM : i32 = 10;
 
@@ -81,7 +82,18 @@ async fn main() {
     // do_thread();
     // do_channel();
     // send_multiple_msgs();
-    do_multiple_threads();
+    // do_multiple_threads();
+    do_box();
+}
+
+enum List {
+    Cons(i32, Box<List>),
+    Nil, // store a no value
+}
+
+fn do_box() {
+    my_box::store_one::create_int();
+    my_box::store_one::create_box();
 }
 
 fn do_multiple_threads() {
