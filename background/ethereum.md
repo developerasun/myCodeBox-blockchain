@@ -62,7 +62,7 @@
 ### Smart contracts
 > A reusable snippet of code (a program) which a developer publishes into EVM state. Anyone can request that the smart contract code be executed by making a transaction request. **Because developers can write arbitrary executable applications into the EVM (games, marketplaces, financial instruments, etc.) by publishing smart contracts, these are often also called dapps, or Decentralized Apps**.
 
-## Introduction to dapp
+## Introduction to DAPP
 > A decentralized application (dapp) is an application built on a decentralized network that combines a smart contract and a frontend user interface. On Ethereum, smart contracts are accessible and transparent – like open APIs – so your dapp can even include a smart contract that someone else has written. 
 
 ### DEFINITION OF A DAPP
@@ -83,8 +83,97 @@
 
 > **A smart contract is code that lives on the Ethereum blockchain** and runs exactly as programmed. Once smart contracts are deployed on the network you can't change them. **Dapps can be decentralized because they are controlled by the logic written into the contract, not an individual or company**. This also means **you need to design your contracts very carefully and test them thoroughly**.
 
+## Blocks
+> **Blocks are batches of transactions with a hash of the previous block** in the chain. This links blocks together (in a chain) because hashes are cryptographically derived from the block data. This prevents fraud, because **one change in any block in history would invalidate all the following blocks as all subsequent hashes would change** and everyone running the blockchain would notice.
+
+> To ensure that all participants on the Ethereum network maintain a synchronized state and agree on the precise history of transactions, we batch transactions into blocks. This means dozens (or hundreds) of transactions are committed, agreed on, and synchronized on all at once.
+
+<img src="reference/batches-of-transactions.png" width=609 height=247 alt="block is the batches of transactions" />
+
+> By spacing out commits, we give all network participants enough time to come to consensus: even though transaction requests occur dozens of times per second, blocks on Ethereum are committed approximately once every fifteen seconds. 
+
+### HOW BLOCKS WORK
+> To preserve the transaction history, blocks are strictly ordered (every new block created contains a reference to its parent block), and transactions within blocks are strictly ordered as well. Except in rare cases, at any given time, all participants on the network are in agreement on the exact number and history of blocks, and are working to batch the current live transaction requests into the next block.
+
+> Once a block is put together (mined) by some miner on the network, it is propagated to the rest of the network; all nodes add this block to the end of their blockchain, and mining continues. The exact block-assembly (mining) process and commitment/consensus process is currently specified by Ethereum’s “proof-of-work” protocol.
+
+### PROOF-OF-WORK PROTOCOL
+> Mining nodes have to spend a variable but substantial amount of energy, time, and computational power to produce a “certificate of legitimacy” for a block they propose to the network. This helps protect the network from spam/denial-of-service attacks, among other things, since certificates are expensive to produce.
+
+> Other miners who hear about a new block with a valid certificate of legitimacy must accept the new block as the canonical next block on the blockchain.
+
+> The exact amount of time needed for any given miner to produce this certificate is a random variable with high variance. This ensures that it is unlikely that two miners produce validations for a proposed next block simultaneously; when a miner produces and propagates a certified new block, they can be almost certain that the block will be accepted by the network as the canonical next block on the blockchain, without conflict (though there is a protocol for dealing with conflicts as well in the case that two chains of certified blocks are produced almost simultaneously).
+
+### WHAT'S IN A BLOCK?
+1. timestamp – the time when the block was mined.
+1. blockNumber – the length of the blockchain in blocks.
+1. baseFeePerGas - the minimum fee per gas required for a transaction to be included in the block.
+1. difficulty – the effort required to mine the block.
+1. mixHash – a unique identifier for that block.
+1. parentHash – the unique identifier for the block that came before (this is how blocks are linked in a chain).
+1. transactions – the transactions included in the block.
+1. stateRoot – the entire state of the system: account balances, contract storage, contract code and account nonces are inside.
+1. nonce – a hash that, when combined with the mixHash, proves that the block has gone through proof-of-work
+
+### BLOCK TIME
+> **Block time refers to the time it takes to mine a new block**. In Ethereum, the average block time is between 12 to 14 seconds and is evaluated after each block. The expected block time is set as a constant at the protocol level and is used to protect the network's security when the miners add more computational power. 
+
+> **The average block time gets compared with the expected block time**, and if the average block time is higher, then the difficulty is decreased in the block header. If the average block time is smaller, then the difficulty in the block header will be increased.
+
+### BLOCK SIZE
+> A final important note is that **blocks themselves are bounded in size**. **Each block has a target size of 15 million gas** but the size of blocks will increase or decrease in accordance with network demands, up until the **block limit of 30 million gas** (2x target block size). 
+
+> **The total amount of gas expended by all transactions in the block must be less than the block gas limit**. This is important because it ensures that blocks can’t be arbitrarily large. **If blocks could be arbitrarily large, then less performant full nodes would gradually stop** being able to keep up with the network due to space and speed requirements.
+
 ### BENEFITS OF DAPP DEVELOPMENT
-> 
+> Zero downtime – Once the smart contract is deployed and on the blockchain, the network as a whole will always be able to serve clients looking to interact with the contract. Malicious actors, therefore, cannot launch denial-of-service attacks targeted towards individual dapps.
+
+> Privacy – You don’t need to provide real-world identity to deploy or interact with a dapp.
+
+> Resistance to censorship – No single entity on the network can block users from submitting transactions, deploying dapps, or reading data from the blockchain.
+
+> Complete data integrity – Data stored on the blockchain is immutable and indisputable, thanks to cryptographic primitives. Malicious actors cannot forge transactions or other data that has already been made public.
+
+> Trustless computation/verifiable behavior – smart contracts can be analyzed and are guaranteed to execute in predictable ways, without the need to trust a central authority. This is not true in traditional models; for example, when we use online banking systems, we must trust that financial institutions will not misuse our financial data, tamper with records, or get hacked.
+
+### DRAWBACKS OF DAPP DEVELOPMENT
+> Maintenance – Dapps can be harder to maintain because **the code and data published to the blockchain are harder to modify**. It’s hard for developers to make updates to their dapps (or the underlying data stored by a dapp) once they are deployed - even if bugs or security risks are identified in an old version.
+
+> Performance overhead – There is a huge performance overhead, and scaling is really hard. To achieve the level of security, integrity, transparency, and reliability that Ethereum aspires to, every node runs and stores every transaction. On top of this, proof-of-work takes time as well. A back-of-the-envelope calculation puts the overhead at something like 1,000,000x that of standard computation currently.
+
+> Network congestion – When one dapp uses too many computational resources, the entire network gets backed up. **Currently, the network can only process about 10-15 transactions per second**; if transactions are being sent in faster than this, the pool of unconfirmed transactions can quickly balloon.
+
+> User experience – It may be **harder to engineer user-friendly experiences** because the average end-user might find it too difficult to set up a tool stack necessary to interact with the blockchain in a truly secure fashion.
+
+> Centralization – User-friendly and developer-friendly solutions built on top of the base layer of **Ethereum might end up looking like centralized services anyways**. For example, such services **may store keys or other sensitive information server-side, serve a frontend using a centralized server, or run important business logic on a centralized server** before writing to the blockchain. Centralization eliminates many (if not all) of the advantages of blockchain over the traditional model.
+
+## Web2 vs Web3
+> Web2 refers to the version of the internet most of us know today. An internet dominated by companies that provide services in exchange for your personal data. **Web3, in the context of Ethereum, refers to decentralized apps that run on the blockchain**. These are apps that allow anyone to participate without monetising their personal data.
+
+### WEB3 BENEFITS
+> Many Web3 developers have chosen to build dapps because of Ethereum's inherent decentralization:
+
+1. Anyone who is on the network has permission to use the service – or in other words, permission isn't required.
+1. No one can block you or deny you access to the service.
+1. Payments are built in via the native token, ether (ETH).
+1. Ethereum is turing-complete, meaning you can pretty much program anything
+
+<img src="reference/web2-web3-comparison.png" width=641 height=429 alt="what's different between web2 and web3" />
+
+### WEB3 LIMITATIONS
+
+> Web3 has some limitations right now:
+
+1. Scalability – transactions are slower on web3 because they're decentralized. Changes to state, like a payment, need to be processed by a miner and propagated throughout the network.
+
+1. UX – interacting with web3 applications can require extra steps, software, and education. This can be a hurdle to adoption.
+
+1. Accessibility – the lack of integration in modern web browsers makes web3 less accessible to most users.
+
+1. Cost – most successful dapps put very small portions of their code on the blockchain as it's expensive.
+
+
+
 
 
 
