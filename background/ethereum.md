@@ -172,8 +172,54 @@
 
 1. Cost – most successful dapps put very small portions of their code on the blockchain as it's expensive.
 
+## SPIN UP YOUR OWN ETHEREUM NODE
+> Running your own node provides you various benefits, opens new possibilities, and helps to support the ecosystem. This page will guide you through spinning up your own node and taking part in validating Ethereum transactions.
 
+### CHOOSING AN APPROACH
+> The first step in spinning up your node is choosing your approach. You have to choose the client (the software), the environment, and the parameters you want to start with. See all the available Mainnet clients.
 
+#### Client settings
+> Client implementations enable different sync modes and various other options. Sync modes represent different methods of downloading and validating blockchain data. Before starting the node, you should decide what network and sync mode to use. **The most important things to consider is the disk space and sync time client will need**.
+
+> All features and options can be found in the client's documentation. Various client configurations can be set by executing the client with the corresponding flags. You can get more information on flags from EthHub or the client documentation. **For testing purposes, you might prefer running a client on one of testnet networks**. See overview of supported networks
+
+#### Environment and hardware
+> Ethereum clients are able to run on consumer grade computers and don't require special hardware, like mining for example. Therefore, you have various options for deploying based on your needs. To simplify, let's think about running a node on both a local physical machine and a cloud server:
+
+##### Cloud
+1. Providers offer high server uptime, static public IP addresses
+1. Getting dedicated or virtual server can be more comfortable than building your own
+1. Trade off is trusting a third party - server provider
+1. Because of required storage size for full node, price of a rented server might get high
+
+##### Own hardware
+1. More trustless and sovereign approach
+1. One time investment
+1. An option to buy preconfigured machines
+1. You have to physically prepare, maintain, and potentially troubleshoot the machine
+
+> Check the minimum and recommended disk space requirements for each client and sync mod. Generally, modest computing power should be enough. The problem is usually drive speed. During initial sync, Ethereum clients perform a lot of read/write operations. **Therefore SSD is strongly recommended**. 
+
+<details>
+<summary>Client software requirement</summary>
+
+> Before installing any client, please ensure your computer has enough resources to run it. Minimum and recommended requirements can be found below, **however the key part is the disk space**. **Syncing the Ethereum blockchain is very input/output intensive. It is best to have a solid-state drive (SSD). To run an Ethereum client on HDD, you will need at least 8GB of RAM to use as a cache.**
+
+## Minimum requirements
+1. CPU with 2+ cores
+1. 4 GB RAM minimum with an SSD, 8 GB+ if you have an HDD
+1. 8 MBit/s bandwidth
+
+## Recommended specification
+1. Fast CPU with 4+ cores
+1. 16 GB+ RAM
+1. Fast SSD with at least 500 GB free space
+1. 25+ MBit/s bandwidth
+</details>
+
+> A client might not even be able to sync current state on HDD and get stuck a few blocks behind Mainnet. You can run most of the clients on a single board computer with ARM. You can also use the Ethbian operating system for Raspberry Pi 4. This lets you [run a client by flashing the SD card. Based on your software and the hardware choices, the initial synchronization time and storage requirements may vary.
+
+> Be sure to check sync times and storage requirements. Also make sure your internet connection is not limited by a bandwidth cap. It's recommended to use an unmetered connection since initial sync and data broadcasted to the network could exceed your limit.
 
 
 
