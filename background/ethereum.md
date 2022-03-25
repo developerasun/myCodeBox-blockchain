@@ -116,7 +116,7 @@
 1. nonce – a hash that, when combined with the mixHash, proves that the block has gone through proof-of-work
 
 ### BLOCK TIME
-> **Block time refers to the time it takes to mine a new block**. In Ethereum, the average block time is between 12 to 14 seconds and is evaluated after each block. The expected block time is set as a constant at the protocol level and is used to protect the network's security when the miners add more computational power. 
+> **Block time refers to the time it takes to mine a new block**. In **Ethereum, the average block time is between 12 to 14 seconds** and is evaluated after each block. The expected block time is set as a constant at the protocol level and is used to protect the network's security when the miners add more computational power. 
 
 > **The average block time gets compared with the expected block time**, and if the average block time is higher, then the difficulty is decreased in the block header. If the average block time is smaller, then the difficulty in the block header will be increased.
 
@@ -221,6 +221,131 @@
 
 > Be sure to check sync times and storage requirements. Also make sure your internet connection is not limited by a bandwidth cap. It's recommended to use an unmetered connection since initial sync and data broadcasted to the network could exceed your limit.
 
+## INTRO TO ETHER
+> A cryptocurrency is a medium of exchange secured by a blockchain-based ledger. A medium of exchange is anything widely accepted as payment for goods and services, and **a ledger is a data store that keeps track of transactions**. Blockchain technology **allows users to make transactions on the ledger** without reliance upon a trusted third party to maintain the ledger.
+
+> The first cryptocurrency was Bitcoin, created by Satoshi Nakamoto. Since Bitcoin's release in 2009, people have made thousands of cryptocurrencies across many different blockchains.
+
+> Ethereum allows developers to create decentralized applications (dapps), which all share a pool of computing power. This shared pool is finite, so Ethereum needs a mechanism to determine who gets to use it. Otherwise, a dapp could accidentally or maliciously consume all network resources, which would block others from accessing it.
+
+> The ether cryptocurrency supports a pricing mechanism for Ethereum's computing power. When users want to make a transaction, they must pay ether to have their transaction recognized on the blockchain. These usage costs are known as gas fees, and the gas fee depends on the amount of computing power required to execute the transaction and the network-wide demand for computing power at the time.
+
+> Therefore, even if a malicious dapp submitted an infinite loop, the transaction would eventually run out of ether and terminate, allowing the network to return to normal.
+
+### MINTING ETHER
+> **Minting is the process in which new ether gets created on the Ethereum ledger**. The underlying Ethereum protocol creates the new ether, and it is not possible for a user to create ether.
+
+> **Ether is minted when a miner creates a block on the Ethereum** blockchain. As an incentive to miners, the protocol grants a reward in each block, incrementing the balance of an address set by the block's miner. The block reward has changed over time, and today it is **2 ETH per block**
+
+### BURNING ETHER
+> As well as creating ether through block rewards, ether can get destroyed by a process called 'burning'. When ether gets burned, it gets removed from circulation permanently.
+
+> Ether burn occurs in every transaction on Ethereum. When users pay for their transactions, **a base gas fee**, set by the network according to transactional demand, **gets destroyed**. This, coupled with variable block sizes and a maximum gas fee, simplifies transaction fee estimation on Ethereum. **When network demand is high, blocks can burn more ether than they mint, effectively offsetting ether issuance**.
+
+> **Burning the base fee prevents various ways the miners could manipulate it otherwise**. For example, if miners got the base fee, they could include their own transactions for free and raise the base fee for everyone else. Alternatively, they could refund the base fee to some users off-chain, leading to a more opaque and complex transaction fee market.
+
+### DENOMINATIONS OF ETHER
+> **Since many transactions on Ethereum are small, ether has several denominations** which may be referenced for smaller amounts. Of these denominations, **Wei and gwei are particularly important**.
+
+> **Wei is the smallest possible amount of ether**, and as a result, many technical implementations, such as the Ethereum Yellowpaper, will base all calculations in Wei.
+
+> **Gwei, short for giga-wei**, is often used to describe **gas costs** on Ethereum.
+
+<img src="reference/wei-and-gwei.png" width=652 height=196 alt="ethereum denomitation" />
+
+### TRANSFERRING ETHER
+> Each transaction on Ethereum contains a value field, which specifies the amount of ether to be transferred, denominated in wei, to send from the sender's address to the recipient address.
+
+> When the recipient address is a smart contract, this transferred ether may be used to pay for gas when the smart contract executes its code.
+
+### QUERYING ETHER
+> Users can **query the ether balance of any account** by inspecting the account's **balance field**, which shows ether holdings denominated in wei.
+
+> Etherscan is a popular tool to inspect address balances via a web-based application. For example, this Etherscan page shows the balance for the Ethereum Foundation.
+
+## ETHEREUM ACCOUNTS
+> An Ethereum account is an entity with an ether (ETH) balance that can send transactions on Ethereum. Accounts can be user-controlled or deployed as smart contracts.
+
+### ACCOUNT TYPES
+> Ethereum has two account types:
+
+1. Externally-owned – controlled by anyone with the private keys
+1. Contract – a smart contract deployed to the network, controlled by code. Learn about smart contracts
+
+> Both account types have the ability to:
+
+1. Receive, hold and send ETH and tokens
+1. Interact with deployed smart contracts
+
+#### Key differences
+Externally-owned
+
+1. Creating an account **costs nothing**
+1. Can **initiate transactions**
+1. Transactions between externally-owned accounts can only be ETH/token transfers
+
+Contract
+
+1. Creating a contract has a cost because you're **using network storage**
+1. Can only send transactions in response to receiving a transaction
+1. Transactions from an external account to a contract account **can trigger code** which can execute many different actions, such as transferring tokens or even creating a new contract
+
+### AN ACCOUNT EXAMINED
+> Ethereum accounts have four fields:
+
+1. nonce – A counter that indicates the number of transactions sent from the account. This ensures transactions are only processed once.
+
+1. balance – The number of wei owned by this address. Wei is a denomination of ETH and there are 1e+18 wei per ETH.
+
+1. codeHash – **This hash refers to the code of an account on the Ethereum virtual machine (EVM).** Contract accounts have code fragments programmed in that can perform different operations. **This EVM code gets executed if the account gets a message call**. It cannot be changed, unlike the other account fields. All such code fragments are contained in the state database under their corresponding hashes for later retrieval. This hash value is known as a codeHash. For externally owned accounts, the codeHash field is the hash of an empty string.
+
+1. storageRoot – Sometimes known as a storage hash. A 256-bit hash of the root node of a Merkle Patricia trie that encodes the storage contents of the account (a mapping between 256-bit integer values), encoded into the trie as a mapping from the Keccak 256-bit hash of the 256-bit integer keys to the RLP-encoded 256-bit integer values. This trie encodes the hash of the storage contents of this account, and is empty by default.
+
+### EXTERNALLY-OWNED ACCOUNTS AND KEY PAIRS
+
+> An account is made up of a cryptographic pair of keys: public and private. They help prove that a transaction was actually signed by the sender and **prevent forgeries(nonrepudiation)**. **Your private key is what you use to sign transactions**, so it grants you custody over the funds associated with your account. **You never really hold cryptocurrency, you hold private keys** – the **funds** are always **on Ethereum's ledger**.
+
+> This prevents malicious actors from broadcasting fake transactions because you can always verify the sender of a transaction.
+
+> If Alice wants to send ether from her own account to Bob’s account, Alice needs to create a transaction request and send it out to the network for verification. Ethereum’s usage of public-key cryptography ensures that Alice can prove that she originally initiated the transaction request. Without cryptographic mechanisms, a malicious adversary Eve could simply publicly broadcast a request that looks something like “send 5 ETH from Alice’s account to Eve’s account,” and no one would be able to verify that it didn’t come from Alice.
+
+### ACCOUNT CREATION
+> When you want to create an account most libraries will generate you a random private key. **A private key is made up of 64 hex characters** and can be encrypted with a password.
+
+```
+fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd036415f
+```
+
+> The public key is generated from the private key using the Elliptic Curve Digital Signature Algorithm. You get a public address for your account by taking the last 20 bytes of the Keccak-256 hash of the public key and adding 0x to the beginning.
+
+> Here's an example of creating an account in the console using GETH's personal_newAccount
+
+```shell
+> personal.newAccount()
+Passphrase:
+Repeat passphrase:
+"0x5e97870f263700f46aa00d967821199b9bc5a120" # length : 42
+
+> personal.newAccount("h4ck3r")
+"0x3d80b31a78c30fc628f20b2c89d7ddbf6e53cedc"
+```
+
+> It is **possible to derive new public keys from your private key** but you cannot derive a private key from public keys. This means it's **vital to keep a private key safe** and, as the name suggests, PRIVATE.
+
+> You **need a private key to sign messages and transactions which output a signature**. Others can then take the signature to derive your public key, proving the author of the message. In your application, you can use a javascript library to send transactions to the network.
+
+- Private key => public key
+- Private key => signature
+- Signature => derive public key for auth
+
+### CONTRACT ACCOUNTS
+> Contract accounts also have a 42 character hexadecimal address:
+
+```
+0x06012c8cf97bead5deae237070f9587f8e7a266d
+```
+
+> The contract address is usually given when a contract is deployed to the Ethereum Blockchain. The address comes from the creator's address and the number of transactions sent from that address (the “nonce”).
 
 
 ## Synchronization modes
