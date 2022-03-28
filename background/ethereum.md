@@ -348,6 +348,10 @@ Repeat passphrase:
 > The contract address is usually given when a contract is deployed to the Ethereum Blockchain. The address comes from the creator's address and the number of transactions sent from that address (the “nonce”).
 
 
+
+
+
+
 ## Synchronization modes
 > To follow and verify current data in the network, the Ethereum client needs to sync with the latest network state. This is done by downloading data from peers, cryptographically verifying their integrity, and building a local blockchain database.
 
@@ -393,8 +397,147 @@ Implemented by Nethermind and Trinity. Works like fast sync but also downloads t
 Syncs state first and enables you to query RPC in a few minutes.
 Still in development and not fully reliable, background sync is slowed down and RPC responses might fail
 
+## Ethereum security and scam prevention
+> With interest in cryptocurrencies growing, learning best practices when using cryptocurrency is essential. Crypto can be fun and exciting, but there are also serious risks. If you put in this small amount of upfront work, you can mitigate these risks.
 
+> Over 80% of account hacks are a result of weak or stolen passwords. A long combination of characters, numbers and symbols is best to keep your accounts secure.
 
+> A common mistake individuals make is using a combination of two to three common, related dictionary words. Passwords like this are insecure because they are prone to a simple hacking technique known as a dictionary attack.
+
+> Another common mistake is using passwords that can be easily guessed or found out through social engineering. Including your mother's maiden name, the names of your children or pets, or dates of birth in your password is not secure and will increase the risk of your password getting hacked.
+
+## Network
+> Since Ethereum is a protocol, this means there can be multiple independent "networks" conforming to this protocol that do not interact with each other.
+
+> Networks are different Ethereum environments you can access for development, testing, or production use cases. Your Ethereum account will work across the different networks but your account balance and transaction history won't carry over from the main Ethereum network. For testing purposes, it's useful to know which networks are available and how to get testnet ETH so you can play around with it.
+
+### Mainnet
+> Mainnet is the primary public Ethereum production blockchain, where actual-value transactions occur on the distributed ledger. When people and exchanges discuss ETH prices, they're talking about Mainnet ETH.
+
+### Testnet
+> In addition to Mainnet, there are public testnets. These are networks used by protocol developers or smart contract developers to test both protocol upgrades as well as potential smart contracts in a production-like environment before deployment to Mainnet. Think of this as an analog to production versus staging servers.
+
+> It’s generally important to test any contract code you write on a testnet before deploying to the Mainnet. If you're building a dapp that integrates with existing smart contracts, most projects have copies deployed to testnets that you can interact with.
+
+> Most testnets use a proof-of-authority consensus mechanism. This means a small number of nodes are chosen to validate transactions and create new blocks – staking their identity in the process. It's hard to incentivise mining on a proof-of-work testnet which can leave it vulnerable.
+
+> ETH on testnets has no real value; therefore, there are no markets for testnet ETH. Since you need ETH to actually interact with Ethereum, most people get testnet ETH from faucets. Most faucets are webapps where you can input an address which you request ETH to be sent to.
+
+### PRIVATE NETWORKS
+> An Ethereum network is a private network if its nodes are not connected to a public network (i.e. Mainnet or a testnet). In this context, **private only means reserved or isolated**, rather than protected or secure.
+
+> To develop an Ethereum application, you'll want to run it on a private network to see how it works before deploying it. Similar to how you create a local server on your computer for web development, you can create a local blockchain instance to test your dapp. This allows for much faster iteration than a public testnet.
+
+#### DEVELOPMENT NETWORKS
+> When building an Ethereum application with smart contracts, you'll want to run it on a local network to see how it works before deploying it.
+
+> Similar to how you might run a local server on your computer for web development, you can use a development network to create a local blockchain instance to test your dapp. These Ethereum development networks provide features that allow for much faster iteration than a public testnet (for instance you don’t need to deal with acquiring ETH from a testnet faucet).
+
+> Development networks are essentially Ethereum clients (implementations of Ethereum) designed specifically for local development.
+
+#### Consortium networks
+> The consensus process is controlled by a pre-defined set of nodes that are trusted. For example, a private network of known academic institutions that each govern a single node, and blocks are validated by a threshold of signatories within the network.
+
+> If a public Ethereum network is like the public internet, you can think of a consortium network as a private intranet.
+
+## CONSENSUS MECHANISMS
+> When it comes to **blockchains like Ethereum, which are, in essence, distributed databases**, the network's nodes **must reach an agreement on the network's current state**. This agreement is achieved using consensus mechanisms.
+
+> Although consensus mechanisms aren't directly related to building a dapp, understanding them will illuminate concepts relevant to you and your users' experience, like gas prices and transaction times.
+
+### WHAT IS CONSENSUS?
+> By consensus, we mean that a general agreement has been reached. Consider a group of people going to the cinema. If there is not a disagreement on a proposed choice of film, then a consensus is achieved. In the extreme case the group will eventually split.
+
+> In regards to **blockchain**, the process is formalized, and **reaching consensus means that at least 51% of the nodes on the network agree** on the next global state of the network.
+
+### WHAT IS A CONSENSUS MECHANISM?
+> Consensus mechanisms (also known as consensus protocols or consensus algorithms) allow distributed systems (networks of computers) to work together and stay secure.
+
+> For decades, these mechanisms have been used to establish consensus among database nodes, application servers, and other enterprise infrastructure. In recent years, new consensus mechanisms have been invented to allow cryptoeconomic systems, such as Ethereum, **to agree on the state of the network**.
+
+> A consensus mechanism in a cryptoeconomic system also helps prevent certain kinds of economic attacks. **In theory, an attacker can compromise consensus by controlling 51% of the network. Consensus mechanisms are designed to make this "51% attack" unfeasible**. Different mechanisms are engineered to solve this security problem in different ways.
+
+### TYPES OF CONSENSUS MECHANISMS
+#### Proof-of-work
+> Ethereum, like Bitcoin, currently uses a proof-of-work (PoW) consensus protocol.
+
+#### Block creation
+> **Proof-of-work is done by miners**, who compete to create new blocks full of processed transactions. **The winner shares the new block with the rest of the network and earns some freshly minted ETH**. The race is won by whosever computer can solve a math puzzle fastest – this produces the cryptographic link between the current block and the block that went before. Solving this puzzle is the work in "proof-of-work".
+
+#### Security
+> **The network is kept secure by the fact that you'd need 51% of the network's computing power to defraud the chain**. This would require such huge investments in equipment and energy; you're likely to spend more than you'd gain.
+
+#### Proof-of-stake
+> Ethereum has plans to upgrade to a proof-of-stake (PoS) consensus protocol.
+
+#### Block creation
+> **Proof-of-stake is done by validators who have staked ETH** to participate in the system. **A validator is chosen at random to create new blocks**, share them with the network and earn rewards. Instead of needing to do intense computational work, you simply need to have staked your ETH in the network. This is what incentivises healthy network behaviour.
+
+#### Security
+> **A proof-of-stake system is kept secure by the fact that you'd need 51% of the total staked ETH to defraud the chain**. And that your stake is slashed for malicious behaviour.
+
+#### Sybil resistance & chain selection
+> Now technically, **proof-of-work** and **proof-of-stake** are not consensus protocols by themselves, but they are often referred to as such for simplicity. **They are actually Sybil resistance mechanisms and block author selectors**; they are a way to decide who is the author of the latest block. It's this Sybil resistance mechanism combined with a chain selection rule that makes up a true consensus mechanism.
+
+- **PoW, PoS => Sybil resistance mechanisms and block author(creator) selector**
+
+> Sybil resistance measures how a protocol fares against a Sybil attack. Sybil attacks are when one user or group pretends to be many users. Resistance to this type of attack is essential for a decentralized blockchain and enables miners and validators to be rewarded equally based on resources put in. Proof-of-work and proof-of-stake protect against this by making users expend a lot of energy or put up a lot of collateral. These protections are an economic deterrent to Sybil attacks.
+
+> A chain selection rule is used to decide which chain is the "correct" chain. **Ethereum and Bitcoin currently use the "longest chain" rule**, which means that whichever blockchain is the longest will be the one the rest of the nodes accept as valid and work with. For proof-of-work chains, the longest chain is determined by the chain's total cumulative proof-of-work difficulty.
+
+> The combination of proof-of-work and longest chain rule is known as "**Nakamoto Consensus**."
+
+## INTRODUCTION TO SMART CONTRACTS
+### WHAT IS A SMART CONTRACT?
+> A "smart contract" is simply a program that runs on the Ethereum blockchain. It's a collection of code (its functions) and data (its state) that resides at a specific address on the Ethereum blockchain.
+
+> Smart contracts are a type of Ethereum account. This means they have a balance and they can send transactions over the network. However they're not controlled by a user, instead they are deployed to the network and run as programmed. 
+
+> User accounts can then interact with a smart contract by submitting transactions that execute a function defined on the smart contract. Smart contracts can define rules, like a regular contract, and automatically **enforce them via the code. Smart contracts cannot be deleted by default, and interactions with them are irreversible**.
+
+### A DIGITAL VENDING MACHINE
+> Perhaps the best metaphor for a smart contract is a vending machine, as described by Nick Szabo. With the right inputs, a certain output is guaranteed.
+
+> A smart contract, like a vending machine, has logic programmed into it. Here's a simple example of how this vending machine might look like as a smart contract:
+
+```solidity
+pragma solidity 0.8.7;
+
+contract VendingMachine {
+
+    // Declare state variables of the contract
+    address public owner;
+    mapping (address => uint) public cupcakeBalances;
+
+    // When 'VendingMachine' contract is deployed:
+    // 1. set the deploying address as the owner of the contract
+    // 2. set the deployed smart contract's cupcake balance to 100
+    constructor() {
+        owner = msg.sender;
+        cupcakeBalances[address(this)] = 100;
+    }
+
+    // Allow the owner to increase the smart contract's cupcake balance
+    function refill(uint amount) public {
+        require(msg.sender == owner, "Only the owner can refill.");
+        cupcakeBalances[address(this)] += amount;
+    }
+
+    // Allow anyone to purchase cupcakes
+    function purchase(uint amount) public payable {
+        require(msg.value >= amount * 1 ether, "You must pay at least 1 ETH per cupcake");
+        require(cupcakeBalances[address(this)] >= amount, "Not enough cupcakes in stock to complete this purchase");
+        cupcakeBalances[address(this)] -= amount;
+        cupcakeBalances[msg.sender] += amount;
+    }
+}
+
+```
+
+### PERMISSIONLESS
+> Anyone can write a smart contract and deploy it to the network. You just need to learn how to code in a smart contract language, and have enough ETH to deploy your contract. **Deploying a smart contract is technically a transaction**, so you need to pay your Gas in the same way that you need to pay gas for a simple ETH transfer. Gas costs for contract deployment are far higher, however.
+
+> Ethereum has developer-friendly languages for writing smart contracts: 1) Solidity 2) Vyper
 
 
 ## Reference
