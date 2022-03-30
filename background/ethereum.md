@@ -539,6 +539,137 @@ contract VendingMachine {
 
 > Ethereum has developer-friendly languages for writing smart contracts: 1) Solidity 2) Vyper
 
+### COMPOSABILITY
+> Smart contracts are public on Ethereum and can be thought of as open APIs. That means you can call other smart contracts in your own smart contract to greatly extend what's possible. Contracts can even deploy other contracts.
+
+### LIMITATIONS
+> Smart contracts alone cannot get information about "real-world" events because **they can't send HTTP requests**. This is by design. Relying on external information could jeopardise consensus, which is important for security and decentralization.
+
+> There are ways to get around this using oracles. Another limitation of smart contracts is the maximum contract size. **A smart contract can be a maximum of 24KB or it will run out of gas**. This can be circumnavigated by using The Diamond Pattern.
+
+## ANATOMY OF SMART CONTRACTS
+> A smart contract is a program that runs at an address on Ethereum. They're made up of data and functions that can execute upon receiving a transaction. Here's an overview of what makes up a smart contract.
+
+> Make sure you've read about smart contracts first. This document assumes you're already familiar with programming languages such as JavaScript or Python.
+
+### DATA
+> **Any contract data must be assigned to a location: either to storage or memory**. It's costly to modify storage in a smart contract so you need to consider where your data should live.
+
+#### Storage
+> **Persistent data is referred to as storage** and is represented by state variables. These values get stored permanently on the blockchain. You need to declare the type so that the contract can keep track of how much storage on the blockchain it needs when it compiles.
+
+> Persistent data is referred to as storage and is represented by state variables. These values get stored permanently on the blockchain. You need to declare the type so that the contract can keep track of how much storage on the blockchain it needs when it compiles.
+
+```solidity
+// Solidity example
+contract SimpleStorage {
+    uint storedData; // State variable
+    // ...
+}
+```
+
+> If you've already programmed object-oriented languages, you'll likely be familiar with most types. However address should be new to you if you're new to Ethereum development.
+
+> An address type can hold an Ethereum address which equates to 20 bytes or 160 bits. It returns in hexadecimal notation with a leading 0x.
+
+#### Memory
+> Values that are only stored for the lifetime of a contract function's execution are called memory variables. Since these are not stored permanently on the blockchain, they are much cheaper to use.
+
+#### Environment variables
+> In addition to the variables you define on your contract, there are some special global variables. They are primarily used to provide information about the blockchain or current transaction.
+
+### FUNCTIONS
+> In the most simplistic terms, functions can get information or set information in response to incoming transactions.
+
+> There are two types of function calls:
+
+1. internal – these don't create an EVM call
+> Internal functions and state variables can only be accessed internally (i.e. **from within the current contract or contracts deriving from it**)
+
+1. external – these do create an EVM call
+> External functions are part of the contract interface, which means they can be called from other contracts and via transactions. **An external function f cannot be called internally** (i.e. f() does not work, but **this.f() works**).
+
+#### View functions
+> These functions promise **not to modify the state of the contract's data**. Common examples are "getter" functions – you might use this to receive a user's balance for example.
+
+#### Constructor functions
+> constructor functions are only executed once when the contract is first deployed. Like constructor in many class-based programming languages, these functions often initialize state variables to their specified values.
+
+#### Built-in functions
+> In addition to the variables and functions you define on your contract, there are some special built-in functions. The most obvious example is:
+
+1. address.send() – Solidity
+1. send(address) – Vyper
+
+## COMPILING SMART CONTRACTS
+> You need to compile your contract so that your web app and the Ethereum virtual machine (EVM) can understand it.
+
+> For the EVM to be able to run your contract it needs to be in bytecode. Compilation turns this:
+
+```solidity
+pragma solidity 0.4.24;
+
+contract Greeter {
+
+    function greet() public constant returns (string) {
+        return "Hello";
+    }
+
+}
+```
+> into this
+
+```
+PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xCFAE3217 EQ PUSH2 0x46 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH2 0x52 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH2 0x5B PUSH2 0xD6 JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 DUP1 PUSH1 0x20 ADD DUP3 DUP2 SUB DUP3 MSTORE DUP4 DUP2 DUP2 MLOAD DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0x9B JUMPI DUP1 DUP3 ADD MLOAD DUP2 DUP5 ADD MSTORE PUSH1 0x20 DUP2 ADD SWAP1 POP PUSH2 0x80 JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0xC8 JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP SWAP3 POP POP POP PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH1 0x60 PUSH1 0x40 DUP1 MLOAD SWAP1 DUP2 ADD PUSH1 0x40 MSTORE DUP1 PUSH1 0x5 DUP2 MSTORE PUSH1 0x20 ADD PUSH32 0x48656C6C6F000000000000000000000000000000000000000000000000000000 DUP2 MSTORE POP SWAP1 POP SWAP1 JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 SLT 0xec 0xe 0xf5 0xf8 SLT 0xc7 0x2d STATICCALL ADDRESS SHR 0xdb COINBASE 0xb1 BALANCE 0xe8 0xf8 DUP14 0xda 0xad DUP13 LOG1 0x4c 0xb4 0x26 0xc2 DELEGATECALL PUSH7 0x8994D3E002900
+```
+
+### WEB APPLICATIONS
+> The compiler will also produce the Application Binary Interface (ABI) which you need in order for your application to understand the contract and call the contract's functions.
+
+> The ABI is a JSON file that describes the deployed contract and its smart contract functions. This helps bridge the gap between web2 and web3. A JavaScript client library will read the ABI in order for you to call on your smart contract in your web app's interface.
+
+## SMART CONTRACT SECURITY
+> Smart contract code usually cannot be changed to patch security flaws, assets that have been stolen from smart contracts are irrecoverable, and stolen assets are extremely difficult to track. The total of amount of value stolen or lost due to smart contract issues is easily over $1B. Some of the larger due to smart contract coding errors include:
+
+1. Parity multi-sig issue #1 - **$30M lost**
+1. Parity multi-sig issue #2 - **$300M locked**
+1. TheDAO hack, 3.6M ETH! Over **$1B** in today's ETH prices
+
+### HOW TO WRITE MORE SECURE SMART CONTRACT CODE
+> Before launching any code to Mainnet, it is **important to take sufficient precaution to protect anything of value your smart contract** is entrusted with. In this article, we will discuss a few specific attacks, provide resources to learn about more attack types, and leave you with some basic tooling and best practices to ensure your contracts function correctly and securely.
+
+### AUDITS ARE NOT A SILVER BULLET
+> Years prior, the tooling for writing, compiling, testing, and deploying smart contracts was very immature, leading many projects to write Solidity code in haphazard ways, throw it over a wall to an auditor who would investigate the code to ensure it functions securely and as expected. 
+
+> In 2020, the development processes and tooling that support writing Solidity is significantly better; leveraging these best practices not only ensures your project is easier to manage, it is a vital part of your project's security. 
+
+> An audit at the end of writing your smart contract is no longer sufficient as the only security consideration your project makes. Security starts before you write your first line of smart contract code, security starts with proper design and development processes.
+
+### SMART CONTRACT DEVELOPMENT PROCESS
+> At a minimum, you should do following things when developing smart contracts. 
+
+1. All code stored in a **version control system**, such as git
+1. All code modifications made via Pull Requests
+1. All Pull Requests have at least one reviewer. If you are a solo project, consider finding another solo author and trade **code reviews**!
+1. A single command compiles, deploys, and runs a suite of tests against your code using a development Ethereum environment (See: Truffle)
+1. You have run your code through basic code analysis tools such as **Mythril and Slither**, ideally before each pull request is merged, comparing differences in output
+1. Solidity does not emit ANY compiler warnings
+1. Your code is well-documented
+
+> There is much more to be said for development process, but these items are a good place to start. For more items and detailed explanations, see the process quality checklist provided by DeFiSafety. DefiSafety is an unofficial public service publishing reviews of various large, public Ethereum dApps.
+
+## ATTACKS AND VULNERABILITIES
+> Now that you are writing Solidity code using an efficient development process, let's look at some common Solidity vulnerabilities to see what can go wrong.
+
+### Re-entrancy
+> Re-entrancy is one of **the largest and most significant security issue** to consider when developing Smart Contracts. While the EVM cannot run multiple contracts at the same time, **a contract calling a different contract pauses the calling contract's execution and memory state until the call returns, at which point execution proceeds normally. This pausing and re-starting can create a vulnerability known as "re-entrancy**".
+
+## 
+
+
+
+
+
 
 ## Reference
 - [Ethereum.org](https://ethereum.org/en/)
