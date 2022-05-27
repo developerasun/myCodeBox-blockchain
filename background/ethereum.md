@@ -1,5 +1,7 @@
 # Learning Ethereum essetials
+
 ## WHAT IS A BLOCKCHAIN?
+
 > A blockchain is a public database that is updated and shared across many computers in a network. **"Block" refers to data and state being stored** in consecutive groups known as "blocks". If you send ETH to someone else, the transaction data needs to be added to a block to be successful.
 
 > **"Chain" refers to the fact that each block cryptographically references its parent**. In other words, blocks get chained together. The data in a block cannot change without changing all subsequent blocks, which would require the consensus of the entire network.
@@ -13,14 +15,16 @@
 > So to summarize, when you send ETH to someone, the transaction must be mined and included in a new block. The updated state is then shared with the entire network.
 
 ## WHAT IS ETHEREUM?
-> In the Ethereum universe, there is a single, canonical computer (called the Ethereum Virtual Machine, or EVM) whose state everyone on the Ethereum network agrees on. Everyone who participates in the Ethereum network (every Ethereum node) keeps a copy of the state of this computer. Additionally, any participant can broadcast a request for this computer to perform arbitrary computation. Whenever such a request is broadcast, other participants on the network verify, validate, and carry out ("execute") the computation. This execution causes a state change in the EVM, which is committed and propagated throughout the entire network.
+
+> In the Ethereum universe, there is **a single, canonical computer** (called the Ethereum Virtual Machine, or **EVM**) whose state everyone on the Ethereum network agrees on. Everyone who participates in the Ethereum network (every Ethereum node) keeps a copy of the state of this computer. Additionally, **any participant can broadcast a request** for this computer to perform arbitrary computation. Whenever such a request is broadcast, **other participants on the network verify**, validate, and carry out ("execute") the computation. This execution causes a state change in the EVM, which is committed and propagated throughout the entire network.
 
 > Requests for computation are called transaction requests; the record of all transactions and the EVM's present state gets stored on the blockchain, which in turn is stored and agreed upon by all nodes.
 
-> Cryptographic mechanisms ensure that once transactions are verified as valid and added to the blockchain, they can't be tampered with later. The same mechanisms also ensure that all transactions are signed and executed with appropriate "permissions" (no one should be able to send digital assets from Alice's account, except for Alice herself).
+> Cryptographic mechanisms ensure that once transactions are verified as valid and added to the blockchain, they can't be tampered with later. The same mechanisms also ensure that **all transactions are signed and executed with appropriate "permissions"** (no one should be able to send digital assets from Alice's account, except for Alice herself).
 
 
 ## WHAT IS ETHER?
+
 > Ether (ETH) is **the native cryptocurrency of Ethereum**. The purpose of ether is to allow for a market for computation. Such **a market provides an economic incentive for participants to verify and execute transaction** requests and provide computational resources to the network.
 
 > **Any participant who broadcasts a transaction request must also offer some amount of ether to the network as a bounty**. This bounty will be awarded to whoever eventually does **the work of verifying the transaction**, executing it, committing it to the blockchain, and broadcasting it to the network.
@@ -28,28 +32,35 @@
 > The amount of ether paid corresponds to the time required to do the computation. These bounties also prevent malicious participants from intentionally clogging the network by requesting the execution of infinite computation or other resource-intensive scripts, as these participants must pay for computation time.
 
 ## WHAT ARE SMART CONTRACTS?
-> In practice, participants don't write new code every time they want **to request a computation on the EVM**. Rather, application developers upload programs (reusable snippets of code) into EVM state, and users make requests to execute these code snippets with varying parameters. We call the programs uploaded to and executed by the network smart contracts.
+
+> In practice, participants don't write new code every time they want **to request a computation on the EVM**. Rather, **application developers upload programs into EVM** state, and **users make requests to execute** these code snippets with varying parameters. We call the programs uploaded to and executed by the network smart contracts.
 
 > At a very basic level, you can think of **a smart contract like a sort of vending machine**: a script that, when called with certain parameters, performs some actions or computation if certain conditions are satisfied. For example, a simple vendor smart contract could create and assign ownership of a digital asset if the caller sends ether to a specific recipient.
 
-> Any developer can create a smart contract and make it public to the network, using the blockchain as its data layer, for a fee paid to the network. Any user can then call the smart contract to execute its code, again for a fee paid to the network.
+> Any developer can create a smart contract and make it public to the network, using the blockchain as its data layer, for a fee paid to the network. **Any user can then call the smart contract to execute** its code, again for a fee paid to the network.
 
 > Thus, with smart contracts, developers can build and deploy arbitrarily complex user-facing apps and services such as: marketplaces, financial instruments, games, etc
 
 ## TERMINOLOGY
+
 ### Blockchain
-> The sequence of all blocks that have been committed to the Ethereum network in the history of the network. So-named because each block contains a reference to the previous block, which helps us maintain an ordering over all blocks (and thus over the precise history)
+
+> **The sequence of all blocks** that have been committed to the Ethereum network in the history of the network. So-named because each block contains a reference to the previous block, which helps us maintain an ordering over all blocks (and thus over the precise history)
 
 ### EVM
+
 > The Ethereum Virtual Machine is **the global virtual computer whose state every participant on the Ethereum network stores and agrees on**. Any participant can request the execution of arbitrary code on the EVM; code execution changes the state of the EVM.
 
 ### Nodes
-> The real-life machines which are storing the EVM state. Nodes communicate with each other to propagate information about the EVM state and new state changes. Any user can also request the execution of code by broadcasting a code execution request from a node. The Ethereum network itself is the aggregate of all Ethereum nodes and their communications.
+
+> **The real-life machines which are storing the EVM state**. Nodes communicate with each other to propagate information about the EVM state and new state changes. Any user can also request the execution of code by broadcasting a code execution request from a node. **The Ethereum network** itself is **the aggregate of all Ethereum nodes** and their communications.
 
 ### Accounts
-> Where ether is stored. Users can initialize accounts, deposit ether into the accounts, and transfer ether from their accounts to other users. Accounts and account balances are stored in a big table in the EVM; they are a part of the overall EVM state.
+
+> **Where ether is stored**. Users can initialize accounts, deposit ether into the accounts, and transfer ether from their accounts to other users. Accounts and account balances are stored in a big table in the EVM; they are a **part of the overall EVM state**.
 
 ### Transactions
+
 > A "transaction request" is the formal term for **a request for code execution on the EVM**, and a "transaction" is a fulfilled transaction request and the associated change in the EVM state. Any user can broadcast a transaction request to the network from a node. For the transaction request to affect the agreed-upon EVM state, it must be validated, executed, and "committed to the network" by another node. **Execution of any code causes a state change in the EVM; upon commitment, this state change is broadcast to all nodes in the network**. Some examples of transactions:
 
 1. Send X ether from my account to Alice's account.
@@ -57,18 +68,25 @@
 1. Execute the code of the smart contract at address X in the EVM, with arguments Y.
 
 ### Blocks
-> The volume of transactions is very high, so transactions are "committed" in batches, or blocks. Blocks generally contain dozens to hundreds of transactions.
+
+> **The volume of transactions** is very high, so transactions are "committed" in **batches**, or blocks. Blocks generally **contain** dozens to hundreds of **transactions**.
 
 ### Smart contracts
-> A reusable snippet of code (a program) which a developer publishes into EVM state. Anyone can request that the smart contract code be executed by making a transaction request. **Because developers can write arbitrary executable applications into the EVM (games, marketplaces, financial instruments, etc.) by publishing smart contracts, these are often also called dapps, or Decentralized Apps**.
+
+> A reusable snippet of code (a program) which a developer publishes into EVM state. Anyone can request that the smart contract code be executed by making a transaction request. Because **developers can write arbitrary executable applications** into the EVM (games, marketplaces, financial instruments, etc.) by publishing smart contracts, these are often also **called dapps**, or Decentralized Apps.
 
 ## Introduction to DAPP
-> A decentralized application (dapp) is an application built on a decentralized network that combines a smart contract and a frontend user interface. On Ethereum, smart contracts are accessible and transparent – like open APIs – so your dapp can even include a smart contract that someone else has written. 
+
+> A decentralized application (dapp) is **an application built on a decentralized network** that combines a smart contract and a frontend user interface. 
+
+- dapp = smart contract + front end 
+
+On Ethereum, smart contracts are accessible and transparent – **like open APIs** – so your dapp can even include a smart contract that someone else has written. 
 
 ### DEFINITION OF A DAPP
 > **A dapp has its backend code running on a decentralized peer-to-peer network**. Contrast this with an app where the backend code is running on centralized servers.
 
-> A dapp can have frontend code and user interfaces written in any language (just like an app) to make calls to its backend. Furthermore, its frontend can get hosted on decentralized storage such as IPFS.
+> A dapp can have frontend code and user interfaces written in any language (just like an app) to make calls to its backend. Furthermore, its frontend can get hosted on **decentralized storage** such as **IPFS**.
 
 1. Decentralized - dapps operate on Ethereum, an open public decentralized platform where no one person or group has control
 
@@ -76,28 +94,34 @@
 
 1. Turing complete - dapps can perform any action given the required resources
 
-1. Isolated - dapps are executed in a virtual environment known as Ethereum Virtual Machine so that if the smart contract has a bug, it won’t hamper the normal functioning of the blockchain network.
+1. Isolated - **dapps are executed in a virtual environment** known as Ethereum Virtual Machine so that **if the smart contract has a bug, it won’t hamper the normal functioning of the blockchain network**.
 
 ### On smart contracts
+
 > To introduce dapps, we need to introduce smart contracts – a dapp's backend for lack of a better term. For a detailed overview, head to our section on smart contracts.
 
-> **A smart contract is code that lives on the Ethereum blockchain** and runs exactly as programmed. Once smart contracts are deployed on the network you can't change them. **Dapps can be decentralized because they are controlled by the logic written into the contract, not an individual or company**. This also means **you need to design your contracts very carefully and test them thoroughly**.
+> **A smart contract is code that lives on the Ethereum blockchain** and runs exactly as programmed. Once smart contracts are deployed on the network you can't change them. Dapps can be decentralized because **they are controlled by the logic written into the contract**, not an individual or company. This also means you need to **design your contracts very carefully** and test them thoroughly.
 
 ## Blocks
-> **Blocks are batches of transactions with a hash of the previous block** in the chain. This links blocks together (in a chain) because hashes are cryptographically derived from the block data. This prevents fraud, because **one change in any block in history would invalidate all the following blocks as all subsequent hashes would change** and everyone running the blockchain would notice.
 
-> To ensure that all participants on the Ethereum network maintain a synchronized state and agree on the precise history of transactions, we batch transactions into blocks. This means dozens (or hundreds) of transactions are committed, agreed on, and synchronized on all at once.
+> **Blocks are batches of transactions with a hash of the previous block** in the chain. This links blocks together (in a chain) because hashes are cryptographically derived from the block data. This prevents fraud, because **one change in any block** in history would **invalidate all the following blocks** as all subsequent hashes would change and everyone running the blockchain would notice.
+
+> To ensure that all participants on the Ethereum network maintain a synchronized state and agree on the precise history of transactions, we **batch transactions into blocks**. This means dozens (or **hundreds) of transactions are committed**, agreed on, and synchronized on all at once.
+
+- batching transactions to one block == grouping commits to one pull request
 
 <img src="reference/batches-of-transactions.png" width=609 height=247 alt="block is the batches of transactions" />
 
 > By spacing out commits, we give all network participants enough time to come to consensus: even though transaction requests occur dozens of times per second, blocks on Ethereum are committed approximately once every fifteen seconds. 
 
 ### HOW BLOCKS WORK
-> To preserve the transaction history, blocks are strictly ordered (every new block created contains a reference to its parent block), and transactions within blocks are strictly ordered as well. Except in rare cases, at any given time, all participants on the network are in agreement on the exact number and history of blocks, and are working to batch the current live transaction requests into the next block.
 
-> Once a block is put together (mined) by some miner on the network, it is propagated to the rest of the network; all nodes add this block to the end of their blockchain, and mining continues. The exact block-assembly (mining) process and commitment/consensus process is currently specified by Ethereum’s “proof-of-work” protocol.
+> To preserve the transaction history, **blocks are strictly ordered** (every new block created contains a reference to its parent block), and transactions within blocks are strictly ordered as well. Except in rare cases, at any given time, all participants on the network are in agreement on the exact number and history of blocks, and are working to batch the current live transaction requests into the next block.
+
+> **Once a block is put together** (mined) by some miner on the network, it is propagated to the rest of the network; **all nodes add this block to the end of their blockchain**, and mining continues. The exact block-assembly (mining) process and commitment/consensus process is currently specified by Ethereum’s “proof-of-work” protocol.
 
 ### PROOF-OF-WORK PROTOCOL
+
 > Mining nodes have to spend a variable but substantial amount of energy, time, and computational power to produce a “certificate of legitimacy” for a block they propose to the network. This helps protect the network from spam/denial-of-service attacks, among other things, since certificates are expensive to produce.
 
 > Other miners who hear about a new block with a valid certificate of legitimacy must accept the new block as the canonical next block on the blockchain.
@@ -664,12 +688,49 @@ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x
 ### Re-entrancy
 > Re-entrancy is one of **the largest and most significant security issue** to consider when developing Smart Contracts. While the EVM cannot run multiple contracts at the same time, **a contract calling a different contract pauses the calling contract's execution and memory state until the call returns, at which point execution proceeds normally. This pausing and re-starting can create a vulnerability known as "re-entrancy**".
 
-## 
+## Layer and scalability
 
+### Layer 1
 
+> **Layer 1 is the base blockchain**. Ethereum and Bitcoin are both layer 1 blockchains because they are the **underlying foundation** that various layer 2 networks build on top of. Examples of layer 2 projects include "rollups" on Ethereum and the Lightning Network on top of Bitcoin. All user transaction activity on these layer 2 projects can ultimately settle back to the layer 1 blockchain.
 
+### Layer 2
 
+> Layer 2 (L2) is a collective term to describe a specific set of Ethereum scaling solutions. **A layer 2 is a separate blockchain that extends Ethereum** and inherits the security guarantees of Ethereum.
 
+- Layer 2: the superset blockchain of Ethereum
+
+> Layer 2 projects will post their transaction data onto Ethereum, relying on Ethereum for data availability.
+
+### Why layer 2? 
+
+> Ethereum has reached the network's current capacity with 1+ million transactions per dayand high demand for each of these transactions. The success of Ethereum and the demand to use it has caused gas prices to rise substantially. Therefore the need for scaling solutions has increased in demand as well. This is where layer 2 networks come in.
+
+> The main goal of scalability is to increase transaction speed (faster finality) and transaction throughput (higher transactions per second) without sacrificing decentralization or security.
+
+> Until sharding, Ethereum Mainnet (layer 1) is only able to process roughly 15 transactions per second. When demand to use Ethereum is high, the network becomes congested, which increases transaction fees and prices out users who cannot afford those fees. That is where layer 2 comes in to scale Ethereum today.
+
+### How layer 2 works? 
+
+> A layer 2 blockchain regularly communicates with Ethereum (by submitting bundles of transactions) in order to ensure it has similar security and decentralization guarantees. All this requires no changes to the layer 1 protocol (Ethereum). This lets layer 1 handle security, data availability, and decentralization, while layer 2s handles scaling. 
+
+> Layer 2s take the transactional burden away from the layer 1 and post finalized proofs back to the layer 1. By removing this transaction load from layer 1, the base layer becomes less congested, and everything becomes more scalable.
+
+#### Rollups
+
+> Rollups are currently the preferred layer 2 solution for scaling Ethereum. By using rollups, users can reduce gas fees by up to 100x compared to layer 1.
+
+Rollups bundle (or ’roll up’) hundreds of transactions into a single transaction on layer 1. This distributes the L1 transaction fees across everyone in the rollup, making it cheaper for each user. Rollup transactions get executed outside of layer 1 but the transaction data gets posted to layer 1. 
+
+> By posting transaction data onto layer 1, rollups inherit the security of Ethereum. There are two different approaches to rollups: optimistic and zero-knowledge - they differ primarily on how this transaction data is posted to L1.
+
+#### Risk of layer 2
+
+> Since layer 2 chains inherit security from Ethereum, **in an ideal world, they are as safe as L1 Ethereum**. However, many of the projects are still young and somewhat experimental. After years of research and development, many of the L2 technologies that will scale Ethereum launched in 2021. 
+
+> Many projects still have additional trust assumptions as they work to decentralize their networks. Always do your own research to decide if you're comfortable with any risks involved.
 
 ## Reference
-- [Ethereum.org](https://ethereum.org/en/)
+
+- [Ethereum.org](https://ethereum.org/en/layer-2/)
+- [Layer 2 - Ethereum for everyone](https://ethereum.org/en/)
