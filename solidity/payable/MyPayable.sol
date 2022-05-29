@@ -17,18 +17,22 @@ contract MyPayable {
         return amount;
     }
 
-    // method to send Ether 1
+    // method to send Ether 1: address.transfer, 2300 gas, throws error
     function transferEth(address payable _user) public payable {
         _user.transfer(msg.value); // msg.value : number of wei sent with the message
     }
     
-    // method to send Ether 2
+    // method to send Ether 2: address.send => 2300 gas, returns bool
     function sendEthe(address payable _user) public payable {
         bool isSent = _user.send(msg.value);
         require(isSent, "Sending Ether failed");
     }
     
-    // method to send Ether 3
+    // method to send Ether 3: address.call => forward all gas, returns bool
+    // Which method should you use? 
+    // call in combination with re-entrancy guard is the recommended method to use after December 2019.
+    // Guard against re-entrancy by making all state changes 
+    // before calling other contracts using re-entrancy guard modifier
     function callEth(address payable _user) public payable {
         (bool isSent, ) = _user.call{ value : msg.value }("");
         require(isSent);
