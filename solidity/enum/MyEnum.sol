@@ -12,11 +12,19 @@ contract MyEnum {
     Rarity public rarity;
     
     constructor() {
-        rarity = Rarity.rare; // default rarity is rare.
+        initSetup();
+    }
+
+    function initSetup() private {
+        rarity = Rarity.original; // default rarity is rare.
     }
 
     function makeRare() public {
         rarity = Rarity.rare;
+    }
+    
+    function getCurrentRarity() public view returns(Rarity) {
+        return rarity;
     }
 }
 
