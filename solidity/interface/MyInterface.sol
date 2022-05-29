@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// NatSpec is recommended for public interface.
+/// @title Solidity interface example
+/// @author @developerasun
+/// @notice A contract inheriting interface and overriding methods
+/// @dev Research abstract contract for more.
+
 // define an interface 
 interface ICounter {
     // function signature in interface => not implement. only siganture.
