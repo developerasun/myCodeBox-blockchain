@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MyModifier {
+contract InheritModifier {
+    // modifier is overridable
+    modifier changeMyNum() virtual {
+        _;
+    }
+}
+
+contract MyModifier is InheritModifier {
     uint256 public myNum = 0;
     bool paused = false;
     address public owner;
@@ -26,7 +33,13 @@ contract MyModifier {
         _;
     }
 
-    function setPause() public { 
+    // Overriding modifier
+    modifier changeMyNum() override {
+        myNum = 4;
+        _;
+    }
+
+    function setPause() public changeMyNum { 
         paused = !paused;
     }
 
