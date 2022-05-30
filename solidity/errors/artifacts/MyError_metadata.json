@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.0+commit.c7dfd78e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -24,6 +24,19 @@
 						"internalType": "uint8",
 						"name": "",
 						"type": "uint8"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "useExternal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "pure",
@@ -55,8 +68,10 @@
 			}
 		],
 		"devdoc": {
+			"author": "@developerasun",
 			"kind": "dev",
 			"methods": {},
+			"title": "error handling types in Solidity",
 			"version": 1
 		},
 		"userdoc": {
@@ -67,9 +82,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"myCodeBox-backend/myBlockchain/solidity/errors/MyError.sol": "MyError"
+			"solidity/errors/MyError.sol": "MyError"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -81,12 +96,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"myCodeBox-backend/myBlockchain/solidity/errors/MyError.sol": {
-			"keccak256": "0x5cd6038d6bd6004bffa63c9b7518766ad8d120a0ef16a6a22a26153d48c8b138",
+		"solidity/errors/MyError.sol": {
+			"keccak256": "0xf25ffb6f9549ac5a9caa96eb6f92c2d71fd3aa8c984bebfee98caf03ce9997b8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5ae9219770118e89b2fb29b4ab3054e0f1e9499812364d8b2e15a58d92872ca1",
-				"dweb:/ipfs/QmUJE3BPwEs8impeezyVonATgK7LtGC1n5jX7zLSyhD2eS"
+				"bzz-raw://08ca17dc99bebcd0c54d99eb0d1a6c2815146ea25b2c082fb21d2c26c1f0b267",
+				"dweb:/ipfs/QmY2PVL36DCcVw2CTVjKLP4V1KeFqWu7NA2AdkBVDxCXGh"
 			]
 		}
 	},
