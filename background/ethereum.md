@@ -122,59 +122,68 @@ On Ethereum, smart contracts are accessible and transparent – **like open APIs
 
 ### PROOF-OF-WORK PROTOCOL
 
-> Mining nodes have to spend a variable but substantial amount of energy, time, and computational power to produce a “certificate of legitimacy” for a block they propose to the network. This helps protect the network from spam/denial-of-service attacks, among other things, since certificates are expensive to produce.
+> **Mining nodes** have to spend a variable but substantial amount of energy, time, and computational power to **produce a “certificate of legitimacy” for a block they propose to the network**. This helps protect the network from spam/denial-of-service attacks, among other things, since certificates are expensive to produce.
 
 > Other miners who hear about a new block with a valid certificate of legitimacy must accept the new block as the canonical next block on the blockchain.
 
 > The exact amount of time needed for any given miner to produce this certificate is a random variable with high variance. This ensures that it is unlikely that two miners produce validations for a proposed next block simultaneously; when a miner produces and propagates a certified new block, they can be almost certain that the block will be accepted by the network as the canonical next block on the blockchain, without conflict (though there is a protocol for dealing with conflicts as well in the case that two chains of certified blocks are produced almost simultaneously).
 
 ### WHAT'S IN A BLOCK?
-1. timestamp – the time when the block was mined.
-1. blockNumber – the length of the blockchain in blocks.
+
+1. **timestamp** – the time when the block **was mined**.
+1. **blockNumber** – **the length of the blockchain** in blocks.
 1. baseFeePerGas - the minimum fee per gas required for a transaction to be included in the block.
 1. difficulty – the effort required to mine the block.
-1. mixHash – a unique identifier for that block.
+
+1. **mixHash** – **a unique identifier** for that block.
+1. **nonce** – a hash that, when **combined with the mixHash**, proves that the block has gone through proof-of-work
 1. parentHash – the unique identifier for the block that came before (this is how blocks are linked in a chain).
+
 1. transactions – the transactions included in the block.
 1. stateRoot – the entire state of the system: account balances, contract storage, contract code and account nonces are inside.
-1. nonce – a hash that, when combined with the mixHash, proves that the block has gone through proof-of-work
 
 ### BLOCK TIME
+
 > **Block time refers to the time it takes to mine a new block**. In **Ethereum, the average block time is between 12 to 14 seconds** and is evaluated after each block. The expected block time is set as a constant at the protocol level and is used to protect the network's security when the miners add more computational power. 
 
 > **The average block time gets compared with the expected block time**, and if the average block time is higher, then the difficulty is decreased in the block header. If the average block time is smaller, then the difficulty in the block header will be increased.
 
 ### BLOCK SIZE
+
 > A final important note is that **blocks themselves are bounded in size**. **Each block has a target size of 15 million gas** but the size of blocks will increase or decrease in accordance with network demands, up until the **block limit of 30 million gas** (2x target block size). 
 
 > **The total amount of gas expended by all transactions in the block must be less than the block gas limit**. This is important because it ensures that blocks can’t be arbitrarily large. **If blocks could be arbitrarily large, then less performant full nodes would gradually stop** being able to keep up with the network due to space and speed requirements.
 
 ### BENEFITS OF DAPP DEVELOPMENT
-> Zero downtime – Once the smart contract is deployed and on the blockchain, the network as a whole will always be able to serve clients looking to interact with the contract. Malicious actors, therefore, cannot launch denial-of-service attacks targeted towards individual dapps.
+
+> Zero downtime – Once the smart contract is deployed and on the blockchain, the **network as a whole will always be able to serve clients** looking to interact with the contract. Malicious actors, therefore, cannot launch denial-of-service attacks targeted towards individual dapps.
 
 > Privacy – You don’t need to provide real-world identity to deploy or interact with a dapp.
 
-> Resistance to censorship – No single entity on the network can block users from submitting transactions, deploying dapps, or reading data from the blockchain.
+> Resistance to censorship – **No single entity on the network can block users** from submitting transactions, deploying dapps, or reading data from the blockchain.
 
-> Complete data integrity – Data stored on the blockchain is immutable and indisputable, thanks to cryptographic primitives. Malicious actors cannot forge transactions or other data that has already been made public.
+> Complete **data integrity** – Data stored on the blockchain is immutable and indisputable, thanks to **cryptographic primitives**. Malicious actors cannot forge transactions or other data that has already been made public.
 
 > Trustless computation/verifiable behavior – smart contracts can be analyzed and are guaranteed to execute in predictable ways, without the need to trust a central authority. This is not true in traditional models; for example, when we use online banking systems, we must trust that financial institutions will not misuse our financial data, tamper with records, or get hacked.
 
 ### DRAWBACKS OF DAPP DEVELOPMENT
+
 > Maintenance – Dapps can be harder to maintain because **the code and data published to the blockchain are harder to modify**. It’s hard for developers to make updates to their dapps (or the underlying data stored by a dapp) once they are deployed - even if bugs or security risks are identified in an old version.
 
-> Performance overhead – There is a huge performance overhead, and scaling is really hard. To achieve the level of security, integrity, transparency, and reliability that Ethereum aspires to, every node runs and stores every transaction. On top of this, proof-of-work takes time as well. A back-of-the-envelope calculation puts the overhead at something like 1,000,000x that of standard computation currently.
+> Performance overhead – **There is a huge performance overhead**, and scaling is really hard. To achieve the level of security, integrity, transparency, and reliability that Ethereum aspires to, **every node runs and stores every transaction**. On top of this, proof-of-work takes time as well. A back-of-the-envelope calculation puts the overhead at something like 1,000,000x that of standard computation currently.
 
 > Network congestion – When one dapp uses too many computational resources, the entire network gets backed up. **Currently, the network can only process about 10-15 transactions per second**; if transactions are being sent in faster than this, the pool of unconfirmed transactions can quickly balloon.
 
-> User experience – It may be **harder to engineer user-friendly experiences** because the average end-user might find it too difficult to set up a tool stack necessary to interact with the blockchain in a truly secure fashion.
+> User experience – It may be **harder to engineer user-friendly experiences** because the average end-user might find it **too difficult to set up** a tool stack necessary to interact with the blockchain in a truly secure fashion.
 
-> Centralization – User-friendly and developer-friendly solutions built on top of the base layer of **Ethereum might end up looking like centralized services anyways**. For example, such services **may store keys or other sensitive information server-side, serve a frontend using a centralized server, or run important business logic on a centralized server** before writing to the blockchain. Centralization eliminates many (if not all) of the advantages of blockchain over the traditional model.
+> Centralization – User-friendly and developer-friendly solutions built on top of the base layer of **Ethereum might end up looking like centralized services anyways**. For example, such services may store keys or other sensitive information server-side, serve a frontend using a centralized server, or run important business logic on a centralized server before writing to the blockchain. Centralization eliminates many (if not all) of the advantages of blockchain over the traditional model.
 
 ## Web2 vs Web3
+
 > Web2 refers to the version of the internet most of us know today. An internet dominated by companies that provide services in exchange for your personal data. **Web3, in the context of Ethereum, refers to decentralized apps that run on the blockchain**. These are apps that allow anyone to participate without monetising their personal data.
 
 ### WEB3 BENEFITS
+
 > Many Web3 developers have chosen to build dapps because of Ethereum's inherent decentralization:
 
 1. Anyone who is on the network has permission to use the service – or in other words, permission isn't required.
@@ -197,26 +206,32 @@ On Ethereum, smart contracts are accessible and transparent – **like open APIs
 1. Cost – most successful dapps put very small portions of their code on the blockchain as it's expensive.
 
 ## SPIN UP YOUR OWN ETHEREUM NODE
-> Running your own node provides you various benefits, opens new possibilities, and helps to support the ecosystem. This page will guide you through spinning up your own node and taking part in validating Ethereum transactions.
+
+> Running your own node provides you various benefits, opens new possibilities, and helps to support the ecosystem. This page will guide you through spinning up your own node and **taking part in validating Ethereum transactions**.
 
 ### CHOOSING AN APPROACH
+
 > The first step in spinning up your node is choosing your approach. You have to choose the client (the software), the environment, and the parameters you want to start with. See all the available Mainnet clients.
 
 #### Client settings
-> Client implementations enable different sync modes and various other options. Sync modes represent different methods of downloading and validating blockchain data. Before starting the node, you should decide what network and sync mode to use. **The most important things to consider is the disk space and sync time client will need**.
 
-> All features and options can be found in the client's documentation. Various client configurations can be set by executing the client with the corresponding flags. You can get more information on flags from EthHub or the client documentation. **For testing purposes, you might prefer running a client on one of testnet networks**. See overview of supported networks
+> Client implementations enable **different sync modes** and various other options. Sync modes represent different methods of downloading and validating **blockchain data**. Before starting the node, you should decide what network and sync mode to use. The **most important** things to consider is the **disk space** and sync time client will need.
+
+> All features and options can be found in the client's documentation. Various client configurations can be set by executing the client with the corresponding flags. You can get more information on flags from EthHub or the client documentation. For testing purposes, you might prefer running a client on one of testnet networks. See overview of supported networks
 
 #### Environment and hardware
+
 > Ethereum clients are able to run on consumer grade computers and don't require special hardware, like mining for example. Therefore, you have various options for deploying based on your needs. To simplify, let's think about running a node on both a local physical machine and a cloud server:
 
 ##### Cloud
+
 1. Providers offer high server uptime, static public IP addresses
 1. Getting dedicated or virtual server can be more comfortable than building your own
 1. Trade off is trusting a third party - server provider
 1. Because of required storage size for full node, price of a rented server might get high
 
 ##### Own hardware
+
 1. More trustless and sovereign approach
 1. One time investment
 1. An option to buy preconfigured machines
@@ -227,48 +242,54 @@ On Ethereum, smart contracts are accessible and transparent – **like open APIs
 <details>
 <summary>Client software requirement</summary>
 
-> Before installing any client, please ensure your computer has enough resources to run it. Minimum and recommended requirements can be found below, **however the key part is the disk space**. **Syncing the Ethereum blockchain is very input/output intensive. It is best to have a solid-state drive (SSD). To run an Ethereum client on HDD, you will need at least 8GB of RAM to use as a cache.**
+> Before installing any client, please ensure your computer has enough resources to run it. Minimum and recommended requirements can be found below, however the key part is the disk space. **Syncing the Ethereum blockchain is very input/output intensive**. It is best to have a solid-state drive (SSD). To run an Ethereum client on HDD, you will need at least 8GB of RAM to use as a cache.
 
 ## Minimum requirements
+
 1. CPU with 2+ cores
 1. 4 GB RAM minimum with an SSD, 8 GB+ if you have an HDD
 1. 8 MBit/s bandwidth
 
 ## Recommended specification
+
 1. Fast CPU with 4+ cores
 1. 16 GB+ RAM
 1. Fast SSD with at least 500 GB free space
 1. 25+ MBit/s bandwidth
 </details>
 
-> A client might not even be able to sync current state on HDD and get stuck a few blocks behind Mainnet. You can run most of the clients on a single board computer with ARM. You can also use the Ethbian operating system for Raspberry Pi 4. This lets you [run a client by flashing the SD card. Based on your software and the hardware choices, the initial synchronization time and storage requirements may vary.
+> A client might not even be able to sync current state on HDD and get stuck a few blocks behind Mainnet. You can run most of the clients on a single board computer with ARM. You can also use the Ethbian operating system for Raspberry Pi 4. This lets you run a client by flashing the SD card. Based on your software and the hardware choices, the initial synchronization time and storage requirements may vary.
 
 > Be sure to check sync times and storage requirements. Also make sure your internet connection is not limited by a bandwidth cap. It's recommended to use an unmetered connection since initial sync and data broadcasted to the network could exceed your limit.
 
 ## INTRO TO ETHER
+
 > A cryptocurrency is a medium of exchange secured by a blockchain-based ledger. A medium of exchange is anything widely accepted as payment for goods and services, and **a ledger is a data store that keeps track of transactions**. Blockchain technology **allows users to make transactions on the ledger** without reliance upon a trusted third party to maintain the ledger.
 
-> The first cryptocurrency was Bitcoin, created by Satoshi Nakamoto. Since Bitcoin's release in 2009, people have made thousands of cryptocurrencies across many different blockchains.
+> The first cryptocurrency was Bitcoin, created by Satoshi Nakamoto. Since **Bitcoin's release in 2009**, people have made thousands of cryptocurrencies across many different blockchains.
 
 > Ethereum allows developers to create decentralized applications (dapps), which all share a pool of computing power. This shared pool is finite, so Ethereum needs a mechanism to determine who gets to use it. Otherwise, a dapp could accidentally or maliciously consume all network resources, which would block others from accessing it.
 
-> The ether cryptocurrency supports a pricing mechanism for Ethereum's computing power. When users want to make a transaction, they must pay ether to have their transaction recognized on the blockchain. These usage costs are known as gas fees, and the gas fee depends on the amount of computing power required to execute the transaction and the network-wide demand for computing power at the time.
+> The ether cryptocurrency supports a pricing mechanism for Ethereum's computing power. When users want to make a transaction, they must pay ether to have their transaction recognized on the blockchain. These usage costs are known as gas fees, and the **gas fee depends on the amount of computing power required** to execute the transaction and the network-wide demand for computing power at the time.
 
 > Therefore, even if a malicious dapp submitted an infinite loop, the transaction would eventually run out of ether and terminate, allowing the network to return to normal.
 
 ### MINTING ETHER
+
 > **Minting is the process in which new ether gets created on the Ethereum ledger**. The underlying Ethereum protocol creates the new ether, and it is not possible for a user to create ether.
 
 > **Ether is minted when a miner creates a block on the Ethereum** blockchain. As an incentive to miners, the protocol grants a reward in each block, incrementing the balance of an address set by the block's miner. The block reward has changed over time, and today it is **2 ETH per block**
 
 ### BURNING ETHER
+
 > As well as creating ether through block rewards, ether can get destroyed by a process called 'burning'. When ether gets burned, it gets removed from circulation permanently.
 
-> Ether burn occurs in every transaction on Ethereum. When users pay for their transactions, **a base gas fee**, set by the network according to transactional demand, **gets destroyed**. This, coupled with variable block sizes and a maximum gas fee, simplifies transaction fee estimation on Ethereum. **When network demand is high, blocks can burn more ether than they mint, effectively offsetting ether issuance**.
+> **Ether burn occurs in every transaction on Ethereum**. When users pay for their transactions, **a base gas fee**, set by the network according to transactional demand, **gets destroyed**. This, coupled with variable block sizes and a maximum gas fee, simplifies transaction fee estimation on Ethereum. **When network demand is high, blocks can burn more ether than they mint, effectively offsetting ether issuance**.
 
 > **Burning the base fee prevents various ways the miners could manipulate it otherwise**. For example, if miners got the base fee, they could include their own transactions for free and raise the base fee for everyone else. Alternatively, they could refund the base fee to some users off-chain, leading to a more opaque and complex transaction fee market.
 
 ### DENOMINATIONS OF ETHER
+
 > **Since many transactions on Ethereum are small, ether has several denominations** which may be referenced for smaller amounts. Of these denominations, **Wei and gwei are particularly important**.
 
 > **Wei is the smallest possible amount of ether**, and as a result, many technical implementations, such as the Ethereum Yellowpaper, will base all calculations in Wei.
@@ -278,16 +299,19 @@ On Ethereum, smart contracts are accessible and transparent – **like open APIs
 <img src="reference/wei-and-gwei.png" width=652 height=196 alt="ethereum denomitation" />
 
 ### TRANSFERRING ETHER
+
 > Each transaction on Ethereum contains a value field, which specifies the amount of ether to be transferred, denominated in wei, to send from the sender's address to the recipient address.
 
 > When the recipient address is a smart contract, this transferred ether may be used to pay for gas when the smart contract executes its code.
 
 ### QUERYING ETHER
+
 > Users can **query the ether balance of any account** by inspecting the account's **balance field**, which shows ether holdings denominated in wei.
 
-> Etherscan is a popular tool to inspect address balances via a web-based application. For example, this Etherscan page shows the balance for the Ethereum Foundation.
+> **Etherscan** is a popular tool to inspect **address balances** via a web-based application. For example, this Etherscan page shows the balance for the Ethereum Foundation.
 
 ## ETHEREUM ACCOUNTS
+
 > An Ethereum account is an entity with an ether (ETH) balance that can send transactions on Ethereum. Accounts can be user-controlled or deployed as smart contracts.
 
 ### ACCOUNT TYPES
@@ -302,6 +326,7 @@ On Ethereum, smart contracts are accessible and transparent – **like open APIs
 1. Interact with deployed smart contracts
 
 #### Key differences
+
 Externally-owned
 
 1. Creating an account **costs nothing**
@@ -310,11 +335,12 @@ Externally-owned
 
 Contract
 
-1. Creating a contract has a cost because you're **using network storage**
+1. Creating a **contract has a cost** because you're **using network storage**
 1. Can only send transactions in response to receiving a transaction
 1. Transactions from an external account to a contract account **can trigger code** which can execute many different actions, such as transferring tokens or even creating a new contract
 
 ### AN ACCOUNT EXAMINED
+
 > Ethereum accounts have four fields:
 
 1. nonce – A counter that indicates the number of transactions sent from the account. This ensures transactions are only processed once.
@@ -329,18 +355,23 @@ Contract
 
 > An account is made up of a cryptographic pair of keys: public and private. They help prove that a transaction was actually signed by the sender and **prevent forgeries(nonrepudiation)**. **Your private key is what you use to sign transactions**, so it grants you custody over the funds associated with your account. **You never really hold cryptocurrency, you hold private keys** – the **funds** are always **on Ethereum's ledger**.
 
-> This prevents malicious actors from broadcasting fake transactions because you can always verify the sender of a transaction.
+> This prevents malicious actors from broadcasting fake transactions because you **can always verify the sender of a transaction**.
 
-> If Alice wants to send ether from her own account to Bob’s account, Alice needs to create a transaction request and send it out to the network for verification. Ethereum’s usage of public-key cryptography ensures that Alice can prove that she originally initiated the transaction request. Without cryptographic mechanisms, a malicious adversary Eve could simply publicly broadcast a request that looks something like “send 5 ETH from Alice’s account to Eve’s account,” and no one would be able to verify that it didn’t come from Alice.
+> If Alice wants to send ether from her own account to Bob’s account, Alice needs to create **a transaction request** and send it out to the network for **verification**. Ethereum’s usage of public-key cryptography ensures that Alice can prove that she originally initiated the transaction request. Without cryptographic mechanisms, a malicious adversary Eve could simply publicly broadcast a request that looks something like “send 5 ETH from Alice’s account to Eve’s account,” and no one would be able to verify that it didn’t come from Alice.
 
 ### ACCOUNT CREATION
+
 > When you want to create an account most libraries will generate you a random private key. **A private key is made up of 64 hex characters** and can be encrypted with a password.
 
 ```
+# private key length: 64
 fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd036415f
 ```
 
-> The public key is generated from the private key using the Elliptic Curve Digital Signature Algorithm. You get a public address for your account by taking the last 20 bytes of the Keccak-256 hash of the public key and adding 0x to the beginning.
+> The **public key is generated from the private key** using the Elliptic Curve Digital Signature Algorithm. You get a public address for your account by taking the last 20 bytes of the Keccak-256 hash of the public key and adding 0x to the beginning.
+
+- public key = private key + ECDS algorithm
+- public address = public key + Keccak-256 function + 0x
 
 > Here's an example of creating an account in the console using GETH's personal_newAccount
 
@@ -356,14 +387,18 @@ Repeat passphrase:
 
 > It is **possible to derive new public keys from your private key** but you cannot derive a private key from public keys. This means it's **vital to keep a private key safe** and, as the name suggests, PRIVATE.
 
+- public key <=====(create)==== private key
+- public key ======(can't create)====> private key
+
 > You **need a private key to sign messages and transactions which output a signature**. Others can then take the signature to derive your public key, proving the author of the message. In your application, you can use a javascript library to send transactions to the network.
 
-- Private key => public key
-- Private key => signature
-- Signature => derive public key for auth
+- private key ====(create)====> public key
+- private key ====(sign)====> transaction & message ====(becomes)====> signature
+- signature ====(derive)====> public key ====(prove)====> checking tx sender
 
 ### CONTRACT ACCOUNTS
-> Contract accounts also have a 42 character hexadecimal address:
+
+> **Contract** accounts also have **a 42 character hexadecimal** address:
 
 ```
 0x06012c8cf97bead5deae237070f9587f8e7a266d
@@ -371,58 +406,46 @@ Repeat passphrase:
 
 > The contract address is usually given when a contract is deployed to the Ethereum Blockchain. The address comes from the creator's address and the number of transactions sent from that address (the “nonce”).
 
+- private key: 64 hex characters
+- account: 42 hex characters
+- contract: 42 hex characters
 
+## Blockchain client
 
-
-
-
-## Synchronization modes
-> To follow and verify current data in the network, the Ethereum client needs to sync with the latest network state. This is done by downloading data from peers, cryptographically verifying their integrity, and building a local blockchain database.
+> To follow and verify current data in the network, **the Ethereum client needs to sync with the latest network state**. This is done by downloading data from peers, cryptographically verifying their integrity, and building a local blockchain database.
 
 > Synchronization modes represent different approaches to this process with various trade-offs. Clients also vary in their implementation of sync algorithms. Always refer to the official documentation of your chosen client for specifics on implementation.
 
-## Overview of strategies
-> General overview of synchronization approaches used in Mainnet ready clients:
-
 ### Full sync {#full-sync}
-Full sync downloads all blocks (including headers, transactions, and receipts) and generates the state of the blockchain incrementally by executing every block from genesis.
 
-Minimizes trust and offers the highest security by verifying every transaction.
+> Full sync downloads all blocks (including headers, transactions, and receipts) and generates the state of the blockchain incrementally by executing every block from genesis.
+
+> Minimizes trust and offers the highest security by verifying every transaction.
 With an increasing number of transactions, it can take days to weeks to process all transactions.
 
 ### Fast sync
-Fast sync downloads all blocks (including headers, transactions, and receipts), verifies all headers, downloads the state and verifies it against the headers.
 
-Relies on the security of the consensus mechanism.
-Synchronization takes only a few hours.
+> Fast sync downloads all blocks (including headers, transactions, and receipts), verifies all headers, downloads the state and verifies it against the headers. Relies on the security of the consensus mechanism. Synchronization takes only a few hours.
 
 ### Light sync
-Light client mode downloads all block headers, block data, and verifies some randomly. Only syncs tip of the chain from the trusted checkpoint.
 
-Gets only the latest state while relying on trust in developers and consensus mechanism.
-Client ready to use with current network state in a few minutes.
+> Light client mode downloads all block headers, block data, and verifies some randomly. Only syncs tip of the chain from the trusted checkpoint. Gets only the latest state while relying on trust in developers and consensus mechanism. Client ready to use with current network state in a few minutes.
 
 ### Snap sync
-Implemented by Geth. Using dynamic snapshots served by peers retrieves all the account and storage data without downloading intermediate trie nodes and then reconstructs the Merkle trie locally.
 
-Fastest sync strategy developed by Geth, currently its default
-Saves a lot of disk usage and network bandwidth without sacrificing security.
+> Implemented by **Geth**. Using **dynamic snapshots** served by peers retrieves all the account and storage data **without downloading intermediate trieI** nodes and then reconstructs the Merkle trie locally. Fastest sync strategy developed by Geth, currently its default. It **saves a lot of disk usage and network bandwidth** without sacrificing security.
 
 ### Warp sync
-Implemented by OpenEthereum. Nodes regularly generate a consensus-critical state snapshot and any peer can fetch these snapshots over the network, enabling a fast sync from this point.
 
-Fastest and default sync mode of OpenEthereum relies on static snapshots served by peers.
-Similar strategy as snap sync but without certain security benefits.
-More on Warp
+> Implemented by OpenEthereum. Nodes regularly generate a consensus-critical state snapshot and any peer can fetch these snapshots over the network, enabling a fast sync from this point. Fastest and default sync mode of OpenEthereum relies on static snapshots served by peers. Similar strategy as snap sync but without certain security benefits.
 
 ### Beam sync
-Implemented by Nethermind and Trinity. Works like fast sync but also downloads the data needed to execute latest blocks, which allows you to query the chain within the first few minutes from starting.
 
-Syncs state first and enables you to query RPC in a few minutes.
-Still in development and not fully reliable, background sync is slowed down and RPC responses might fail
+> Implemented by Nethermind and Trinity. Works like fast sync but also downloads the data needed to execute latest blocks, which allows you to query the chain within the first few minutes from starting. Syncs state first and enables you to query RPC in a few minutes. Still in development and not fully reliable, background sync is slowed down and RPC responses might fail
 
 ## Ethereum security and scam prevention
-> With interest in cryptocurrencies growing, learning best practices when using cryptocurrency is essential. Crypto can be fun and exciting, but there are also serious risks. If you put in this small amount of upfront work, you can mitigate these risks.
+
+> With interest in cryptocurrencies growing, **learning best practices when using cryptocurrency is essential**. Crypto can be fun and exciting, but there are also serious risks. If you put in this small amount of upfront work, you can mitigate these risks.
 
 > Over 80% of account hacks are a result of weak or stolen passwords. A long combination of characters, numbers and symbols is best to keep your accounts secure.
 
@@ -431,95 +454,112 @@ Still in development and not fully reliable, background sync is slowed down and 
 > Another common mistake is using passwords that can be easily guessed or found out through social engineering. Including your mother's maiden name, the names of your children or pets, or dates of birth in your password is not secure and will increase the risk of your password getting hacked.
 
 ## Network
-> Since Ethereum is a protocol, this means there can be multiple independent "networks" conforming to this protocol that do not interact with each other.
+
+> Since **Ethereum is a protocol**, this means there can be **multiple independent "networks"** conforming to this protocol that do not interact with each other.
 
 > Networks are different Ethereum environments you can access for development, testing, or production use cases. Your Ethereum account will work across the different networks but your account balance and transaction history won't carry over from the main Ethereum network. For testing purposes, it's useful to know which networks are available and how to get testnet ETH so you can play around with it.
 
 ### Mainnet
+
 > Mainnet is the primary public Ethereum production blockchain, where actual-value transactions occur on the distributed ledger. When people and exchanges discuss ETH prices, they're talking about Mainnet ETH.
 
 ### Testnet
+
 > In addition to Mainnet, there are public testnets. These are networks used by protocol developers or smart contract developers to test both protocol upgrades as well as potential smart contracts in a production-like environment before deployment to Mainnet. Think of this as an analog to production versus staging servers.
 
-> It’s generally important to test any contract code you write on a testnet before deploying to the Mainnet. If you're building a dapp that integrates with existing smart contracts, most projects have copies deployed to testnets that you can interact with.
+> It’s **generally important to test any contract code** you write on a testnet **before deploying to the Mainnet**. If you're building a dapp that integrates with existing smart contracts, most projects have copies deployed to testnets that you can interact with.
 
-> Most testnets use a proof-of-authority consensus mechanism. This means a small number of nodes are chosen to validate transactions and create new blocks – staking their identity in the process. It's hard to incentivise mining on a proof-of-work testnet which can leave it vulnerable.
+> **Most testnets** use a proof-of-authority consensus mechanism. This means **a small number of nodes** are chosen to **validate transactions** and create new blocks – staking their identity in the process. It's hard to incentivise mining on a proof-of-work testnet which can leave it vulnerable.
 
-> ETH on testnets has no real value; therefore, there are no markets for testnet ETH. Since you need ETH to actually interact with Ethereum, most people get testnet ETH from faucets. Most faucets are webapps where you can input an address which you request ETH to be sent to.
+> ETH on testnets has no real value; therefore, there are no markets for testnet ETH. Since you need ETH to actually interact with Ethereum, most people get testnet ETH from faucets. **Most faucets are webapps where you can input an address** which you request ETH to be sent to.
 
 ### PRIVATE NETWORKS
+
 > An Ethereum network is a private network if its nodes are not connected to a public network (i.e. Mainnet or a testnet). In this context, **private only means reserved or isolated**, rather than protected or secure.
 
-> To develop an Ethereum application, you'll want to run it on a private network to see how it works before deploying it. Similar to how you create a local server on your computer for web development, you can create a local blockchain instance to test your dapp. This allows for much faster iteration than a public testnet.
+> To develop an Ethereum application, you'll want to run it on a private network to see how it works before deploying it. Similar to how you create a local server on your computer for web development, **you can create a local blockchain instance to test your dapp**. This allows for much faster iteration than a public testnet.
 
-#### DEVELOPMENT NETWORKS
+### DEVELOPMENT NETWORKS
+
 > When building an Ethereum application with smart contracts, you'll want to run it on a local network to see how it works before deploying it.
 
 > Similar to how you might run a local server on your computer for web development, you can use a development network to create a local blockchain instance to test your dapp. These Ethereum development networks provide features that allow for much faster iteration than a public testnet (for instance you don’t need to deal with acquiring ETH from a testnet faucet).
 
-> Development networks are essentially Ethereum clients (implementations of Ethereum) designed specifically for local development.
+> **Development networks are essentially Ethereum clients** (implementations of Ethereum) designed specifically **for local development**.
 
-#### Consortium networks
+### Consortium networks
+
 > The consensus process is controlled by a pre-defined set of nodes that are trusted. For example, a private network of known academic institutions that each govern a single node, and blocks are validated by a threshold of signatories within the network.
 
 > If a public Ethereum network is like the public internet, you can think of a consortium network as a private intranet.
 
 ## CONSENSUS MECHANISMS
+
 > When it comes to **blockchains like Ethereum, which are, in essence, distributed databases**, the network's nodes **must reach an agreement on the network's current state**. This agreement is achieved using consensus mechanisms.
 
 > Although consensus mechanisms aren't directly related to building a dapp, understanding them will illuminate concepts relevant to you and your users' experience, like gas prices and transaction times.
 
 ### WHAT IS CONSENSUS?
+
 > By consensus, we mean that a general agreement has been reached. Consider a group of people going to the cinema. If there is not a disagreement on a proposed choice of film, then a consensus is achieved. In the extreme case the group will eventually split.
 
 > In regards to **blockchain**, the process is formalized, and **reaching consensus means that at least 51% of the nodes on the network agree** on the next global state of the network.
 
 ### WHAT IS A CONSENSUS MECHANISM?
+
 > Consensus mechanisms (also known as consensus protocols or consensus algorithms) allow distributed systems (networks of computers) to work together and stay secure.
 
 > For decades, these mechanisms have been used to establish consensus among database nodes, application servers, and other enterprise infrastructure. In recent years, new consensus mechanisms have been invented to allow cryptoeconomic systems, such as Ethereum, **to agree on the state of the network**.
 
 > A consensus mechanism in a cryptoeconomic system also helps prevent certain kinds of economic attacks. **In theory, an attacker can compromise consensus by controlling 51% of the network. Consensus mechanisms are designed to make this "51% attack" unfeasible**. Different mechanisms are engineered to solve this security problem in different ways.
 
-### TYPES OF CONSENSUS MECHANISMS
-#### Proof-of-work
+## TYPES OF CONSENSUS MECHANISMS
+### Proof-of-work
 > Ethereum, like Bitcoin, currently uses a proof-of-work (PoW) consensus protocol.
 
-#### Block creation
+- Block creation
 > **Proof-of-work is done by miners**, who compete to create new blocks full of processed transactions. **The winner shares the new block with the rest of the network and earns some freshly minted ETH**. The race is won by whosever computer can solve a math puzzle fastest – this produces the cryptographic link between the current block and the block that went before. Solving this puzzle is the work in "proof-of-work".
 
-#### Security
-> **The network is kept secure by the fact that you'd need 51% of the network's computing power to defraud the chain**. This would require such huge investments in equipment and energy; you're likely to spend more than you'd gain.
+- Security
+> The network is kept secure by the fact that you'd need 51% of the network's computing power to defraud the chain. This would require such huge investments in equipment and energy; you're likely to spend more than you'd gain.
 
-#### Proof-of-stake
+### Proof-of-stake
+
 > Ethereum has plans to upgrade to a proof-of-stake (PoS) consensus protocol.
 
-#### Block creation
-> **Proof-of-stake is done by validators who have staked ETH** to participate in the system. **A validator is chosen at random to create new blocks**, share them with the network and earn rewards. Instead of needing to do intense computational work, you simply need to have staked your ETH in the network. This is what incentivises healthy network behaviour.
+- Block creation
+> **Proof-of-stake is done by validators who have staked ETH** to participate in the system. A validator is **chosen at random** to create new blocks**, share them with the network and earn rewards. Instead of needing to do intense computational work, you **simply need to have staked your ETH** in the network. This is what incentivises healthy network behaviour.
 
-#### Security
-> **A proof-of-stake system is kept secure by the fact that you'd need 51% of the total staked ETH to defraud the chain**. And that your stake is slashed for malicious behaviour.
+- Security
+> A proof-of-stake system is kept secure by the fact that you'd **need 51% of the total staked ETH** to defraud the chain. And that your stake is slashed for malicious behaviour.
 
-#### Sybil resistance & chain selection
+- PoW: needs 51% of whole network's computing power to hack 
+- PoS: needs 51% of whole network's a staked ETH to hack
+
+### Sybil resistance & chain selection
+
 > Now technically, **proof-of-work** and **proof-of-stake** are not consensus protocols by themselves, but they are often referred to as such for simplicity. **They are actually Sybil resistance mechanisms and block author selectors**; they are a way to decide who is the author of the latest block. It's this Sybil resistance mechanism combined with a chain selection rule that makes up a true consensus mechanism.
 
 - **PoW, PoS => Sybil resistance mechanisms and block author(creator) selector**
 
-> Sybil resistance measures how a protocol fares against a Sybil attack. Sybil attacks are when one user or group pretends to be many users. Resistance to this type of attack is essential for a decentralized blockchain and enables miners and validators to be rewarded equally based on resources put in. Proof-of-work and proof-of-stake protect against this by making users expend a lot of energy or put up a lot of collateral. These protections are an economic deterrent to Sybil attacks.
+> Sybil resistance measures how a protocol fares against a **Sybil attack**. Sybil attacks are when one user or group **pretends to be many users**. Resistance to this type of attack is essential for a decentralized blockchain and enables miners and validators to be rewarded equally based on resources put in. Proof-of-work and proof-of-stake protect against this by making users expend a lot of energy or put up a lot of collateral. These protections are an economic deterrent to Sybil attacks.
 
 > A chain selection rule is used to decide which chain is the "correct" chain. **Ethereum and Bitcoin currently use the "longest chain" rule**, which means that whichever blockchain is the longest will be the one the rest of the nodes accept as valid and work with. For proof-of-work chains, the longest chain is determined by the chain's total cumulative proof-of-work difficulty.
 
 > The combination of proof-of-work and longest chain rule is known as "**Nakamoto Consensus**."
 
 ## INTRODUCTION TO SMART CONTRACTS
+
 ### WHAT IS A SMART CONTRACT?
+
 > A "smart contract" is simply a program that runs on the Ethereum blockchain. It's a collection of code (its functions) and data (its state) that resides at a specific address on the Ethereum blockchain.
 
-> Smart contracts are a type of Ethereum account. This means they have a balance and they can send transactions over the network. However they're not controlled by a user, instead they are deployed to the network and run as programmed. 
+> Smart contracts are a type of **Ethereum account**. This means **they have a balance** and they can **send transactions** over the network. However they're not controlled by a user, instead they are deployed to the network and run as programmed. 
 
 > User accounts can then interact with a smart contract by submitting transactions that execute a function defined on the smart contract. Smart contracts can define rules, like a regular contract, and automatically **enforce them via the code. Smart contracts cannot be deleted by default, and interactions with them are irreversible**.
 
 ### A DIGITAL VENDING MACHINE
+
 > Perhaps the best metaphor for a smart contract is a vending machine, as described by Nick Szabo. With the right inputs, a certain output is guaranteed.
 
 > A smart contract, like a vending machine, has logic programmed into it. Here's a simple example of how this vending machine might look like as a smart contract:
@@ -559,19 +599,23 @@ contract VendingMachine {
 ```
 
 ### PERMISSIONLESS
-> Anyone can write a smart contract and deploy it to the network. You just need to learn how to code in a smart contract language, and have enough ETH to deploy your contract. **Deploying a smart contract is technically a transaction**, so you need to pay your Gas in the same way that you need to pay gas for a simple ETH transfer. Gas costs for contract deployment are far higher, however.
+
+> Anyone can write a smart contract and deploy it to the network. You just need to learn how to code in a smart contract language, and have enough ETH to deploy your contract. **Deploying a smart contract is technically a transaction**, so you need to pay your Gas in the same way that you need to pay gas for a simple ETH transfer. Gas **costs** for **contract deployment** are far **higher**, however.
 
 > Ethereum has developer-friendly languages for writing smart contracts: 1) Solidity 2) Vyper
 
 ### COMPOSABILITY
-> Smart contracts are public on Ethereum and can be thought of as open APIs. That means you can call other smart contracts in your own smart contract to greatly extend what's possible. Contracts can even deploy other contracts.
+
+> Smart contracts are public on Ethereum and can be thought of as open APIs. That means you can **call other smart contracts in your own smart contract** to greatly extend what's possible. Contracts can even deploy other contracts.
 
 ### LIMITATIONS
+
 > Smart contracts alone cannot get information about "real-world" events because **they can't send HTTP requests**. This is by design. Relying on external information could jeopardise consensus, which is important for security and decentralization.
 
 > There are ways to get around this using oracles. Another limitation of smart contracts is the maximum contract size. **A smart contract can be a maximum of 24KB or it will run out of gas**. This can be circumnavigated by using The Diamond Pattern.
 
 ## ANATOMY OF SMART CONTRACTS
+
 > A smart contract is a program that runs at an address on Ethereum. They're made up of data and functions that can execute upon receiving a transaction. Here's an overview of what makes up a smart contract.
 
 > Make sure you've read about smart contracts first. This document assumes you're already familiar with programming languages such as JavaScript or Python.
@@ -628,7 +672,7 @@ contract SimpleStorage {
 ## COMPILING SMART CONTRACTS
 > You need to compile your contract so that your web app and the Ethereum virtual machine (EVM) can understand it.
 
-> For the EVM to be able to run your contract it needs to be in bytecode. Compilation turns this:
+> For the EVM to be able **to run your contract** it needs to be **in bytecode**. Compilation turns this:
 
 ```solidity
 pragma solidity 0.4.24;
@@ -648,11 +692,13 @@ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x
 ```
 
 ### WEB APPLICATIONS
+
 > The compiler will also produce the Application Binary Interface (ABI) which you need in order for your application to understand the contract and call the contract's functions.
 
-> The ABI is a JSON file that describes the deployed contract and its smart contract functions. This helps bridge the gap between web2 and web3. A JavaScript client library will read the ABI in order for you to call on your smart contract in your web app's interface.
+> The ABI is a JSON file that describes the deployed contract and its smart contract functions. This helps bridge the gap between web2 and web3. **A JavaScript client library will read the ABI** in order for you to call on your smart contract in your web app's interface.
 
 ## SMART CONTRACT SECURITY
+
 > Smart contract code usually cannot be changed to patch security flaws, assets that have been stolen from smart contracts are irrecoverable, and stolen assets are extremely difficult to track. The total of amount of value stolen or lost due to smart contract issues is easily over $1B. Some of the larger due to smart contract coding errors include:
 
 1. Parity multi-sig issue #1 - **$30M lost**
@@ -660,9 +706,11 @@ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x
 1. TheDAO hack, 3.6M ETH! Over **$1B** in today's ETH prices
 
 ### HOW TO WRITE MORE SECURE SMART CONTRACT CODE
+
 > Before launching any code to Mainnet, it is **important to take sufficient precaution to protect anything of value your smart contract** is entrusted with. In this article, we will discuss a few specific attacks, provide resources to learn about more attack types, and leave you with some basic tooling and best practices to ensure your contracts function correctly and securely.
 
 ### AUDITS ARE NOT A SILVER BULLET
+
 > Years prior, the tooling for writing, compiling, testing, and deploying smart contracts was very immature, leading many projects to write Solidity code in haphazard ways, throw it over a wall to an auditor who would investigate the code to ensure it functions securely and as expected. 
 
 > In 2020, the development processes and tooling that support writing Solidity is significantly better; leveraging these best practices not only ensures your project is easier to manage, it is a vital part of your project's security. 
@@ -670,6 +718,7 @@ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x
 > An audit at the end of writing your smart contract is no longer sufficient as the only security consideration your project makes. Security starts before you write your first line of smart contract code, security starts with proper design and development processes.
 
 ### SMART CONTRACT DEVELOPMENT PROCESS
+
 > At a minimum, you should do following things when developing smart contracts. 
 
 1. All code stored in a **version control system**, such as git
@@ -683,9 +732,11 @@ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x
 > There is much more to be said for development process, but these items are a good place to start. For more items and detailed explanations, see the process quality checklist provided by DeFiSafety. DefiSafety is an unofficial public service publishing reviews of various large, public Ethereum dApps.
 
 ## ATTACKS AND VULNERABILITIES
+
 > Now that you are writing Solidity code using an efficient development process, let's look at some common Solidity vulnerabilities to see what can go wrong.
 
 ### Re-entrancy
+
 > Re-entrancy is one of **the largest and most significant security issue** to consider when developing Smart Contracts. While the EVM cannot run multiple contracts at the same time, **a contract calling a different contract pauses the calling contract's execution and memory state until the call returns, at which point execution proceeds normally. This pausing and re-starting can create a vulnerability known as "re-entrancy**".
 
 ## Layer and scalability
