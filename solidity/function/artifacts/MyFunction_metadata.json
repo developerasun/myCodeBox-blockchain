@@ -94,7 +94,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"myCodeBox-backend/myBlockchain/solidity/funciton/MyFunction.sol": "MyFunction"
+			"solidity/function/MyFunction.sol": "MyFunction"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -108,12 +108,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"myCodeBox-backend/myBlockchain/solidity/funciton/MyFunction.sol": {
-			"keccak256": "0x5c904852ee5511b592b819f7ccb8fcaeaee765279d847e6e8327894f17a61808",
+		"solidity/function/MyFunction.sol": {
+			"keccak256": "0xdee3fb4e4d393f920c4e825143bd589aafd7ea4778bc75187dee916b719dd3a3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cc93f069b7febc638e2e206215e80890b4a70b5c397a29c5d7cae63fd5cf5d7b",
-				"dweb:/ipfs/QmRwX3VGcZCYJcWW1iRqT3ywb37Fhp1hwP9BL9scJszsaP"
+				"bzz-raw://9a04292d4f4a9bfbd7fad382c529cafa1dc5bb9047a4109c095f7780e79bcfeb",
+				"dweb:/ipfs/QmTKeXnSs2UytGKFtMcBoePnaENe2Sw9pDENr3rHwBtotL"
 			]
 		}
 	},
