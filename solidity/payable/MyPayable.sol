@@ -7,6 +7,11 @@ pragma solidity ^0.8.0;
 2. The amount of Ether will be moved from msg.sender to receiver. Check blockchain logs in above network.
 3. Among send, transfer, call methods, call with reentrancy guard is recommended for Ether transfer 
 because of gas cost and security.
+
+e.g.
+- contract: 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6
+- from: hardhat user1: msg.sender(account): 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+- to: hardhat user2: 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
 */
 
 contract MyPayable {
