@@ -11,7 +11,7 @@ class App extends Component {
     try {
       // Get network provider and web3 instance.
       const web3 = await getWeb3(); // provided by truffle
-    
+      
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
 
@@ -25,7 +25,7 @@ class App extends Component {
 
       // add the deployed contract address
       // check deployed contract address in truffle migrate
-      instance.options.address = "0x1c26879ef00Ee67A83bB4d3091eCAbaC38338A6b"
+      // instance.options.address = "0x70Ea0C3797cf8e9A09A0E0A614e675942281D92E"
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.

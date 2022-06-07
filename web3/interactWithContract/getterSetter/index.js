@@ -1,5 +1,7 @@
 const Web3 = require('web3')
 const PROVIDER = require('../../config/key.js')
+
+// import json file is supported in common js
 const myContract = require('./build/contracts/MyContract.json')
 
 const init = async () => {
@@ -21,6 +23,7 @@ const init = async () => {
         })
         
         // call getData method in the contract
+        // contract.methods.yourMethod.call : read only function
         const data = await contract.methods.getData().call()
         console.log(data)
     } catch (err) {
