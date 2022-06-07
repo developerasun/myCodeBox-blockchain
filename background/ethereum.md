@@ -781,6 +781,47 @@ Rollups bundle (or ’roll up’) hundreds of transactions into a single transac
 
 > Many projects still have additional trust assumptions as they work to decentralize their networks. Always do your own research to decide if you're comfortable with any risks involved.
 
+## GAS AND FEES
+
+### PRIOR TO LONDON
+
+> The way transaction fees on the Ethereum network were calculated changed with the London Upgrade of August 2021. Here is a recap of how things used to work:
+
+> Let's say Alice had to pay Bob 1 ETH. In the transaction, the gas limit is 21,000 units, and the gas price is 200 gwei.
+
+> Total fee would have been: Gas units (limit) * Gas price per unit i.e 21,000 * 200 = 4,200,000 gwei or 0.0042 ETH(around 10 dollars as of June, 2022)
+
+> When Alice sent the money, 1.0042 ETH would be deducted from Alice's account. Bob would be credited 1.0000 ETH. Miner would receive 0.0042 ETH.
+
+- gas unit(gas limit, user sets this) * gas price per unit(in gwei, check it in website like [Ethereum gas tracker](https://etherscan.io/gastracker)) 
+
+- once you find out the total number of gwei, it needs to be converted to the one of the FIAT(USD, ... etc)
+
+### AFTER LONDON
+
+> Starting with the **London network upgrade**, **every block has a base fee**, the minimum price per unit of gas for inclusion in this block, **calculated by the network** based on demand for block space. As the base fee of the transaction fee is burnt, users are **also expected to set a tip (priority fee)** in their transactions. The tip compensates miners for executing and propagating user transactions in blocks and **is expected to be set automatically by most wallets**.
+
+- gas unit(gas limit) * (base fee + tip)
+
+> Let's say Jordan has to pay Taylor 1 ETH. In the transaction, the gas limit is 21,000 units and the base fee is 100 gwei. Jordan includes a tip of 10 gwei.
+
+- 21000 * (100+10) = 2,310,000 gwei or 0.00231 ETH. (around 6 dollars as of June, 2022)
+
+> When Jordan sends the money, 1.00231 ETH will be deducted from Jordan's account. Taylor will be credited 1.0000 ETH. Miner receives the tip of 0.00021 ETH. Base fee of 0.0021 ETH is burned.
+
+> Additionally, Jordan can also set a max fee (maxFeePerGas) for the transaction. The difference between the max fee and the actual fee is refunded to Jordan, i.e. refund = max fee - (base fee + priority fee). Jordan can set a maximum amount to pay for the transaction to execute and not worry about overpaying "beyond" the base fee when the transaction is executed
+
+### BlOCK SIZE
+
+> Before the London Upgrade, Ethereum had fixed-sized blocks. In times of high network demand, these blocks operated at total capacity. As a result, users often had to wait for high demand to reduce to get included in a block, which led to a poor user experience.
+
+> The London Upgrade introduced variable-size blocks to Ethereum. Each block has a target size of 15 million gas, but the size of blocks will increase or decrease in accordance with network demand, up until the block limit of 30 million gas (2x the target block size). The protocol achieves an equilibrium block size of 15 million on average through the process of tâtonnement. This means if the block size is greater than the target block size, the protocol will increase the base fee for the following block. Similarly, the protocol will decrease the base fee if the block size is less than the target block size. The amount by which the base fee is adjusted is proportional to how far the current block size is from the target.
+
+### Calculating fees
+
+> One of the main benefits of the London upgrade is improving the user's experience when setting transaction fees. For wallets that support the upgrade, instead of explicitly stating how much you are willing to pay to get your transaction through, wallet providers will automatically set a recommended transaction fee (base fee + recommended priority fee) to reduce the amount of complexity burdened onto their users.
+
+
 ## Reference
 
 - [Ethereum.org](https://ethereum.org/en/layer-2/)
