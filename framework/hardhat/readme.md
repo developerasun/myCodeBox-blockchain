@@ -292,6 +292,30 @@ solidity: {
   },
 ```
 
+##### Multiple Solidity version
+> Hardhat supports projects that use different, incompatible versions of solc. For example, if you have a project where some files use Solidity 0.5 and others use 0.6, you can configure Hardhat to use compiler versions compatible with those files like this:
+
+```js
+module.exports = {
+  solidity: {
+    compilers: [
+      {
+        version: "0.5.5",
+      },
+      {
+        version: "0.6.7",
+        settings: {},
+      },
+    ],
+  },
+};
+```
+
+> This setup means that a file with a pragma solidity ^0.5.0 will be compiled with solc 0.5.5 and a file with a pragma solidity ^0.6.0 will be compiled with solc 0.6.7.
+
+
+
+
 ## Typescript support
 > Hardhat will automatically enable its TypeScript support if your config file ends in .ts and is written in valid TypeScript. This requires a few changes to work properly.
 

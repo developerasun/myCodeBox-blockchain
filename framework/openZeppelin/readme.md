@@ -1,5 +1,7 @@
-# Learning OpenZeppelin essentials 
+# Learning OpenZeppelin essentials
+
 ## ERC20
+
 > There a few core contracts that implement the behavior specified in the EIP
 
 1. IERC20: the interface all ERC20 implementations should conform to.
@@ -7,6 +9,7 @@
 1. ERC20: the implementation of the ERC20 interface, including the name, symbol and decimals optional standard extension to the base interface.
 
 ## ERC721
+
 > The EIP specifies four interfaces:
 
 1. IERC721: Core functionality required in all compliant implementation.
@@ -21,9 +24,11 @@
 1. ERC721Holder: A bare bones implementation of the receiver interface.
 
 ## Access control
+
 > Access control—that is, "who is allowed to do this thing"—is incredibly important in the world of smart contracts. The access control of your contract may govern who can mint tokens, vote on proposals, freeze transfers, and many other things. It is therefore critical to understand how you implement it, lest someone else steals your whole system.
 
 ### Ownership
+
 > The most common and basic form of access control is the concept of ownership: there’s an account that is the owner of a contract and can do administrative tasks on it. This approach is perfectly reasonable for contracts that have a single administrative user.
 
 ```solidity
@@ -47,11 +52,13 @@ contract MyContract is Ownable {
 > By default, the owner of an Ownable contract is the account that deployed it, which is usually exactly what you want.
 
 ### Multi-signature
+
 > Note that a contract can also be the owner of another one! This opens the door to using, for example, a Gnosis Multisig or Gnosis Safe, an Aragon DAO, an ERC725/uPort identity contract, or a totally custom contract that you create.
 
 > In this way you can use composability to add additional layers of access control complexity to your contracts. Instead of having a single regular Ethereum account (Externally Owned Account, or EOA) as the owner, you could use a 2-of-3 multisig run by your project leads, for example. Prominent projects in the space, such as MakerDAO, use systems similar to this one.
 
 ### Role-based access control
+
 > While the simplicity of ownership can be useful for simple systems or quick prototyping, different levels of authorization are often needed. You may want for an account to have permission to ban users from a system, but not create new tokens. Role-Based Access Control (RBAC) offers flexibility in this regard.
 
 > In essence, we will be defining multiple roles, each allowed to perform different sets of actions. An account may have, for example, 'moderator', 'minter' or 'admin' roles, which you will then check for instead of simply using onlyOwner. This check can be enforced through the onlyRole modifier. Separately, you will be able to define rules for how accounts can be granted a role, have it revoked, and more.
@@ -62,7 +69,7 @@ contract MyContract is Ownable {
 
 > where AccessControl shines is in scenarios where granular permissions are required, which can be implemented by defining multiple roles.
 
-```solidity 
+```solidity
 // contracts/MyToken.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -90,7 +97,8 @@ contract MyToken is ERC20, AccessControl {
 ```
 
 #### Granting and revoking roles
-```solidity 
+
+```solidity
 // contracts/MyToken.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -122,14 +130,15 @@ contract MyToken is ERC20, AccessControl {
 > Dynamic role allocation is often a desirable property, for example in systems where trust in a participant may vary over time. It can also be used to support use cases such as KYC, where the list of role-bearers may not be known up-front, or may be prohibitively expensive to include in a single transaction.
 
 ## Upgradable smart contract
+
 > Smart contracts in Ethereum are immutable by default. Once you create them there is no way to alter them, effectively acting as an unbreakable contract among participants.
 
 > However, for some scenarios, it is desirable to be able to modify them. Think of a traditional contract between two parties: if they both agreed to change it, they would be able to do so. On Ethereum, they may desire to alter a smart contract to fix a bug they found (which might even lead to a hacker stealing their funds!), to add additional features, or simply to change the rules enforced by it.
 
-Overall workflow to write, upgrade, and deploy a upgradable contract is as follows : 
+Overall workflow to write, upgrade, and deploy a upgradable contract is as follows :
 
-1. Write upgradable contracts with @openzeppelin/contracts-upgradeable. 
-1. Test the contracts. 
+1. Write upgradable contracts with @openzeppelin/contracts-upgradeable.
+1. Test the contracts.
 1. Upgrade and deploy the contracts with @openzeppelin/hardhat-upgrades.
 
 > OpenZeppelin provides tooling for deploying and securing upgradeable smart contracts.
@@ -144,23 +153,24 @@ You will need these dependencies for upgradable smart contract.
 # upgradable contracts dependency
 $npm i @openzeppelin/contracts-upgradeable # writing upgradable contracts
 $npm i @openzeppelin/hardhat-upgrades # deploying and upgrading the contracts
-$npm i @nomiclabs/hardhat-ethers 
+$npm i @nomiclabs/hardhat-ethers
 $npm i ethers
 ```
 
 ### Writing upgradable smart contract
+
 > If your contract is going to be deployed with upgradeability, such as using the OpenZeppelin Upgrades Plugins, you will need to use the Upgradeable variant of OpenZeppelin Contracts.
 
 > This variant is available as a separate package called @openzeppelin/contracts-upgradeable, which is hosted in the repository OpenZeppelin/openzeppelin-contracts-upgradeable.
 
-> It follows all of the rules for Writing Upgradeable Contracts: 
+> It follows all of the rules for Writing Upgradeable Contracts:
 
 1. constructors are replaced by initializer functions
 1. state variables are initialized in initializer functions
 
 > and we additionally check for storage incompatibilities across minor versions.
 
-Install it like below. 
+Install it like below.
 
 ```shell
 $npm install @openzeppelin/contracts-upgradeable
@@ -176,7 +186,7 @@ $npm install @openzeppelin/contracts-upgradeable
 +contract MyCollectible is ERC721Upgradeable {
 ```
 
-> Constructors are replaced by internal initializer functions following the naming convention __{ContractName}_init. Since these are internal, you must always define your own public initializer function and call the parent initializer of the contract you extend.
+> Constructors are replaced by internal initializer functions following the naming convention \_\_{ContractName}\_init. Since these are internal, you must always define your own public initializer function and call the parent initializer of the contract you extend.
 
 ```
 -    constructor() ERC721("MyCollectible", "MCO") public {
@@ -190,7 +200,8 @@ $npm install @openzeppelin/contracts-upgradeable
 > It’s worth mentioning that these restrictions have their roots in how the Ethereum VM works, and apply to all projects that work with upgradeable contracts, not just OpenZeppelin Upgrades.
 
 #### Initializer
-> You can use your Solidity contracts with OpenZeppelin Upgrades without any modifications, except for their constructors. Due to a requirement of the proxy-based upgradeability system, no constructors can be used in upgradeable contracts. 
+
+> You can use your Solidity contracts with OpenZeppelin Upgrades without any modifications, except for their constructors. Due to a requirement of the proxy-based upgradeability system, no constructors can be used in upgradeable contracts.
 
 > This means that, when using a contract with the OpenZeppelin Upgrades, you need to change its constructor into a regular function, typically named initialize, where you run all the setup logic:
 
@@ -252,11 +263,13 @@ contract MyContract is BaseContract {
 ```
 
 #### Using Upgradeable Smart Contract Libraries
+
 > Note that you should not be using these contracts, for example ERC20.sol, ERC721.sol, in your OpenZeppelin Upgrades project. Instead, make sure to use @openzeppelin/contracts-upgradeable, which is an official fork of OpenZeppelin Contracts that has been modified to use initializers instead of constructors.
 
 > Whether using OpenZeppelin Contracts or another smart contract library, always make sure that the package is set up to handle upgradeable contracts.
 
 #### Avoiding Initial Values in Field Declarations
+
 > Whilst Solidity allows defining initial values for fields when declaring them in a contract, this will not work for upgradeable contracts.
 
 ```solidity
@@ -279,14 +292,18 @@ contract MyContract is Initialiaable {
 > It is still ok to define constant state variables, because the compiler does not reserve a storage slot for these variables, and every occurrence is replaced by the respective constant expression.
 
 #### Initializing the Implementation Contract
+
 > Do not leave an implementation contract uninitialized. An uninitialized implementation contract can be taken over by an attacker, which may impact the proxy. You can either invoke the initializer manually, or you can include a constructor to automatically mark it as initialized when it is deployed:
 
 ```solidity
 /// @custom:oz-upgrades-unsafe-allow constructor
-constructor() initializer {}
+constructor() {
+    _disableInitializers();
+}
 ```
 
 #### No selfdestruct and delegatecall
+
 > As such, it is not allowed to use either selfdestruct or delegatecall in your upgradable contracts.
 
 > When working with upgradeable smart contracts, you will always interact with the contract instance, and never with the underlying logic contract. However, nothing prevents a malicious actor from sending transactions to the logic contract directly. This does not pose a threat, since any changes to the state of the logic contracts do not affect your contract instances, as the storage of the logic contracts is never used in your project.
@@ -296,11 +313,12 @@ constructor() initializer {}
 > A similar effect can be achieved if the logic contract contains a delegatecall operation. If the contract can be made to delegatecall into a malicious contract that contains a selfdestruct, then the calling contract will be destroyed.
 
 #### Modifying contract, keeping storage layout
+
 > When writing new versions of your contracts, either due to new features or bug fixing, there is an additional restriction to observe: you cannot change the order in which the contract state variables are declared, nor their type.
 
 > Violating any of these storage layout restrictions will cause the upgraded version of the contract to have its storage values mixed up, and can lead to critical errors in your application.
 
-For example, 
+For example,
 
 ```solidity
 // initial contract
@@ -379,7 +397,7 @@ contract B {
 
 contract MyContract is A, B {}
 
-// bad 
+// bad
 contract MyContract is B, A {}
 
 ```
@@ -408,12 +426,15 @@ contract Base {
 > Then the variable base2 would be assigned the slot that child had in the previous version. A workaround for this is to declare unused variables on base contracts that you may want to extend in the future, as a means of "reserving" those slots. Note that this trick does not involve increased gas usage.
 
 #### Proxy upgrade pattern
+
 ##### Upgrading via Proxy pattern
+
 > The basic idea is using a proxy for upgrades. The first contract is a simple wrapper or "proxy" which users interact with directly and is in charge of forwarding transactions to and from the second contract, which contains the logic. The key concept to understand is that the logic contract can be replaced while the proxy, or the access point is never changed. Both contracts are still immutable in the sense that their code cannot be changed, but the logic contract can simply be swapped by another contract. The wrapper can thus point to a different logic implementation and in doing so, the software is "upgraded".
 
 <img src="https://user-images.githubusercontent.com/83855174/158337176-fe281f21-27ac-443d-8438-2352a706b800.png" />
 
 ##### Proxy forwarding
+
 > The most immediate problem that proxies need to solve is how the proxy exposes the entire interface of the logic contract without requiring a one to one mapping of the entire logic contract’s interface. That would be difficult to maintain, prone to errors, and would make the interface itself not upgradeable. Hence, a dynamic forwarding mechanism is required. The basics of such a mechanism are presented in the code below:
 
 ```assembly
@@ -437,20 +458,21 @@ assembly {
 }
 ```
 
-> This code can be put in the [fallback function](https://solidity.readthedocs.io/en/v0.6.12/contracts.html#fallback-function) of a proxy, and will forward any call to any function with any set of parameters to the logic contract without it needing to know anything in particular of the logic contract’s interface. 
+> This code can be put in the [fallback function](https://solidity.readthedocs.io/en/v0.6.12/contracts.html#fallback-function) of a proxy, and will forward any call to any function with any set of parameters to the logic contract without it needing to know anything in particular of the logic contract’s interface.
 
 > In essence, (1) the calldata is copied to memory, (2) the call is forwarded to the logic contract, (3) the return data from the call to the logic contract is retrieved, and (4) the returned data is forwarded back to the caller.
 
-> A very important thing to note is that the code makes use of the EVM’s delegatecall opcode which executes the callee’s code in the context of the caller’s state. 
+> A very important thing to note is that the code makes use of the EVM’s delegatecall opcode which executes the callee’s code in the context of the caller’s state.
 
 > **That is, the logic contract controls the proxy’s state and the logic contract’s state is meaningless**. Thus, the proxy doesn’t only forward transactions to and from the logic contract, but also represents the pair’s state. **The state is in the proxy** and the logic is in the particular implementation that the proxy points to.
 
 ##### Unstructured Storage Proxies : storage collision
-> A problem that quickly comes up when using proxies has to do with the way in which variables are stored in the proxy contract. Suppose that the proxy stores the logic contract’s address in its only variable address public _implementation;. Now, suppose that the logic contract is a basic token whose first variable is address public _owner. Both variables are 32 byte in size, and as far as the EVM knows, occupy the first slot of the resulting execution flow of a proxied call. When the logic contract writes to _owner, it does so in the scope of the proxy’s state, and in reality writes to _implementation. This problem can be referred to as a "storage collision".
+
+> A problem that quickly comes up when using proxies has to do with the way in which variables are stored in the proxy contract. Suppose that the proxy stores the logic contract’s address in its only variable address public \_implementation;. Now, suppose that the logic contract is a basic token whose first variable is address public \_owner. Both variables are 32 byte in size, and as far as the EVM knows, occupy the first slot of the resulting execution flow of a proxied call. When the logic contract writes to \_owner, it does so in the scope of the proxy’s state, and in reality writes to \_implementation. This problem can be referred to as a "storage collision".
 
 <img src="proxy-storage-collision.png" width=800 height=200 alt="proxy and logic contract's storage collision"/>
 
-> There are many ways to overcome this problem, and the "unstructured storage" approach which OpenZeppelin Upgrades implements works as follows. Instead of storing the _implementation address at the proxy’s first storage slot, it chooses a pseudo random slot instead. This slot is sufficiently random, that the probability of a logic contract declaring a variable at the same slot is negligible. The same principle of randomizing slot positions in the proxy’s storage is used in any other variables the proxy may have, such as an admin address (that is allowed to update the value of _implementation), etc.
+> There are many ways to overcome this problem, and the "unstructured storage" approach which OpenZeppelin Upgrades implements works as follows. Instead of storing the \_implementation address at the proxy’s first storage slot, it chooses a pseudo random slot instead. This slot is sufficiently random, that the probability of a logic contract declaring a variable at the same slot is negligible. The same principle of randomizing slot positions in the proxy’s storage is used in any other variables the proxy may have, such as an admin address (that is allowed to update the value of \_implementation), etc.
 
 <img src="proxy-random-slot.png" width=800 height=200 alt="proxy and logic contract's storage collision"/>
 
@@ -465,15 +487,17 @@ bytes32 private constant implementationPosition = bytes32(uint256(
 > As a result, a logic contract doesn’t need to care about overwriting any of the proxy’s variables. Other proxy implementations that face this problem usually imply having the proxy know about the logic contract’s storage structure and adapt to it, or instead having the logic contract know about the proxy’s storage structure and adapt to it. This is why this approach is called "unstructured storage"; neither of the contracts needs to care about the structure of the other.
 
 ##### Storage Collisions Between Implementation Versions
-> As discussed, the unstructured approach avoids storage collisions between the logic contract and the proxy. However, storage collisions between different versions of the logic contract can occur. In this case, imagine that the first implementation of the logic contract stores address public _owner at the first storage slot and an upgraded logic contract stores address public _lastContributor at the same first slot. 
 
-> When the updated logic contract attempts to write to the _lastContributor variable, it will be using the same storage position where the previous value for _owner was being stored, and overwrite it!
+> As discussed, the unstructured approach avoids storage collisions between the logic contract and the proxy. However, storage collisions between different versions of the logic contract can occur. In this case, imagine that the first implementation of the logic contract stores address public \_owner at the first storage slot and an upgraded logic contract stores address public \_lastContributor at the same first slot.
+
+> When the updated logic contract attempts to write to the \_lastContributor variable, it will be using the same storage position where the previous value for \_owner was being stored, and overwrite it!
 
 <img src="logic-contracts-storage-extension.png" width=850 height=480 alt="storage extension for logic contract"/>
 
 > The unstructured storage proxy mechanism doesn’t safeguard against this situation. It is up to the user to have new versions of a logic contract extend previous versions, or otherwise guarantee that the storage hierarchy is always appended to but not modified. However, OpenZeppelin Upgrades detects such collisions and warns the developer appropriately.
 
 ##### The Constructor Caveat
+
 > In Solidity, code that is inside a constructor or part of a global variable declaration is not part of a deployed contract’s runtime bytecode. This code is executed only once, when the contract instance is deployed. As a consequence of this, the code within a logic contract’s constructor will never be executed in the context of the proxy’s state. To rephrase, proxies are completely oblivious to the existence of constructors. It’s simply as if they weren’t there for the proxy.
 
 > The problem is easily solved though. Logic contracts should move the code within the constructor to a regular 'initializer' function, and have this function be called whenever the proxy links to this logic contract. Special care needs to be taken with this initializer function so that it can only be called once, which is one of the properties of constructors in general programming.
@@ -502,6 +526,7 @@ contract MyContract is Initializable {
 ```
 
 ##### Transparent Proxies and Function Clashes
+
 > As described in the previous sections, upgradeable contract instances (or proxies) work by delegating all calls to a logic contract. However, the proxies need some functions of their own, such as upgradeTo(address) to upgrade to a new implementation. This begs the question of how to proceed if the logic contract also has a function named upgradeTo(address): upon a call to that function, did the caller intend to call the proxy or the logic contract?
 
 > The way OpenZeppelin Upgrades deals with this problem is via the transparent proxy pattern. A transparent proxy will decide which calls are delegated to the underlying logic contract based on the caller address (i.e., the msg.sender):
@@ -514,7 +539,7 @@ contract MyContract is Initializable {
 
 <img src="transparent-proxy-pattern-caller-address.png" width=744 height=205 alt="transparent proxy pattern"/>
 
-> Fortunately, OpenZeppelin Upgrades accounts for this situation, and creates an intermediary ProxyAdmin contract that is in charge of all the proxies you create via the Upgrades plugins. Even if you call the deploy command from your node’s default account, the ProxyAdmin contract will be the actual admin of all your proxies. 
+> Fortunately, OpenZeppelin Upgrades accounts for this situation, and creates an intermediary ProxyAdmin contract that is in charge of all the proxies you create via the Upgrades plugins. Even if you call the deploy command from your node’s default account, the ProxyAdmin contract will be the actual admin of all your proxies.
 
 > This means that you will be able to interact with the proxies from any of your node’s accounts, without having to worry about the nuances of the transparent proxy pattern. Only advanced users that create proxies from Solidity need to be aware of the transparent proxies pattern.
 
@@ -525,9 +550,11 @@ contract MyContract is Initializable {
 1. Make sure your contracts use initializer functions instead of constructors
 
 ### Network file
-> OpenZeppelin Upgrades keep track of all the contract versions you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-*.json)
+
+> OpenZeppelin Upgrades keep track of all the contract versions you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-\*.json)
 
 #### Network Files
+
 > OpenZeppelin Upgrades will generate a file for each of the networks you work on (ropsten, mainnet, etc). These files share the same structure:
 
 ```json
@@ -570,6 +597,7 @@ contract MyContract is Initializable {
 > There is a limited set of public chains; Chains not on the list such as Ethereum Classic will have network files named unknown-<chain_id>.json.
 
 #### Configuration Files in Version Control
+
 > Public network files like mainnet.json or ropsten.json should be tracked in version control. These contain valuable information about your project’s status in the corresponding network, like the addresses of the contract versions that have been deployed. Such files should be identical for all the contributors of a project.
 
 > However, local network files like unknown-<chain_id>.json only represent a project’s deployment in a temporary local network such as ganache-cli that are only relevant to a single contributor of the project and should not be tracked in version control.
@@ -582,8 +610,8 @@ contract MyContract is Initializable {
 .openzeppelin/unknown-*.json
 ```
 
+### Deploy and test upgradable smart contract
 
-### Deploy and test upgradable smart contract 
 > Integrate upgrades into your existing workflow. Plugins for Hardhat and Truffle to deploy and manage upgradeable contracts on Ethereum. Upgrades Plugins are only a part of a comprehensive set of OpenZeppelin tools for deploying and securing upgradeable smart contracts. Check out the full list of resources.
 
 1. Deploy upgradeable contracts.
@@ -591,7 +619,7 @@ contract MyContract is Initializable {
 1. Manage proxy admin rights.
 1. Easily use in tests.
 
-Install the plugin like below. 
+Install the plugin like below.
 
 ```shell
 # hardhat
@@ -602,28 +630,29 @@ $npm install --save-dev @openzeppelin/truffle-upgrades
 
 And then load the package in config.
 
-```js 
+```js
 // hardhat.config.js
-require('@openzeppelin/hardhat-upgrades');
+require("@openzeppelin/hardhat-upgrades");
 // hardhat.config.ts
-import '@openzeppelin/hardhat-upgrades';
+import "@openzeppelin/hardhat-upgrades";
 ```
 
 #### Hardhat plugin
+
 > Hardhat users will be able to write scripts that use the plugin to deploy or upgrade a contract, and manage proxy admin rights. Once the contract is set up and compiled, you can deploy it using the Upgrades Plugins. The following snippet shows an example deployment script using Hardhat.
 
 ```js
 const { ethers, upgrades } = require("hardhat");
 
 async function main() {
-    const Box = await ethers.getContractFactory("Box");
-    // Deploying with proxy
-    const instance = await upgrades.deployProxy(Box, [42]);
-    await instance.deployed();
+  const Box = await ethers.getContractFactory("Box");
+  // Deploying with proxy
+  const instance = await upgrades.deployProxy(Box, [42]);
+  await instance.deployed();
 
-    // Upgrading
-    const BoxV2 = await ethers.getContractFactory("BoxV2");
-    const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
+  // Upgrading
+  const BoxV2 = await ethers.getContractFactory("BoxV2");
+  const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
 }
 
 main();
@@ -642,16 +671,17 @@ main();
 1. Check if there is an implementation contract deployed with the same bytecode, and deploy one if not.
 1. Upgrade the proxy to use the new implementation contract.
 
-> The plugins will keep track of all the implementation contracts you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-*.json
+> The plugins will keep track of all the implementation contracts you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-\*.json
 
 ##### Test with Hardhat
+
 > You can also use the plugin’s functions from your Hardhat tests, in case you want to add tests for upgrading your contracts (which you should!). The API is the same as in scripts.
 
 ```js
 const { expect } = require("chai");
 
-describe("Box", function() {
-  it('works', async () => {
+describe("Box", function () {
+  it("works", async () => {
     const Box = await ethers.getContractFactory("Box");
     const BoxV2 = await ethers.getContractFactory("BoxV2");
 
@@ -659,70 +689,82 @@ describe("Box", function() {
     const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
 
     const value = await upgraded.value();
-    expect(value.toString()).to.equal('42');
+    expect(value.toString()).to.equal("42");
   });
 });
 ```
 
 #### Truffle plugin
+
 > Truffle users will be able to write migrations that use the plugin to deploy or upgrade a contract, or manage proxy admin rights.
 
-```js 
-const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
+```js
+const { deployProxy, upgradeProxy } = require("@openzeppelin/truffle-upgrades");
 
-const Box = artifacts.require('Box');
-const BoxV2 = artifacts.require('BoxV2');
+const Box = artifacts.require("Box");
+const BoxV2 = artifacts.require("BoxV2");
 
 module.exports = async function (deployer) {
   const instance = await deployProxy(Box, [42], { deployer });
   const upgraded = await upgradeProxy(instance.address, BoxV2, { deployer });
-}
+};
 ```
 
 > Whether you’re using Hardhat or Truffle, you can use the plugin in your tests to ensure everything works as expected.
 
 #### Multiple inheritance
-> Initializer functions are not linearized by the compiler like constructors. Because of this, each __{ContractName}_init function embeds the linearized calls to all parent initializers. As a consequence, calling two of these init functions can potentially initialize the same contract twice.
 
-> The function __{ContractName}_init_unchained found in every contract is the initializer function minus the calls to parent initializers, and can be used to avoid the double initialization problem, but doing this manually is not recommended. We hope to be able to implement safety checks for this in future versions of the Upgrades Plugins.
+> Initializer functions are not linearized by the compiler like constructors. Because of this, each \_\_{ContractName}\_init function embeds the linearized calls to all parent initializers. As a consequence, calling two of these init functions can potentially initialize the same contract twice.
+
+> The function \_\_{ContractName}\_init_unchained found in every contract is the initializer function minus the calls to parent initializers, and can be used to avoid the double initialization problem, but doing this manually is not recommended. We hope to be able to implement safety checks for this in future versions of the Upgrades Plugins.
 
 #### Storage gaps
-> You may notice that every contract includes a state variable named __gap. This is empty reserved space in storage that is put in place in Upgradeable contracts. It allows us to freely add new state variables in the future without compromising the storage compatibility with existing deployments.
 
-> It isn’t safe to simply add a state variable because it "shifts down" all of the state variables below in the inheritance chain. This makes the storage layouts incompatible, as explained in Writing Upgradeable Contracts. The size of the __gap array is calculated so that the amount of storage used by a contract always adds up to the same number (in this case 50 storage slots).
+> You may notice that every contract includes a state variable named \_\_gap. This is empty reserved space in storage that is put in place in Upgradeable contracts. It allows us to freely add new state variables in the future without compromising the storage compatibility with existing deployments.
+
+> It isn’t safe to simply add a state variable because it "shifts down" all of the state variables below in the inheritance chain. This makes the storage layouts incompatible, as explained in Writing Upgradeable Contracts. The size of the \_\_gap array is calculated so that the amount of storage used by a contract always adds up to the same number (in this case 50 storage slots).
 
 ### Proxy pattern
+
 > The plugins support the UUPS, transparent, and beacon proxy patterns. UUPS and transparent proxies are upgraded individually, whereas any number of beacon proxies can be upgraded atomically at the same time by upgrading the beacon that they point to. For more details on the different proxy patterns available, see the documentation for Proxies.
 
 > For UUPS and transparent proxies, use deployProxy and upgradeProxy as shown above. For beacon proxies, use deployBeacon, deployBeaconProxy, and upgradeBeacon. See the documentation for Hardhat Upgrades and Truffle Upgrades for examples.
 
-## Defender 
+## Defender
+
 > The first secure operations platform for smart contracts.
 
 > OpenZeppelin Defender provides a security operations (SecOps) platform for Ethereum with built-in best practices. Development teams implement Defender to ship faster and minimize security risks.
 
 ### Features
+
 1. admin : Automate and secure all your smart contract administration.
-> Administration mistakes on protocols and applications put user funds at risk. With Defender Admin, you can seamlessly manage all smart contract administration including access controls, upgrades, and pausing. Works with popular multi-sigs including Gnosis Safe.
+
+   > Administration mistakes on protocols and applications put user funds at risk. With Defender Admin, you can seamlessly manage all smart contract administration including access controls, upgrades, and pausing. Works with popular multi-sigs including Gnosis Safe.
 
 1. relay : Build with private and secure transaction infrastructure
-> Don’t spend time implementing third-party or homegrown transaction infrastructure that is unreliable or insecure. Use Defender Relay to quickly implement private relayers with support for testnets, mainnet, layer 2 and sidechains. Increase user security with embedded key vaults, API key management, and meta-transactions.
+
+   > Don’t spend time implementing third-party or homegrown transaction infrastructure that is unreliable or insecure. Use Defender Relay to quickly implement private relayers with support for testnets, mainnet, layer 2 and sidechains. Increase user security with embedded key vaults, API key management, and meta-transactions.
 
 1. Create automated scripts to call your smart contracts
-> Homegrown bots and cron jobs are tedious to maintain and a target for hackers. With Defender Autotasks, you can easily create and run scripts in a serverless environment that call your smart contracts and other web services. Automate your operations and lower attack risk.
+
+   > Homegrown bots and cron jobs are tedious to maintain and a target for hackers. With Defender Autotasks, you can easily create and run scripts in a serverless environment that call your smart contracts and other web services. Automate your operations and lower attack risk.
 
 1. sentinels : Monitor and respond to smart contract exploits
-> Use Defender Sentinels to automatically monitor and respond to events, functions, and transaction parameters on your smart contracts. With full Autotask integration, you can add circuit breakers or automated actions so your team can respond to attacks within seconds and receive notifications via email, Slack, Telegram, or Discord.
+
+   > Use Defender Sentinels to automatically monitor and respond to events, functions, and transaction parameters on your smart contracts. With full Autotask integration, you can add circuit breakers or automated actions so your team can respond to attacks within seconds and receive notifications via email, Slack, Telegram, or Discord.
 
 1. advisor : Quickly implement security best practices
-> Protocol complexity is increasing, leading to new vulnerabilities that you might not be aware of. Use Defender Advisor knowledgebase to stay up to date with the latest security best practices. Use step-by-step guides to implement them across development, testing, monitoring and operations.
+   > Protocol complexity is increasing, leading to new vulnerabilities that you might not be aware of. Use Defender Advisor knowledgebase to stay up to date with the latest security best practices. Use step-by-step guides to implement them across development, testing, monitoring and operations.
 
 <img src="why-defender.png" width=732 height=668 alt="openzepplin defender"/>
 
 ## Utilities
+
 > The OpenZeppelin Contracts provide a ton of useful utilities that you can use in your project. Here are some of the more popular ones.
 
 ### Cryptography
+
 > ECDSA provides functions for recovering and managing Ethereum account ECDSA signatures. These are often generated via web3.eth.sign, and are a 65 byte array (of type bytes in Solidity) arranged the following way: [[v (1)], [r (32)], [s (32)]].
 
 > The data signer can be recovered with ECDSA.recover, and its address compared to verify the signature. Most wallets will hash the data to sign and add the prefix '\x19Ethereum Signed Message:\n', so when attempting to recover the signer of an Ethereum signed message hash, you’ll want to use toEthSignedMessageHash.
@@ -738,6 +780,7 @@ function _verify(bytes32 data, bytes memory signature, address account) internal
 ```
 
 ### Math
+
 > The most popular math related library OpenZeppelin Contracts provides is SafeMath, which provides mathematical functions that protect your contract from overflows and underflows.
 
 > Include the contract with using SafeMath for uint256; and then call the functions:
@@ -749,9 +792,11 @@ function _verify(bytes32 data, bytes memory signature, address account) internal
 1. myNumber.mod(otherNumber)
 
 ### Misc
+
 > Want to check if an address is a contract? Use Address and Address.isContract(). Want to keep track of some numbers that increment by 1 every time you want another one? Check out Counters. This is useful for lots of things, like creating incremental identifiers, as shown on the ERC721 guide.
 
 ### Base64
+
 > Base64 util allows you to transform bytes32 data into its Base64 string representation. This is specially useful to build URL-safe tokenURIs for both ERC721 or ERC1155. This library provides a clever way to serve URL-safe Data URI compliant strings to serve on-chain data structures.
 
 > Consider this is an example to send JSON Metadata through a Base64 Data URI using an ERC721:
@@ -795,6 +840,7 @@ contract My721Token is ERC721 {
 ```
 
 ### Multicall
+
 > The Multicall abstract contract comes with a multicall function that bundles together multiple calls in a single external call. With it, external accounts may perform atomic operations comprising several function calls. This is not only useful for EOAs to make multiple calls in a single transaction, it’s also a way to revert a previous call if a later one fails.
 
 ```solidity
@@ -820,15 +866,16 @@ contract Box is Multicall {
 ```js
 // scripts/foobar.js
 
-const Box = artifacts.require('Box');
+const Box = artifacts.require("Box");
 const instance = await Box.new();
 
 await instance.multicall([
-    instance.contract.methods.foo().encodeABI(),
-    instance.contract.methods.bar().encodeABI()
+  instance.contract.methods.foo().encodeABI(),
+  instance.contract.methods.bar().encodeABI(),
 ]);
 ```
 
 ## Reference
+
 - [OpenZeppelin docs](https://docs.openzeppelin.com/)
 - [OpenZeppelin docs : upgradable smart contract](https://docs.openzeppelin.com/learn/upgrading-smart-contracts#whats-in-an-upgrade)

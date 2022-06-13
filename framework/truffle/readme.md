@@ -47,6 +47,8 @@ Adjust truffle-compile.js file for compiler setting,
   },
 ```
 
+> Truffle comes bundled with a local development blockchain server that launches automatically when you invoke the commands above. If you'd like to configure a more advanced development environment we recommend you install the blockchain server separately by running npm install -g ganache-cli at the command line.
+
 ### Compile
 Complie your contract with truffle like below. If compiles fine, it will generate build/contracts/~.json files. 
 
@@ -91,6 +93,12 @@ Check migration.
 
 ### Test
 > Truffle uses the **Mocha testing framework and Chai** for assertions to provide you with a solid framework from which to write your JavaScript tests.
+
+```shell
+$truffle test [<test_file>] [--compile-all[-debug]] [--network <name>] [--verbose-rpc] [--show-events] [--debug] [--debug-global <identifier>] [--bail] [--stacktrace[-extra]]
+```
+
+Check command details [here](https://trufflesuite.com/docs/truffle/reference/truffle-commands#test).
 
 #### Use contract() instead of describe()¶
 > Structurally, your tests should remain largely unchanged from that of Mocha: Your tests should exist in the ./test directory, they should end with a .js extension, and they should contain code that Mocha will recognize as an automated test. 

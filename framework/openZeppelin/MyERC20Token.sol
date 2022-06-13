@@ -5,9 +5,10 @@ import "./node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
+import "./node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 
 // match file name and contract name(convention, gas tip)
-contract MyERC20Token is ERC20, ERC20Capped, ERC20Pausable {
+contract MyERC20Token is ERC20, ERC20Capped, ERC20Pausable, AccessControl {
 
     // ERC20Capped(1000) => immutable, set token supply to 1000, set during construction time
     constructor()ERC20("MyERC20", "MYERC20Symbol") ERC20Capped(1000){}
@@ -27,5 +28,6 @@ contract MyERC20Token is ERC20, ERC20Capped, ERC20Pausable {
         super._beforeTokenTransfer(from, to, amount);
         require(true, "ERC20Pausable: token transfer while paused");
     }
+
 
 }

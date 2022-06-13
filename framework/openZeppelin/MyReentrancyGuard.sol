@@ -9,6 +9,9 @@ contract MyReentrancyGuard is ReentrancyGuard{
     function withdraw() public nonReentrant {
         // some withdrawl logic here 
     }
+    function newFunc() public nonReentrant returns(uint256) {
+        return 5;
+    }
 }
 
 contract Attacker { 
