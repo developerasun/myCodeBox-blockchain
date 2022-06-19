@@ -1,0 +1,30 @@
+{
+  "trailingComma": "es5",
+  "semi": false,
+  "tabWidth": 4,
+  "singleQuote": true,
+  "printWidth": 80,
+  "useTabs": false,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "jsxSingleQuote": false,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.{md,yml,yaml,json}",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.sol",
+      "options": {
+        "compiler": ">=0.8.0",
+        "printWidth": 150,
+        "singleQuote": false,
+        "explicitTypes": "always"
+      }
+    }
+  ]
+}

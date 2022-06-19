@@ -3,6 +3,8 @@ reminder.md
 node_modules/
 secrets.json
 config
+interview
+artifacts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
