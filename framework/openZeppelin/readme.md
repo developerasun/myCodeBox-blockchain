@@ -135,33 +135,143 @@ contract MyToken is ERC20, AccessControl {
 
 > However, for some scenarios, it is desirable to be able to modify them. Think of a traditional contract between two parties: if they both agreed to change it, they would be able to do so. On Ethereum, they may desire to alter a smart contract to fix a bug they found (which might even lead to a hacker stealing their funds!), to add additional features, or simply to change the rules enforced by it.
 
-Overall workflow to write, upgrade, and deploy a upgradable contract is as follows :
-
-1. Write upgradable contracts with @openzeppelin/contracts-upgradeable.
-1. Test the contracts.
-1. Upgrade and deploy the contracts with @openzeppelin/hardhat-upgrades.
-
 > OpenZeppelin provides tooling for deploying and securing upgradeable smart contracts.
 
 1. Upgradeable Contracts to build your contract using our Solidity components.
 1. Upgrades Plugins to deploy upgradeable contracts with automated security checks.
 1. Defender Admin to manage upgrades in production and automate operations.
 
-You will need these dependencies for upgradable smart contract.
+<details>
+<summary>What is a Proxy contract?</summary>
 
-```shell
-# upgradable contracts dependency
-$npm i @openzeppelin/contracts-upgradeable # writing upgradable contracts
-$npm i @openzeppelin/hardhat-upgrades # deploying and upgrading the contracts
-$npm i @nomiclabs/hardhat-ethers
-$npm i ethers
+> A proxy is a contract that delegates all of its calls to a second contract, named an implementation contract. **All state and funds are held in the proxy**, but the code actually executed is that of the implementation. A proxy can be upgraded by its admin to use a different implementation contract.
+
+</details>
+
+<details>
+<summary>What is an implementation contract?</summary>
+
+> Upgradeable deployments require at least two contracts: a proxy and an implementation. The proxy contract is the instance you and your users will interact with, and **the implementation is the contract that holds the code**. If you call deployProxy several times for the same implementation contract, several proxies will be deployed, but **only one implementation contract will be used**.
+
+When you upgrade a proxy to a new version, **a new implementation contract is deployed if needed**, and the proxy is set to use the new implementation contract.
+
+</details>
+
+### Upgrades plugins
+
+<details>
+<summary> Workflow</summary>
+
+1. Write your Proxy contract with initializer modifier. If the contract is either ERC20 or ERC721, use @openzeppelin/contracts-upgradeable, not @openzeppelin/contracts.
+1. Deploy the Proxy contract first, using hardhat plugin script
+1. Write your Upgradable contract with changed logic keeping storage in order
+1. Deploy the Upgradable contract with proxy contract address, using hardhat plugin script
+</details>
+
+> Integrate upgrades into your existing workflow. Plugins for Hardhat and Truffle to deploy and manage upgradeable contracts on Ethereum.
+
+- Deploy upgradeable contracts.
+- Upgrade deployed contracts.
+- Manage proxy admin rights.
+- Easily use in tests.
+
+#### Installation
+
+For Hardhat users,
+
+```sh
+npm install --save-dev @openzeppelin/contracts-upgradeable @openzeppelin/hardhat-upgrades @nomiclabs/hardhat-ethers ethers
+```
+
+and then load them in your Hardhat config file:
+
+```js
+// hardhat.config.js
+require("@openzeppelin/hardhat-upgrades");
+```
+
+```ts
+// hardhat.config.ts
+import "@openzeppelin/hardhat-upgrades";
+```
+
+For Truffle user,
+
+```sh
+npm install --save-dev @openzeppelin/truffle-upgrades
+```
+
+#### Usage
+
+For Hardhat user,
+
+> Hardhat users will be able to write scripts that use the plugin to deploy or upgrade a contract, and manage proxy admin rights.
+
+```js
+const { ethers, upgrades } = require("hardhat");
+
+async function main() {
+  // Deploying
+  const Box = await ethers.getContractFactory("Box");
+  const instance = await upgrades.deployProxy(Box, [42]); // [42]: initializer params
+  await instance.deployed();
+
+  // Upgrading: should provide proxy address
+  const BoxV2 = await ethers.getContractFactory("BoxV2");
+  const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
+}
+
+main();
+```
+
+For Truffle user,
+
+> Truffle users will be able to write migrations that use the plugin to deploy or upgrade a contract, or manage proxy admin rights.
+
+```js
+const { deployProxy, upgradeProxy } = require("@openzeppelin/truffle-upgrades");
+
+const Box = artifacts.require("Box");
+const BoxV2 = artifacts.require("BoxV2");
+
+module.exports = async function (deployer) {
+  const instance = await deployProxy(Box, [42], { deployer });
+  const upgraded = await upgradeProxy(instance.address, BoxV2, { deployer });
+};
+```
+
+> deployProxy does the following:
+
+1. Validate that the implementation is upgrade-safe.
+1. Deploy a proxy admin for your project (if needed).
+1. Deploy the implementation contract.
+1. Create and initialize the proxy contract.
+
+> upgradeProxy does the following:
+
+1. Validate that the new implementation is upgrade-safe and is compatible with the previous one.
+1. Check if there is an implementation contract deployed with the same bytecode, and deploy one if not.
+1. Upgrade the proxy to use the new implementation contract.
+
+> The plugins will keep track of all the implementation contracts you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-\*.json
+
+#### Test usage
+
+> Whether you’re using Hardhat or Truffle, you can use the plugin in your tests to ensure everything works as expected.
+
+```js
+it("works before and after upgrading", async function () {
+  const instance = await upgrades.deployProxy(Box, [42]);
+  assert.strictEqual(await instance.retrieve(), 42);
+
+  await upgrades.upgradeProxy(instance.address, BoxV2);
+  assert.strictEqual(await instance.retrieve(), 42);
+});
 ```
 
 ### Writing upgradable smart contract
 
-> If your contract is going to be deployed with upgradeability, such as using the OpenZeppelin Upgrades Plugins, you will need to use the Upgradeable variant of OpenZeppelin Contracts.
-
-> This variant is available as a separate package called @openzeppelin/contracts-upgradeable, which is hosted in the repository OpenZeppelin/openzeppelin-contracts-upgradeable.
+> If your contract is going to be deployed with upgradeability, such as using the OpenZeppelin Upgrades Plugins, you will need to use the Upgradeable variant of OpenZeppelin Contracts. This variant is available as a separate package called @openzeppelin/contracts-upgradeable, which is hosted in the repository OpenZeppelin/openzeppelin-contracts-upgradeable.
 
 > It follows all of the rules for Writing Upgradeable Contracts:
 
@@ -186,7 +296,7 @@ $npm install @openzeppelin/contracts-upgradeable
 +contract MyCollectible is ERC721Upgradeable {
 ```
 
-> Constructors are replaced by internal initializer functions following the naming convention \_\_{ContractName}\_init. Since these are internal, you must always define your own public initializer function and call the parent initializer of the contract you extend.
+> **Constructors are replaced by internal initializer functions** following the naming convention \_\_{ContractName}\_init. Since these are internal, you must always define your own public initializer function and call the parent initializer of the contract you extend.
 
 ```
 -    constructor() ERC721("MyCollectible", "MCO") public {
@@ -195,15 +305,11 @@ $npm install @openzeppelin/contracts-upgradeable
     }
 ```
 
-> When working with upgradeable contracts using OpenZeppelin Upgrades, there are a few minor caveats to keep in mind when writing your Solidity code.
-
-> It’s worth mentioning that these restrictions have their roots in how the Ethereum VM works, and apply to all projects that work with upgradeable contracts, not just OpenZeppelin Upgrades.
+> When working with upgradeable contracts using OpenZeppelin Upgrades, there are a few minor caveats to keep in mind when writing your Solidity code. It’s worth mentioning that **these restrictions have their roots in how the Ethereum VM works**, and _apply to all projects_ that work with upgradeable contracts, not just OpenZeppelin Upgrades.
 
 #### Initializer
 
-> You can use your Solidity contracts with OpenZeppelin Upgrades without any modifications, except for their constructors. Due to a requirement of the proxy-based upgradeability system, no constructors can be used in upgradeable contracts.
-
-> This means that, when using a contract with the OpenZeppelin Upgrades, you need to change its constructor into a regular function, typically named initialize, where you run all the setup logic:
+> You can use your Solidity contracts with OpenZeppelin Upgrades without any modifications, except for their constructors. Due to a requirement of the proxy-based upgradeability system, **no constructors can be used in upgradeable contracts**. This means that, when using a contract with the OpenZeppelin Upgrades, you **need to change its constructor into a regular function**, typically named initialize, where you run all the setup logic:
 
 ```solidity
 pragma solidity ^0.6.0;
@@ -237,7 +343,7 @@ contract MyContract is Initializable {
 }
 ```
 
-> Another difference between a constructor and a regular function is that Solidity takes care of automatically invoking the constructors of all ancestors of a contract. When writing an initializer, you need to take special care to manually call the initializers of all parent contracts:
+> Another difference between a constructor and a regular function is that Solidity takes care of automatically invoking the constructors of all ancestors of a contract. **When writing an initializer, you need to take special care to manually call the initializers of all parent contracts**:
 
 ```solidity
 pragma solidity ^0.6.0;
@@ -264,9 +370,7 @@ contract MyContract is BaseContract {
 
 #### Using Upgradeable Smart Contract Libraries
 
-> Note that you should not be using these contracts, for example ERC20.sol, ERC721.sol, in your OpenZeppelin Upgrades project. Instead, make sure to use @openzeppelin/contracts-upgradeable, which is an official fork of OpenZeppelin Contracts that has been modified to use initializers instead of constructors.
-
-> Whether using OpenZeppelin Contracts or another smart contract library, always make sure that the package is set up to handle upgradeable contracts.
+> Note that you should not be using these contracts, for example ERC20.sol, ERC721.sol, in your OpenZeppelin Upgrades project. Instead, make sure to use @openzeppelin/contracts-upgradeable, which is an official fork of OpenZeppelin Contracts that has been modified to use initializers instead of constructors. Whether using OpenZeppelin Contracts or another smart contract library, always make sure that the package is set up to handle upgradeable contracts.
 
 #### Avoiding Initial Values in Field Declarations
 
@@ -289,11 +393,11 @@ contract MyContract is Initialiaable {
 }
 ```
 
-> It is still ok to define constant state variables, because the compiler does not reserve a storage slot for these variables, and every occurrence is replaced by the respective constant expression.
+> It is **still ok to define constant** state variables, because **the compiler does not reserve a storage slot** for these variables, and every occurrence is replaced by the respective constant expression.
 
 #### Initializing the Implementation Contract
 
-> Do not leave an implementation contract uninitialized. An uninitialized implementation contract can be taken over by an attacker, which may impact the proxy. You can either invoke the initializer manually, or you can include a constructor to automatically mark it as initialized when it is deployed:
+> Do not leave an implementation contract uninitialized. An uninitialized implementation contract can be taken over by an attacker, which may impact the proxy. **You can either invoke the initializer manually, or you can include a constructor to automatically mark it as initialized when it is deployed**:
 
 ```solidity
 /// @custom:oz-upgrades-unsafe-allow constructor
@@ -304,19 +408,15 @@ constructor() {
 
 #### No selfdestruct and delegatecall
 
-> As such, it is not allowed to use either selfdestruct or delegatecall in your upgradable contracts.
+> As such, it is not allowed to use either selfdestruct or delegatecall in your upgradable contracts. When working with upgradeable smart contracts, you will always interact with the contract instance, and never with the underlying logic contract. However, **nothing prevents a malicious actor from sending transactions to the logic contract directly**. This does not pose a threat, since any changes to the state of the logic contracts do not affect your contract instances, as **the storage of the logic contracts is never used in your project**.
 
-> When working with upgradeable smart contracts, you will always interact with the contract instance, and never with the underlying logic contract. However, nothing prevents a malicious actor from sending transactions to the logic contract directly. This does not pose a threat, since any changes to the state of the logic contracts do not affect your contract instances, as the storage of the logic contracts is never used in your project.
+> There is, however, an exception. **If the direct call to the logic contract triggers a selfdestruct** operation, then the logic contract will be destroyed, and all your contract instances will end up delegating all calls to an address without any code. **This would effectively break all contract instances in your project**.
 
-> There is, however, an exception. If the direct call to the logic contract triggers a selfdestruct operation, then the logic contract will be destroyed, and all your contract instances will end up delegating all calls to an address without any code. This would effectively break all contract instances in your project.
-
-> A similar effect can be achieved if the logic contract contains a delegatecall operation. If the contract can be made to delegatecall into a malicious contract that contains a selfdestruct, then the calling contract will be destroyed.
+> A similar effect can be achieved if the logic contract **contains a delegatecall operation**. If the contract can be made to delegatecall into a malicious contract that contains a selfdestruct, then the **calling contract will be destroyed**.
 
 #### Modifying contract, keeping storage layout
 
-> When writing new versions of your contracts, either due to new features or bug fixing, there is an additional restriction to observe: you cannot change the order in which the contract state variables are declared, nor their type.
-
-> Violating any of these storage layout restrictions will cause the upgraded version of the contract to have its storage values mixed up, and can lead to critical errors in your application.
+> When writing new versions of your contracts, either due to new features or bug fixing, there is an additional restriction to observe: you **cannot change the order** in which the contract state variables are declared, **nor their type**. Violating any of these storage layout restrictions will cause the upgraded version of the contract to have its storage values mixed up, and can lead to critical errors in your application.
 
 For example,
 
@@ -429,7 +529,7 @@ contract Base {
 
 ##### Upgrading via Proxy pattern
 
-> The basic idea is using a proxy for upgrades. The first contract is a simple wrapper or "proxy" which users interact with directly and is in charge of forwarding transactions to and from the second contract, which contains the logic. The key concept to understand is that the logic contract can be replaced while the proxy, or the access point is never changed. Both contracts are still immutable in the sense that their code cannot be changed, but the logic contract can simply be swapped by another contract. The wrapper can thus point to a different logic implementation and in doing so, the software is "upgraded".
+> The basic idea is using a proxy for upgrades. **The first contract is a simple wrapper or "proxy"** which users interact with directly and is **in charge of forwarding transactions to and from the second contract**, which contains the logic. The key concept to understand is that the **logic contract can be replaced** while the **proxy, or the access point is never changed**. Both contracts are still immutable in the sense that their code cannot be changed, but the logic contract can simply be swapped by another contract. The wrapper can thus point to a different logic implementation and in doing so, the software is "upgraded".
 
 <img src="https://user-images.githubusercontent.com/83855174/158337176-fe281f21-27ac-443d-8438-2352a706b800.png" />
 
@@ -462,7 +562,7 @@ assembly {
 
 > In essence, (1) the calldata is copied to memory, (2) the call is forwarded to the logic contract, (3) the return data from the call to the logic contract is retrieved, and (4) the returned data is forwarded back to the caller.
 
-> A very important thing to note is that the code makes use of the EVM’s delegatecall opcode which executes the callee’s code in the context of the caller’s state.
+> A very important thing to note is that the code makes use of **the EVM’s delegatecall opcode which executes the callee’s code in the context of the caller’s state**.
 
 > **That is, the logic contract controls the proxy’s state and the logic contract’s state is meaningless**. Thus, the proxy doesn’t only forward transactions to and from the logic contract, but also represents the pair’s state. **The state is in the proxy** and the logic is in the particular implementation that the proxy points to.
 
@@ -610,108 +710,6 @@ contract MyContract is Initializable {
 .openzeppelin/unknown-*.json
 ```
 
-### Deploy and test upgradable smart contract
-
-> Integrate upgrades into your existing workflow. Plugins for Hardhat and Truffle to deploy and manage upgradeable contracts on Ethereum. Upgrades Plugins are only a part of a comprehensive set of OpenZeppelin tools for deploying and securing upgradeable smart contracts. Check out the full list of resources.
-
-1. Deploy upgradeable contracts.
-1. Upgrade deployed contracts.
-1. Manage proxy admin rights.
-1. Easily use in tests.
-
-Install the plugin like below.
-
-```shell
-# hardhat
-$npm install --save-dev @openzeppelin/hardhat-upgrades @nomiclabs/hardhat-ethers ethers
-# truffle
-$npm install --save-dev @openzeppelin/truffle-upgrades
-```
-
-And then load the package in config.
-
-```js
-// hardhat.config.js
-require("@openzeppelin/hardhat-upgrades");
-// hardhat.config.ts
-import "@openzeppelin/hardhat-upgrades";
-```
-
-#### Hardhat plugin
-
-> Hardhat users will be able to write scripts that use the plugin to deploy or upgrade a contract, and manage proxy admin rights. Once the contract is set up and compiled, you can deploy it using the Upgrades Plugins. The following snippet shows an example deployment script using Hardhat.
-
-```js
-const { ethers, upgrades } = require("hardhat");
-
-async function main() {
-  const Box = await ethers.getContractFactory("Box");
-  // Deploying with proxy
-  const instance = await upgrades.deployProxy(Box, [42]);
-  await instance.deployed();
-
-  // Upgrading
-  const BoxV2 = await ethers.getContractFactory("BoxV2");
-  const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
-}
-
-main();
-```
-
-> deployProxy does the following:
-
-1. Validate that the implementation is upgrade safe.
-1. Deploy a proxy admin for your project (if needed).
-1. Deploy the implementation contract.
-1. Create and initialize the proxy contract.
-
-> upgradeProxy does the following:
-
-1. Validate that the new implementation is upgrade safe and is compatible with the previous one.
-1. Check if there is an implementation contract deployed with the same bytecode, and deploy one if not.
-1. Upgrade the proxy to use the new implementation contract.
-
-> The plugins will keep track of all the implementation contracts you have deployed in an .openzeppelin folder in the project root, as well as the proxy admin. You will find one file per network there. It is advised that you commit to source control the files for all networks except the development ones (you may see them as .openzeppelin/unknown-\*.json
-
-##### Test with Hardhat
-
-> You can also use the plugin’s functions from your Hardhat tests, in case you want to add tests for upgrading your contracts (which you should!). The API is the same as in scripts.
-
-```js
-const { expect } = require("chai");
-
-describe("Box", function () {
-  it("works", async () => {
-    const Box = await ethers.getContractFactory("Box");
-    const BoxV2 = await ethers.getContractFactory("BoxV2");
-
-    const instance = await upgrades.deployProxy(Box, [42]);
-    const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
-
-    const value = await upgraded.value();
-    expect(value.toString()).to.equal("42");
-  });
-});
-```
-
-#### Truffle plugin
-
-> Truffle users will be able to write migrations that use the plugin to deploy or upgrade a contract, or manage proxy admin rights.
-
-```js
-const { deployProxy, upgradeProxy } = require("@openzeppelin/truffle-upgrades");
-
-const Box = artifacts.require("Box");
-const BoxV2 = artifacts.require("BoxV2");
-
-module.exports = async function (deployer) {
-  const instance = await deployProxy(Box, [42], { deployer });
-  const upgraded = await upgradeProxy(instance.address, BoxV2, { deployer });
-};
-```
-
-> Whether you’re using Hardhat or Truffle, you can use the plugin in your tests to ensure everything works as expected.
-
 #### Multiple inheritance
 
 > Initializer functions are not linearized by the compiler like constructors. Because of this, each \_\_{ContractName}\_init function embeds the linearized calls to all parent initializers. As a consequence, calling two of these init functions can potentially initialize the same contract twice.
@@ -720,44 +718,15 @@ module.exports = async function (deployer) {
 
 #### Storage gaps
 
-> You may notice that every contract includes a state variable named \_\_gap. This is empty reserved space in storage that is put in place in Upgradeable contracts. It allows us to freely add new state variables in the future without compromising the storage compatibility with existing deployments.
+> You may notice that every contract includes **a state variable named \_\_gap**. This is empty reserved space in storage that is put in place in Upgradeable contracts. It **allows us to freely add new state variables in the future** without compromising the storage compatibility with existing deployments.
 
 > It isn’t safe to simply add a state variable because it "shifts down" all of the state variables below in the inheritance chain. This makes the storage layouts incompatible, as explained in Writing Upgradeable Contracts. The size of the \_\_gap array is calculated so that the amount of storage used by a contract always adds up to the same number (in this case 50 storage slots).
 
-### Proxy pattern
+### Proxy patterns
 
-> The plugins support the UUPS, transparent, and beacon proxy patterns. UUPS and transparent proxies are upgraded individually, whereas any number of beacon proxies can be upgraded atomically at the same time by upgrading the beacon that they point to. For more details on the different proxy patterns available, see the documentation for Proxies.
+> The plugins support the UUPS, transparent, and beacon proxy patterns. **UUPS and transparent proxies are upgraded individually**, whereas any number of beacon proxies can be upgraded atomically at the same time by upgrading the beacon that they point to. For more details on the different proxy patterns available, see the documentation for Proxies.
 
-> For UUPS and transparent proxies, use deployProxy and upgradeProxy as shown above. For beacon proxies, use deployBeacon, deployBeaconProxy, and upgradeBeacon. See the documentation for Hardhat Upgrades and Truffle Upgrades for examples.
-
-## Defender
-
-> The first secure operations platform for smart contracts.
-
-> OpenZeppelin Defender provides a security operations (SecOps) platform for Ethereum with built-in best practices. Development teams implement Defender to ship faster and minimize security risks.
-
-### Features
-
-1. admin : Automate and secure all your smart contract administration.
-
-   > Administration mistakes on protocols and applications put user funds at risk. With Defender Admin, you can seamlessly manage all smart contract administration including access controls, upgrades, and pausing. Works with popular multi-sigs including Gnosis Safe.
-
-1. relay : Build with private and secure transaction infrastructure
-
-   > Don’t spend time implementing third-party or homegrown transaction infrastructure that is unreliable or insecure. Use Defender Relay to quickly implement private relayers with support for testnets, mainnet, layer 2 and sidechains. Increase user security with embedded key vaults, API key management, and meta-transactions.
-
-1. Create automated scripts to call your smart contracts
-
-   > Homegrown bots and cron jobs are tedious to maintain and a target for hackers. With Defender Autotasks, you can easily create and run scripts in a serverless environment that call your smart contracts and other web services. Automate your operations and lower attack risk.
-
-1. sentinels : Monitor and respond to smart contract exploits
-
-   > Use Defender Sentinels to automatically monitor and respond to events, functions, and transaction parameters on your smart contracts. With full Autotask integration, you can add circuit breakers or automated actions so your team can respond to attacks within seconds and receive notifications via email, Slack, Telegram, or Discord.
-
-1. advisor : Quickly implement security best practices
-   > Protocol complexity is increasing, leading to new vulnerabilities that you might not be aware of. Use Defender Advisor knowledgebase to stay up to date with the latest security best practices. Use step-by-step guides to implement them across development, testing, monitoring and operations.
-
-<img src="why-defender.png" width=732 height=668 alt="openzepplin defender"/>
+> **For UUPS and transparent proxies, use deployProxy and upgradeProxy as shown above**. For beacon proxies, use deployBeacon, deployBeaconProxy, and upgradeBeacon. See the documentation for Hardhat Upgrades and Truffle Upgrades for examples.
 
 ## Utilities
 
