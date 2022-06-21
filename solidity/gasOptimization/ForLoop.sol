@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// try to limit your read/write towards state variable
+// instead, create local variables in function and update it to the state variables last.
 contract ForLoop {
     uint myNum; // default is 0
     
