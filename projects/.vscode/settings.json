@@ -1,0 +1,10 @@
+{
+    "solidity.remappingsWindows": [
+        "@openzeppelin/=../node_modules/@openzeppelin"
+    ],
+    "editor.formatOnSave": true,
+    "files.autoSave": "onFocusChange",
+    "[solidity]": {
+        "editor.defaultFormatter": "JuanBlanco.solidity",
+    }
+}
