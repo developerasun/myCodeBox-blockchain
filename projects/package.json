@@ -21,6 +21,9 @@
     "url": "https://github.com/developerasun/myCodeBox-blockchain/issues"
   },
   "homepage": "https://github.com/developerasun/myCodeBox-blockchain#readme",
-  "type": "module",
-  "packageManager": "pnpm@7.3.0"
+  "packageManager": "pnpm@7.3.0",
+  "devDependencies": {
+    "prettier": "^2.3.0",
+    "prettier-plugin-solidity": "1.0.0-beta.19"
+  }
 }
