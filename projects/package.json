@@ -4,7 +4,8 @@
   "description": "mini-projects",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gen:abi": "waffle",
+    "test:waffle:dev": "mocha"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,15 @@
   "homepage": "https://github.com/developerasun/myCodeBox-blockchain#readme",
   "packageManager": "pnpm@7.3.0",
   "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "*",
+    "chai": "^4.3.6",
+    "ethereum-waffle": "^3.4.4",
+    "mocha": "^10.0.0",
     "prettier": "^2.3.0",
-    "prettier-plugin-solidity": "1.0.0-beta.19"
+    "prettier-plugin-solidity": "1.0.0-beta.19",
+    "ts-node": "^10.8.1",
+    "typescript": ">=3.7.0"
   }
 }
