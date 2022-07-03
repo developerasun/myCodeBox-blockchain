@@ -1,12 +1,11 @@
-# ENH: 
-# BUG: 
-# DOC: 
-# TST: 
-# BLD: 
-# PERF: 
-# TYP: 
-# CLN: 
-
+# ENH:
+# BUG:
+# DOC:
+# TST:
+# BLD:
+# PERF:
+# TYP:
+# CLN:
 # =====================================
 # ENH: Enhancement, new functionality
 # BUG: Bug fix
@@ -16,5 +15,6 @@
 # PERF: Performance improvement
 # TYP: Type annotations
 # CLN: Code cleanup
+# run this command in terminal: git config --local commit.template .gitmessage.txt
 # =====================================
 # find more details here: https://pandas.pydata.org/docs/development/contributing.html#committing-your-code

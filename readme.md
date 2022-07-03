@@ -2,7 +2,7 @@
 
 # My Open Code Box - Blockchain
 
-This is a open code box for blockchain learning material and mini projects by Jake Sung. Topics contain blockchain background knowledge, libraries(ethers.js, web3.js, openzeppelin), framework(hardhat, truffle), IPFS, Defi, NFT. And many more to come.  
+This is a open code box for blockchain learning material and mini projects by Jake Sung. Topics contain blockchain background knowledge, libraries(ethers.js, web3.js, openzeppelin), framework(hardhat, truffle), IPFS, Defi, NFT. And many more to come.
 
 ## Mini projects
 
