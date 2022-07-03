@@ -5,6 +5,11 @@ require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-ethers");
 require("dotenv").config();
 
+// add custom task(async function accessing to HRE)
+task("balance", "Prints an account's balance").setAction(async () => {
+  console.log("hey");
+});
+
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
