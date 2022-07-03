@@ -406,6 +406,175 @@ describe('Am I Rich Already', () => {
 })
 ```
 
+## Configuration
+
+> While Waffle works well enough without any configurations, advanced users might want to excert more control over what happens when they use Waffle in their projects. This is why we made it very easy to configure Waffle to meet your needs. All you need to do is create a waffle.json file inside your project and point waffle to it.
+
+> First create your waffle.json configuration file:
+
+```json
+{
+  "compilerType": "solcjs",
+  "compilerVersion": "0.6.2",
+  "sourceDirectory": "./contracts",
+  "outputDirectory": "./build"
+}
+```
+
+> Since Waffle 3.0.0 it recognises waffle.json as the default configuration file. If your configuration file is called waffle.json, it’s possible to use just waffle to build contracts.
+
+```json
+{
+  "scripts": {
+    "build": "waffle"
+  }
+}
+```
+
+### SourceDirectory
+
+> You can specify a custom path to the directory containing your smart contracts. Waffle uses ./contracts as the default value for sourceDirectory. The path you provide will be resolved relative to the current working directory.
+
+```json
+{
+  "sourceDirectory": "./custom/path/to/contracts"
+}
+```
+
+### OutputDirectory
+
+> You can specify a custom path to the directory to which Waffle saves the compilation output. Waffle uses ./build as the default value for outputDirectory. The path you provide will be resolved relative to the current working directory.
+
+```json
+{
+  "outputDirectory": "./custom/path/to/output"
+}
+```
+
+### NodeModulesDirectory
+
+> You can specify a custom path to the node_modules folder which Waffle will use to resolve third party dependencies. Waffle uses ./node_modules as the default value for nodeModulesDirectory. The path you provide will be resolved relative to the current working directory.
+
+```json
+{
+  "nodeModulesDirectory": "./custom/path/to/node_modules"
+}
+```
+
+### CacheDirectory
+
+> When compiling using solcjs and using a non-default compilerVersion Waffle downloads the necessary solcjs binary from a remote server. This file is cached to speed up subsequent runs. You can specify a custom path to the directory in which caches are saved. Waffle uses ./cache as the default value for cacheDirectory. The path you provide will be resolved relative to the current working directory.
+
+```json
+{
+  "cacheDirectory": "./custom/path/to/cache"
+}
+```
+
+### CompilerVersion
+
+> Specifies the version of the compiler. Should be a semver string like 0.5.9. You can use it with "compilerType": "solcjs" or "compilerType": "dockerized-solc".
+
+> When using "compilerType": "solcjs" you can also specify the exact commit that will be used or a path to a specific solc module dependency.
+
+```json
+{
+  "compilerType": "solcjs",
+  "compilerVersion": "./node_modules/solc"
+}
+```
+
+### CompilerAllowedPaths
+
+> The solc compiler has restrictions on paths it can access for security reasons. The value of compilerAllowedPaths will be passed as a command line argument: solc --allow-paths <VALUE>.
+
+This is especially useful if you are doing a monorepo setup with Lerna, see: Usage with Lernajs.
+
+```json
+{
+  "compilerAllowedPaths": ["../contracts"]
+}
+```
+
+### CompilerOptions
+
+> You can customize the behaviour of solc by providing custom settings for it. All of the information is provided in the Solidity documentation. Value of the compilerOptions configuration setting will be passed to solc as settings.
+
+> For detailed list of options go to solidity documentation (sections: ‘Setting the EVM version to target’, ‘Target options’ and ‘Compiler Input and Output JSON Description’).
+
+```json
+{
+  "compilerOptions": {
+    "evmVersion": "constantinople"
+  }
+}
+```
+
+### OutputHumanReadableAbi
+
+> Waffle supports Human Readable Abi. In order to enable its output, you need to set outputHumanReadableAbi to true in your config file:
+
+```json
+{
+  "outputHumanReadableAbi": true
+}
+```
+
+> For the compiled contracts you will now see the following in the output:
+
+```json
+{
+  "humanReadableAbi": [
+    "constructor(uint256 argOne)",
+    "event Bar(bool argOne, uint256 indexed argTwo)",
+    "event FooEvent()",
+    "function noArgs() view returns(uint200)",
+    "function oneArg(bool argOne)",
+    "function threeArgs(string argOne, bool argTwo, uint256[] argThree) view returns(bool, uint256)",
+    "function twoReturns(bool argOne) view returns(bool, uint256)"
+  ]
+}
+```
+
+### Typechain
+
+> Waffle supports typechain artifacts generation. To enable typed artifacts generation you should set typechainEnabled property to true. You are also able to define target folder for your artifacts by defining typechainOutputDir property, which is set to ./types by default. Property typechainOutputDir is a path relative to outputDirectory.
+
+```json
+{
+  "typechainEnabled": true,
+  "typechainOutputDir": "typechain"
+}
+```
+
+### Other configuration file formats
+
+> Waffle supports the following configuration file formats: JSON, Javascript, Promise
+
+> This is a powerful feature if you want to asynchronously load different compliation configurations in different environments. For example, you can use native solc in CI for faster compilation, while deciding the exact solc-js version locally based on the contract versions being used. Since many of those operations are asynchronous, you’ll most likely be returning a Promise to waffle to handle.
+
+```json
+{
+  "sourceDirectory": "./src/contracts"
+}
+```
+
+```js
+module.exports = {
+  sourceDirectory: './src/contracts',
+}
+```
+
+```js
+module.exports = Promise.resolve({
+  sourceDirectory: './src/contracts',
+})
+```
+
+### Monorepo
+
+> Waffle works well with mono-repositories. It is enough to set up a common nodeModulesDirectory in the configuration file to make it work. We recommend using yarn workspaces, wsrun, and Lerna.js for monorepo management.
+
 ## Reference
 
 - [Ethereum-Waffle](https://ethereum-waffle.readthedocs.io/en/latest/)
