@@ -1,0 +1,15 @@
+{
+  "name": "ipfs",
+  "version": "1.0.0",
+  "description": "> IPFS is a distributed system for storing and accessing files, websites, applications, and data.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@pinata/sdk": "^1.1.26"
+  }
+}
