@@ -7,7 +7,7 @@
 <details>
 <summary>How Defender works</summary>
 
-<img src="reference/defender-system.png" width=742 height=377 alt="openzepplin defender system"/>
+<img src="../reference/defender-system.png" width=742 height=377 alt="openzepplin defender system"/>
 </details>
 
 <details>
@@ -40,7 +40,7 @@
 1. advisor : Quickly implement security best practices
    > Protocol complexity is increasing, leading to new vulnerabilities that you might not be aware of. Use **Defender Advisor knowledgebase to stay up to date with the latest security best practices**. Use step-by-step guides to implement them across development, testing, monitoring and operations.
 
-<img src="reference/why-defender.png" width=732 height=668 alt="openzepplin defender"/>
+<img src="../reference/why-defender.png" width=732 height=668 alt="openzepplin defender"/>
 
 ## Defender Relay
 
@@ -49,4 +49,4 @@ Defender relay: a set of keys assigned to dev teams for sending transactions thr
 1. Automation with NPM defender-relay-client package & defender autotask
 1. Securing private keys
 
-<img src="reference/relay-key-management.png" width=588 height=440 alt="openzepplin defender relay"/>
+<img src="../reference/relay-key-management.png" width=588 height=440 alt="openzepplin defender relay"/>
