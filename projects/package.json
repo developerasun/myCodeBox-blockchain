@@ -24,10 +24,13 @@
   "homepage": "https://github.com/developerasun/myCodeBox-blockchain#readme",
   "packageManager": "pnpm@7.3.0",
   "devDependencies": {
+    "@pinata/sdk": "^1.1.26",
     "@types/chai": "^4.3.1",
+    "@types/crypto-js": "^4.1.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "*",
     "chai": "^4.3.6",
+    "crypto-js": "^4.1.1",
     "ethereum-waffle": "^3.4.4",
     "mocha": "^10.0.0",
     "prettier": "^2.3.0",
