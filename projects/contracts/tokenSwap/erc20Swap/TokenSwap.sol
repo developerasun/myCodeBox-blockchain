@@ -45,7 +45,6 @@ contract TokenSwap {
         uint256 _amount
     ) private {
         bool sent = _token.transferFrom(_sender, _recipient, _amount);
-
         // execute only when above transfer succeeded
         require(sent, "Token transfer failed");
     }
