@@ -1,0 +1,20 @@
+{
+  "name": "1inch-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "moralis": "^1.9.0"
+  },
+  "type": "module",
+  "browser": {
+    "moralis": false,
+    "react-moralis": false
+  }
+}
